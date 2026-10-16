@@ -29,17 +29,24 @@
             <a href="#contact" class="btn-header-cta">تماس با ما</a>
 
             <button class="nav-toggle" id="navToggle" aria-label="باز کردن منو">
+
                 <svg class="block" fill="none" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width: 32px; height: 32px;"><path fill="white" d="M21 18a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm0-7a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm0-7a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2z"></path></svg>
+
+                @* @else
+                {
+                    <svg class="block" fill="none" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width: 32px; height: 32px;"><path fill="currentColor" d="M16.7929 5.79289C17.1834 5.40237 17.8164 5.40237 18.207 5.79289C18.5975 6.18342 18.5975 6.81643 18.207 7.20696L14.8282 10.5857C14.0472 11.3668 14.0472 12.6331 14.8282 13.4141L18.207 16.7929C18.5975 17.1834 18.5975 17.8164 18.207 18.207C17.8164 18.5975 17.1834 18.5975 16.7929 18.207L13.4141 14.8282C12.6331 14.0472 11.3668 14.0472 10.5857 14.8282L7.20696 18.207C6.81643 18.5975 6.18342 18.5975 5.79289 18.207C5.40237 17.8164 5.40237 17.1834 5.79289 16.7929L9.17165 13.4141C9.9527 12.6331 9.9527 11.3668 9.17165 10.5857L5.79289 7.20696C5.40237 6.81643 5.40237 6.18342 5.79289 5.79289C6.18342 5.40237 6.81643 5.40237 7.20696 5.79289L10.5857 9.17165C11.3668 9.9527 12.6331 9.9527 13.4141 9.17165L16.7929 5.79289Z"></path></svg>
+                } *@
+
             </button>
 
 
-            
 
 
         </div>
     </header>
     @RenderBody()
     <footer class="site-footer" id="contact">
+        <canvas class="starfield-canvas" data-count="20" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
         <div class="container testimonial-row">
 
             <div class="brand-side">
@@ -139,7 +146,7 @@
 
                         </span>
                     </a>
-                    </span>
+                </span>
                 with
                 <svg style="margin-bottom:0.5vh;" width="16" height="16" class="icon-love">
                     <use href="#i-heart"></use>
@@ -223,15 +230,15 @@
         // testimonial slider — ready for more entries; add objects to this array later
 
         @{
-                        var Comments = new SetComments();
-                        var CommentsList = Comments.GetComments()
-                        .Select(c => new
-                        {
-                                        text = c.Text,
-                                        name = c.Name,
-                                        role = c.Role,
-                                        rating = c.Rating,
-                        });
+                            var Comments = new SetComments();
+                            var CommentsList = Comments.GetComments()
+                            .Select(c => new
+                            {
+                                                text = c.Text,
+                                                name = c.Name,
+                                                role = c.Role,
+                                                rating = c.Rating,
+                            });
         }
 
         const testimonials = @Json.Serialize(CommentsList);
@@ -266,6 +273,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/starfield.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

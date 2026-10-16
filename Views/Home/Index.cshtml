@@ -2,46 +2,56 @@
 <partial name="_SvgSprite"></partial>
 
 <!-- ================= HERO ================= -->
-<section class="hero" id="home">
-    <div class="container hero-inner">
+<div class="hero-news-bg">
+    <section class="hero" id="home">
+        <canvas class="starfield-canvas" data-count="20" data-colors="#49b9ff,#8fd8ff,#6fc3ff" data-avoid-pixels="#heroCanvas"></canvas>        <div class="container hero-inner">
 
-        <div class="hero-text">
-            <h1 class="hero-title">کافینت آریا</h1>
-            <p class="hero-subtitle">همیشه یک قدم جلوتر از شما</p>
-            <p class="hero-desc">ارائه انواع خدمات اینترنتی، ثبت نام پرداخت قبوض. پرداخت خدمات دانشجویی اطلاع رسانی جدیدترین اخبار با سرعت، دقت و اطمینان</p>
-            <div class="hero-buttons">
-                <a href="#news" class="btn btn-ghost"><span>مشاهده آخرین اخبار</span><svg class="icon"><use href="#i-chevron-left"></use></svg></a>
-                <a href="#services" class="btn btn-solid"><span>خدمات ما</span><svg class="icon"><use href="#i-grid"></use></svg></a>
+            <div class="hero-text">
+                <a href="#services" class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    ما را در اینستاگرام دنبال کنید
+                    <svg class="icon"><use href="#i-chevron-left"></use></svg>
+                </a>
+                <div class="hero-Sentences">
+                    <h1 class="hero-title">کافینت آریا</h1>
+                    <p class="hero-subtitle">همیشه یک قدم جلوتر از شما</p>
+                    <p class="hero-desc">ارائه انواع خدمات اینترنتی، ثبت نام پرداخت قبوض. پرداخت خدمات دانشجویی اطلاع رسانی جدیدترین اخبار با سرعت، دقت و اطمینان</p>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#news" class="btn btn-ghost"><span>مشاهده آخرین اخبار</span><svg class="icon"><use href="#i-chevron-left"></use></svg></a>
+                    <a href="#services" class="btn btn-solid"><span>خدمات ما</span><svg class="icon"><use href="#i-grid"></use></svg></a>
+                </div>
+            </div>
+
+            <partial name="_Hero3dLogo"></partial>
+
+        </div>
+    </section>
+
+    <!-- ================= NEWS ================= -->
+    <section class="news-section" id="news">
+        <canvas class="starfield-canvas" data-count="30" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow on-dark">آخرین اخبار و اطلاعیه‌ها</p>
+                <h2 class="section-title on-dark">همیشه به‌روز باشید</h2>
+            </div>
+
+            <div class="news-grid">
+
+                @{
+                    var Newest3 = Model.News.OrderByDescending(n => n.Id).Take(3).ToArray();
+
+                    foreach (var item in Newest3)
+                    {
+                        <partial name="_NewsCard" model="item" />
+                    }
+                }
+
             </div>
         </div>
-
-        <partial name="_Hero3dLogo"></partial>
-
-    </div>
-</section>
-
-<!-- ================= NEWS ================= -->
-<section class="news-section" id="news">
-    <div class="container">
-        <div class="section-head">
-            <p class="eyebrow on-dark">آخرین اخبار و اطلاعیه‌ها</p>
-            <h2 class="section-title on-dark">همیشه به‌روز باشید</h2>
-        </div>
-
-        <div class="news-grid">
-
-            @{
-                var Newest3 = Model.News.OrderByDescending(n => n.Id).Take(3).ToArray();
-
-                foreach (var item in Newest3)
-                {
-                    <partial name="_NewsCard" model="item" />
-                }
-            }
-
-        </div>
-    </div>
-</section>
+    </section>
+</div>
 
 <!-- ================= SERVICES ================= -->
 <section class="services-section" id="services">

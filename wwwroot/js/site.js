@@ -1,4 +1,17 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿(function () {
+    var header = document.querySelector('.site-header');
+    if (!header) return;
 
-// Write your JavaScript code.
+    var threshold = 80; // بعد از چند پیکسل اسکرول، هدر توپُر بشه
+
+    function updateHeader() {
+        if (window.scrollY < threshold) {
+            header.classList.add('is-transparent');
+        } else {
+            header.classList.remove('is-transparent');
+        }
+    }
+
+    updateHeader();
+    window.addEventListener('scroll', updateHeader, { passive: true });
+})();
