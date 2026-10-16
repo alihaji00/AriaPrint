@@ -947,6 +947,7 @@ button {
     background: linear-gradient(180deg,#050e2c 0%,#0a2a63 28%,#123a7a 44%,#0d3c8a 60%,#0a2560 78%,#050e2c 100%);
     isolation: isolate;
     margin-top: calc(-1 * 12vh);
+    overflow:hidden;
 }
 
     .article-dark-zone > .starfield-canvas {

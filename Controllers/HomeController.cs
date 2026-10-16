@@ -35,7 +35,12 @@ namespace AriaPrint.Controllers
             var Model = new NewsViewModel(News);
 
             var comments = await _commentService.GetCommentsAsync(id);
-            var answers = await _answerService.GetAnswersAsync(id);
+
+            var answers = new List<Answer>();
+            foreach (var c in comments)
+            {
+                answers.AddRange(await _answerService.GetAnswersAsync(c.CommentId));
+            }
 
             ViewData["CommentsModel"] = new CommentsViewModel
             {
@@ -58,24 +63,6 @@ namespace AriaPrint.Controllers
             return View(viewModel);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Comments(CommentsViewModel viewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        string ip = Request.GetClientIpAddress();
-        //        await _commentService.AddCommentAsync(viewModel.NewComment, ip);
-        //    }
-        //    else
-        //    {
-        //        foreach (var kvp in ModelState)
-        //            foreach (var err in kvp.Value.Errors)
-        //                Console.WriteLine($"{kvp.Key}: {err.ErrorMessage}");
-        //    }
-
-        //    return RedirectToAction("News", new { id = viewModel.NewComment.NewsId });
-        //}
-
         [HttpPost]
         public async Task<IActionResult> Comments(Comment newComment)
         {
@@ -86,6 +73,16 @@ namespace AriaPrint.Controllers
             }
 
             return RedirectToAction("News", new { id = newComment.NewsId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Answers(int CommentId)
+        {
+            var viewModel = new CommentsViewModel
+            {
+                AnswersList = await _answerService.GetAnswersAsync(CommentId)
+            };
+            return View(viewModel);
         }
 
         [HttpPost]
