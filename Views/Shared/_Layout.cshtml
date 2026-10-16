@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>کافینت آریا | همیشه یک قدم جلوتر از شما</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    @* <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/AriaPrint.styles.css" asp-append-version="true" /> *@
 </head>
 <body>
     <header class="site-header">
@@ -31,8 +29,13 @@
             <a href="#contact" class="btn-header-cta">تماس با ما</a>
 
             <button class="nav-toggle" id="navToggle" aria-label="باز کردن منو">
-                <span></span><span></span><span></span>
+                <svg class="block" fill="none" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width: 32px; height: 32px;"><path fill="white" d="M21 18a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm0-7a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2zm0-7a1 1 0 1 1 0 2H3a1 1 0 0 1 0-2z"></path></svg>
             </button>
+
+
+            
+
+
         </div>
     </header>
     @RenderBody()
@@ -127,15 +130,16 @@
         <div class="container footer-bottom">
             <p dir="ltr" style="display:flex; align-items:center; justify-content:center; gap:8px; margin:0;">
                 Created by
-                <span class="shine">ᯓ
+                <span class="shine">
                     <a href="www.alihaji.com">
+                        ᯓ
                         𝖆𝖑𝖎𝖍𝖆𝖏𝖎
                         <span style="transform:scaleX(-1);display:inline-block">
                             ᯓ
 
                         </span>
                     </a>
-                </span>
+                    </span>
                 with
                 <svg style="margin-bottom:0.5vh;" width="16" height="16" class="icon-love">
                     <use href="#i-heart"></use>
@@ -163,26 +167,23 @@
                                 }
 
                             @@keyframes steam-rise {
-                                0%
+                                0% {
+                                    opacity: 0;
+                                    transform: translateY(0) scaleY(0.8);
+                                }
 
-                            {
-                                opacity: 0;
-                                transform: translateY(0) scaleY(0.8);
-                            }
+                                25% {
+                                    opacity: 0.9;
+                                }
 
-                            25% {
-                                opacity: 0.9;
-                            }
+                                70% {
+                                    opacity: 0.35;
+                                }
 
-                            70% {
-                                opacity: 0.35;
-                            }
-
-                            100% {
-                                opacity: 0;
-                                transform: translateY(-6px) scaleY(1.15);
-                            }
-
+                                100% {
+                                    opacity: 0;
+                                    transform: translateY(-6px) scaleY(1.15);
+                                }
                             }
 
                             .coffee-cup {
@@ -222,15 +223,15 @@
         // testimonial slider — ready for more entries; add objects to this array later
 
         @{
-                var Comments = new SetComments();
-                var CommentsList = Comments.GetComments()
-                .Select(c => new
-                {
-                        text = c.Text,
-                        name = c.Name,
-                        role = c.Role,
-                        rating = c.Rating,
-                });
+                        var Comments = new SetComments();
+                        var CommentsList = Comments.GetComments()
+                        .Select(c => new
+                        {
+                                        text = c.Text,
+                                        name = c.Name,
+                                        role = c.Role,
+                                        rating = c.Rating,
+                        });
         }
 
         const testimonials = @Json.Serialize(CommentsList);
