@@ -227,18 +227,18 @@
         // testimonial slider — ready for more entries; add objects to this array later
 
         @{
-                            var Comments = new SetComments();
-                            var CommentsList = Comments.GetComments()
-                            .Select(c => new
-                            {
-                                                text = c.Text,
-                                                name = c.Name,
-                                                role = c.Role,
-                                                rating = c.Rating,
-                            });
+            var Feedbacks = new SetFeedbacks();
+            var FeedbacksList = Feedbacks.GetFeedbacks()
+            .Select(c => new
+            {
+                text = c.Text,
+                name = c.Name,
+                role = c.Role,
+                rating = c.Rating,
+            });
         }
 
-        const testimonials = @Json.Serialize(CommentsList);
+        const testimonials = @Json.Serialize(FeedbacksList);
 
         let tIndex = 0;
         const quoteText = document.getElementById('quoteText');

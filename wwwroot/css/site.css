@@ -1353,7 +1353,6 @@ button {
 }
 
     .related-item:hover {
-        border: 1px solid rgba(255 255 255 / 0.1);
         box-shadow: 0 0 10px rgba(255 255 255 / 0.2);
         background: rgba(255, 255, 255, 0.02);
     }
@@ -1440,91 +1439,470 @@ button {
 
 /* ---- Comments section ---- */
 
-/*.article-bottom {
-    margin: 0 10vw;
-    padding-bottom: 10vh;
+/* =========================================================================
+   بخش سوالات و پاسخ‌ها — استایل
+   نکته: تمام رنگ‌های زمینه به‌صورت rgba و نیمه‌شفاف تعریف شده‌اند تا با
+   بک‌گراند آبی سایت شما ترکیب شوند. اگر می‌خواهید شفافیت بیشتر/کمتر شود،
+   فقط مقدار آلفای متغیرهای --qa-bg-panel و --qa-bg-card را تغییر دهید.
+   ========================================================================= */
+
+:root {
+    --qa-blue: #2f7dfa;
+    --qa-blue-hover: #2568d6;
+    --qa-blue-soft: rgba(47, 125, 250, 0.14);
+    --qa-blue-soft-border: rgba(47, 125, 250, 0.35);
+    --qa-bg-panel: rgba(18, 28, 54, 0.55); /* پنل اصلی؛ نیمه‌شفاف */
+    --qa-bg-card: rgba(255, 255, 255, 0.035); /* کارت هر سوال */
+    --qa-bg-card-border: rgba(255, 255, 255, 0.07);
+    --qa-bg-answer: rgba(255, 255, 255, 0.025); /* جعبه پاسخ پشتیبانی */
+    --qa-bg-input: rgba(255, 255, 255, 0.05);
+    --qa-bg-input-border: rgba(255, 255, 255, 0.09);
+    --qa-bg-avatar: rgba(255, 255, 255, 0.08);
+    --qa-text-title: #f3f5fb;
+    --qa-text-name: #eef1f8;
+    --qa-text-body: #b6bdcf;
+    --qa-text-muted: #808a9e;
+    --qa-text-placeholder: #6f7890;
+    --qa-radius-panel: 22px;
+    --qa-radius-card: 16px;
+    --qa-radius-input: 12px;
+    --qa-radius-pill: 999px;
+    --qa-shadow-panel: 0 24px 60px rgba(2, 6, 20, 0.45);
 }
 
-.article-Comments {
-    background: rgba(255, 255, 255, 0.01);
-    border: 2px solid #2159f2;
-    border-radius: 18px;
-    color: var(--white);
-    width: 80vw;
-    height: 50vh;
+* {
+    box-sizing: border-box;
+}
+
+.comments-section{
+    margin: 0 5vw;
+}
+
+/* =========================================================================
+   پنل اصلی
+   ========================================================================= */
+.qa-section {
+    width: 100%;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(1,1fr);
-    padding: 20px;
-    gap: 10px;
+    padding: 30px;
+    border-radius: var(--qa-radius-panel);
+    background: var(--qa-bg-panel);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--qa-shadow-panel);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    font-family: "Vazirmatn", Tahoma, sans-serif;
+    direction: rtl;
+    text-align: right;
 }
 
-.comments-header {
-    display: grid;
-    grid-template-columns: repeat(1,1fr);
-    gap: 10px;
-}
-
-.comments-header-txt {
+/* ---------- هدر ---------- */
+.qa-header {
     display: flex;
-    justify-content: start;
-    gap: 10px;
+    align-items: center;
+    margin-bottom: 22px;
 }
 
-    .comments-header-txt span {
+.qa-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--qa-text-title);
+}
+
+.qa-title-icon {
+    display: inline-flex;
+    color: var(--qa-blue);
+    flex-shrink: 0;
+}
+
+    .qa-title-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+/* ---------- فرم ثبت سوال ---------- */
+.qa-form {
+    margin-bottom: 26px;
+}
+
+.qa-form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.qa-form-row-double {
+    margin-bottom: 12px;
+}
+
+.qa-field {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.qa-form-row-submit {
+    align-items: stretch;
+}
+
+.qa-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: var(--qa-radius-input);
+    border: 1px solid var(--qa-bg-input-border);
+    background: var(--qa-bg-input);
+    color: var(--qa-text-name);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+    .qa-input::placeholder {
+        color: var(--qa-text-placeholder);
+    }
+
+    .qa-input:focus {
+        border-color: var(--qa-blue-soft-border);
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+.qa-form-row-submit .qa-input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.qa-submit-btn {
+    flex: 0 0 auto;
+    height: 48px;
+    padding: 0 24px;
+    border: none;
+    border-radius: var(--qa-radius-input);
+    background: var(--qa-blue);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, transform 0.05s ease;
+}
+
+    .qa-submit-btn:hover {
+        background: var(--qa-blue-hover);
+    }
+
+    .qa-submit-btn:active {
+        transform: translateY(1px);
+    }
+
+.qa-hint {
+    margin: 10px 2px 0;
+    font-size: 12.5px;
+    color: var(--qa-text-muted);
+}
+
+/* ---------- لیست سوالات ---------- */
+.qa-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.qa-item-hidden {
+    display: none;
+}
+
+.qa-item {
+    background: var(--qa-bg-card);
+    border: 1px solid var(--qa-bg-card-border);
+    border-radius: var(--qa-radius-card);
+    padding: 18px;
+    overflow: hidden;
+}
+
+.qa-item-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.qa-avatar {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--qa-bg-avatar);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c3c9d8;
+}
+
+    .qa-avatar svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.qa-avatar-support {
+    background: linear-gradient(135deg, #2f7dfa 0%, #1a4fc4 100%);
+    color: #ffffff;
+}
+
+.qa-user-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.qa-username {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--qa-text-name);
+}
+
+.qa-time {
+    font-size: 12px;
+    color: var(--qa-text-muted);
+}
+
+.qa-question {
+    margin: 0 0 12px;
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--qa-text-body);
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* ---------- دکمه پاسخ ---------- */
+.qa-reply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 16px;
+    border-radius: var(--qa-radius-pill);
+    border: 1px solid var(--qa-blue-soft-border);
+    background: transparent;
+    color: var(--qa-blue);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+    .qa-reply-btn svg {
+        width: 14px;
+        height: 14px;
+        transform: scaleX(-1); /* هم‌جهت با آیکون تصویر مرجع در حالت راست‌به‌چپ */
+    }
+
+    .qa-reply-btn:hover,
+    .qa-reply-btn-active {
+        background: var(--qa-blue-soft);
+    }
+
+/* ---------- جعبه پاسخِ درون‌خطی (فقط رابط کاربری) ---------- */
+.qa-reply-box {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+    .qa-reply-box .qa-input {
+        height: 40px;
+        font-size: 13px;
+    }
+
+.qa-reply-send {
+    flex: 0 0 auto;
+    height: 40px;
+    padding: 0 18px;
+    border: none;
+    border-radius: var(--qa-radius-input);
+    background: var(--qa-blue);
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .qa-reply-send:hover {
+        background: var(--qa-blue-hover);
+    }
+
+/* ---------- جعبه پاسخ پشتیبانی ---------- */
+.qa-answer {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--qa-bg-answer);
+    border-right: 3px solid var(--qa-blue-soft-border);
+    overflow: hidden;
+}
+
+.qa-answer-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+    .qa-answer-top .qa-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+        .qa-answer-top .qa-avatar svg {
+            width: 15px;
+            height: 15px;
+        }
+
+.qa-answer-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--qa-text-name);
+}
+
+.qa-answer-text {
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--qa-text-body);
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* ---------- دکمه لایک ---------- */
+.qa-like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    color: var(--qa-text-muted);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 2px;
+}
+
+    .qa-like-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .qa-like-btn:hover {
+        color: var(--qa-blue);
+    }
+
+.qa-like-btn-active {
+    color: var(--qa-blue);
+}
+
+    .qa-like-btn-active svg path {
+        fill: var(--qa-blue);
+        fill-opacity: 0.18;
+    }
+
+/* ---------- دکمه مشاهده همه سوالات ---------- */
+.qa-viewall-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 46px;
+    margin-top: 20px;
+    border-radius: var(--qa-radius-pill);
+    border: 1px solid var(--qa-bg-input-border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--qa-blue);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+    .qa-viewall-btn svg {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s ease;
+    }
+
+    .qa-viewall-btn:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+.qa-viewall-btn-open svg {
+    transform: rotate(180deg);
+}
+
+/* =========================================================================
+   ریسپانسیو
+   ========================================================================= */
+@media (max-width: 640px) {
+    .page-preview-bg {
+        padding: 24px 12px;
+    }
+
+    .qa-section {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .qa-title {
+        font-size: 18px;
+    }
+
+    .qa-form-row-double {
+        flex-direction: column;
+    }
+
+    .qa-form-row-submit {
+        flex-direction: column;
+    }
+
+    .qa-submit-btn {
+        width: 100%;
+        order: 2;
+    }
+
+    .qa-form-row-submit .qa-input {
+        order: 1;
+    }
+
+    .qa-item {
+        padding: 14px;
+    }
+
+    .qa-question,
+    .qa-answer-text {
+        font-size: 13.5px;
+    }
+}
+
+@media (max-width: 380px) {
+    .qa-avatar {
         width: 34px;
         height: 34px;
-        border-radius: 10px;
-        flex: 0 0 auto;
-        background: linear-gradient(160deg,var(--blue-400),var(--blue-600));
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
-    .comments-header-txt h4 {
-        flex: 0 0 auto;
+    .qa-username {
+        font-size: 13.5px;
     }
-
-.submit-new-comment {
-    display: grid;
-    gap: 10px;
 }
 
-    .submit-new-comment div {
-        display: flex;
-        gap: 10px;
-        height: 10vh;
-    }
-
-.comment-name {
-    flex: 1 1 50%;
-    border: 2px solid #2159f2;
-    border-radius: 18px;
-}
-
-.comment-number {
-    flex: 1 1 50%;
-    border: 2px solid #2159f2;
-    border-radius: 18px;
-}
-
-.comment-text {
-    flex: 1 1 80%;
-    border: 2px solid #2159f2;
-    border-radius: 18px;
-}
-
-.btn-submit-quasuion {
-    background-color: var(--blue-600);
-    padding: 10px;
-    border: 2px solid #2159f2;
-    border-radius: 18px;
-}
-
-.btn-more-comments {
-    background: rgba(50, 50, 255, .09);
-}*/
 
 /* =========================================================
      RESPONSIVE

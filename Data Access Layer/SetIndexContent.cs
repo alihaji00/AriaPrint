@@ -3,26 +3,27 @@ using AriaPrint.Data_Access_Layer;
 using AriaPrint.Repository;
 using System;
 using System.Runtime.Intrinsics.X86;
+using System.Threading.Tasks;
 
 namespace AriaPrint.Models
 {
     public class SetIndexContent
     {
-        public IndexViewModel GetAllLists()
+        public async Task<IndexViewModel> GetAllLists()
         {
             var viewModel = new IndexViewModel
             {
-                News = GetNewsList(),
+                News = await GetNewsListAsync(),
                 Services = GetServicesList(),
                 WhyUs = GetWhyUsList(),
             };
             return viewModel;
         }
 
-        private List<News> GetNewsList()
+        private async Task<List<News>> GetNewsListAsync()
         {
             var News = new SetNews();
-            var NewsList = News.GetNews();
+            var NewsList = await News.GetNewsAsync();
             return NewsList;
         }
 

@@ -1,5 +1,6 @@
 ﻿using AriaPrint.Data_Access_Layer;
 using AriaPrint.Repository;
+using System.Threading.Tasks;
 
 namespace AriaPrint.BL
 {
@@ -12,10 +13,10 @@ namespace AriaPrint.BL
             this.PageId = Id;
         }
 
-        public News GetNews()
+        public async Task<News> GetNews()
         {
             SetNews SetNews = new();
-            var NewsList = SetNews.GetNews();
+            var NewsList = await SetNews.GetNewsAsync();
             var News = NewsList.FirstOrDefault(n => n.Id == PageId);
             return (News);
         }

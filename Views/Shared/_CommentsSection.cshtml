@@ -1,0 +1,396 @@
+﻿@model CommentsViewModel
+
+<div class="comments-section">
+    <section class="qa-section" id="qaSection">
+
+        <!-- هدر بخش -->
+        <div class="qa-header">
+            <h2 class="qa-title">
+                <span class="qa-title-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 11.5C21.0034 12.82 20.6951 14.12 20.1 15.3C19.3944 16.7118 18.3097 17.8992 16.9674 18.7293C15.6251 19.5594 14.0782 19.9994 12.5 20C11.1801 20.0035 9.87812 19.6951 8.7 19.1L3 21L4.9 15.3C4.30493 14.1219 3.99656 12.8199 4 11.5C4.00061 9.92176 4.44061 8.37485 5.27072 7.03258C6.10083 5.69031 7.28825 4.6056 8.7 3.90003C9.87812 3.30496 11.1801 2.99659 12.5 3.00003H13C15.0843 3.11502 17.053 3.99479 18.5291 5.47089C20.0052 6.94699 20.885 8.91568 21 11V11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                پرسش و پاسخ
+            </h2>
+        </div>
+
+        <!-- فرم ثبت سوال جدید -->
+        <form asp-controller="Comment" asp-action="Comments" method="post" class="qa-form" id="qaForm" novalidate>
+
+            <div class="qa-form-row qa-form-row-double">
+                <div class="qa-field">
+                    <input asp-for="NewComment.FullName" type="text" id="qaName" class="qa-input" placeholder="نام و نام خانوادگی" autocomplete="name" required>
+                </div>
+
+                <div class="qa-field">
+                    <input asp-for="NewComment.PhoneNumber" type="tel" id="qaPhone" class="qa-input" placeholder="شماره موبایل" autocomplete="tel" inputmode="numeric" pattern="09[0-9]{9}" required>
+                </div>
+            </div>
+
+            <div class="qa-form-row qa-form-row-submit">
+                <input asp-for="NewComment.Text" type="text" id="qaComment" class="qa-input" placeholder="سوال خود را اینجا بنویسید..." required>
+                <button type="submit" class="qa-submit-btn">ارسال سوال</button>
+            </div>
+
+            <p class="qa-hint">لطفاً سوال خود را با جزئیات مطرح کنید تا بهتر راهنمایی شوید.</p>
+        </form>
+
+        <!-- لیست سوالات و پاسخ‌ها -->
+        <div class="qa-list" id="qaList">
+
+            @foreach (var item in Model.CommentsList)
+            {
+            <article class="qa-item">
+                <div class="qa-item-top">
+                    <div class="qa-avatar" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="qa-user-meta">
+                        <span class="qa-username">@item.FullName</span>
+                        <span class="qa-time">۲ روز پیش</span>
+                    </div>
+                </div>
+
+                <p class="qa-question">@item.Text</p>
+
+                <button class="qa-reply-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    پاسخ
+                </button>
+            </article>
+            }
+
+            @* <article class="qa-item">
+                <div class="qa-item-top">
+                    <div class="qa-avatar" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="qa-user-meta">
+                        <span class="qa-username">مریم احمدی</span>
+                        <span class="qa-time">۲ روز پیش</span>
+                    </div>
+                </div>
+
+                <p class="qa-question">آیا امکان ویرایش اطلاعات پس از ثبت نام وجود دارد؟</p>
+
+                <button class="qa-reply-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    پاسخ
+                </button>
+
+                <div class="qa-answer">
+                    <div class="qa-answer-top">
+                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
+                    </div>
+                    <p class="qa-answer-text">سلام، بله، امکان ویرایش اطلاعات تا قبل از تایید نهایی وجود دارد. به بخش کاربری خود مراجعه کنید.</p>
+                    <button class="qa-like-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        </svg>
+                        <span class="qa-like-count" data-count="8">۸</span>
+                    </button>
+                </div>
+            </article>
+
+            <article class="qa-item">
+                <div class="qa-item-top">
+                    <div class="qa-avatar" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="qa-user-meta">
+                        <span class="qa-username">علی رضایی</span>
+                        <span class="qa-time">۴ روز پیش</span>
+                    </div>
+                </div>
+
+                <p class="qa-question">حداقل مبلغ وام ازدواج چقدر است؟</p>
+
+                <button class="qa-reply-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    پاسخ
+                </button>
+
+                <div class="qa-answer">
+                    <div class="qa-answer-top">
+                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
+                    </div>
+                    <p class="qa-answer-text">حداقل مبلغ وام ازدواج ۲۲۰ میلیون تومان و حداکثر ۳۰۰ میلیون تومان است.</p>
+                    <button class="qa-like-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        </svg>
+                        <span class="qa-like-count" data-count="9">۹</span>
+                    </button>
+                </div>
+            </article> *@
+
+            <!-- این دو مورد با کلیک روی «مشاهده همه سوالات» نمایش داده می‌شوند -->
+            <article class="qa-item qa-item-hidden">
+                <div class="qa-item-top">
+                    <div class="qa-avatar" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="qa-user-meta">
+                        <span class="qa-username">سارا محمدی</span>
+                        <span class="qa-time">۶ روز پیش</span>
+                    </div>
+                </div>
+
+                <p class="qa-question">آیا امکان پرداخت قسطی هزینه هم وجود دارد؟</p>
+
+                <button class="qa-reply-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    پاسخ
+                </button>
+
+                <div class="qa-answer">
+                    <div class="qa-answer-top">
+                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
+                    </div>
+                    <p class="qa-answer-text">بله، امکان پرداخت اقساطی وجود دارد. برای اطلاعات بیشتر با پشتیبانی تماس بگیرید.</p>
+                    <button class="qa-like-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        </svg>
+                        <span class="qa-like-count" data-count="4">۴</span>
+                    </button>
+                </div>
+            </article>
+
+            <article class="qa-item qa-item-hidden">
+                <div class="qa-item-top">
+                    <div class="qa-avatar" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="qa-user-meta">
+                        <span class="qa-username">حسین کریمی</span>
+                        <span class="qa-time">۱ هفته پیش</span>
+                    </div>
+                </div>
+
+                <p class="qa-question">مدت زمان بررسی درخواست چقدر طول می‌کشد؟</p>
+
+                <button class="qa-reply-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    پاسخ
+                </button>
+
+                <div class="qa-answer">
+                    <div class="qa-answer-top">
+                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
+                    </div>
+                    <p class="qa-answer-text">معمولاً بررسی درخواست بین ۲۴ تا ۴۸ ساعت کاری زمان می‌برد.</p>
+                    <button class="qa-like-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        </svg>
+                        <span class="qa-like-count" data-count="3">۳</span>
+                    </button>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- دکمه مشاهده همه سوالات -->
+        <button class="qa-viewall-btn" id="qaViewAllBtn" type="button">
+            <span>مشاهده همه سوالات</span>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+
+    </section>
+
+</div>
+
+<script>
+    (function () {
+      "use strict";
+
+      var personIconSvg =
+        '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6"/>' +
+        '<path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+        '</svg>';
+
+      var replyIconSvg =
+        '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>';
+
+      var persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+      function toPersianDigits(input) {
+        return String(input).replace(/[0-9]/g, function (d) { return persianDigits[d]; });
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // ---- toggle like buttons ----
+      function bindLikeButton(btn) {
+        if (btn.dataset.bound === "1") return;
+        btn.dataset.bound = "1";
+        btn.addEventListener("click", function () {
+          var countEl = btn.querySelector(".qa-like-count");
+          var count = parseInt(countEl.getAttribute("data-count") || "0", 10);
+          var liked = btn.classList.toggle("qa-like-btn-active");
+          count = liked ? count + 1 : count - 1;
+          countEl.setAttribute("data-count", count);
+          countEl.textContent = toPersianDigits(count);
+        });
+      }
+
+      // ---- toggle inline reply box under a question ----
+      function bindReplyButton(btn) {
+        if (btn.dataset.bound === "1") return;
+        btn.dataset.bound = "1";
+        btn.addEventListener("click", function () {
+          var existing = btn.nextElementSibling;
+          if (existing && existing.classList.contains("qa-reply-box")) {
+            existing.remove();
+            btn.classList.remove("qa-reply-btn-active");
+            return;
+          }
+
+          btn.classList.add("qa-reply-btn-active");
+          var box = document.createElement("div");
+          box.className = "qa-reply-box";
+          box.innerHTML =
+            '<input type="text" class="qa-input qa-reply-input" placeholder="پاسخ خود را بنویسید...">' +
+            '<button type="button" class="qa-reply-send">ارسال</button>';
+          btn.insertAdjacentElement("afterend", box);
+
+          box.querySelector(".qa-reply-send").addEventListener("click", function () {
+            box.remove();
+            btn.classList.remove("qa-reply-btn-active");
+          });
+        });
+      }
+
+      document.querySelectorAll(".qa-like-btn").forEach(bindLikeButton);
+      document.querySelectorAll(".qa-reply-btn").forEach(bindReplyButton);
+
+      // ---- submit a new question (name + phone + comment) ----
+      var form = document.getElementById("qaForm");
+      var list = document.getElementById("qaList");
+      var nameInput = document.getElementById("qaName");
+      var phoneInput = document.getElementById("qaPhone");
+      var commentInput = document.getElementById("qaComment");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        var name = nameInput.value.trim();
+        var phone = phoneInput.value.trim();
+        var comment = commentInput.value.trim();
+
+        if (!name || !phone || !comment) {
+          alert("لطفاً نام، شماره موبایل و متن سوال را تکمیل کنید.");
+          return;
+        }
+        if (!/^09[0-9]{9}$/.test(phone)) {
+          alert("لطفاً شماره موبایل را به‌درستی وارد کنید. مثال: 09123456789");
+          phoneInput.focus();
+          return;
+        }
+
+        var item = document.createElement("article");
+        item.className = "qa-item";
+        item.innerHTML =
+          '<div class="qa-item-top">' +
+            '<div class="qa-avatar">' + personIconSvg + "</div>" +
+            '<div class="qa-user-meta">' +
+              '<span class="qa-username">' + escapeHtml(name) + "</span>" +
+              '<span class="qa-time">همین الان</span>' +
+            "</div>" +
+          "</div>" +
+          '<p class="qa-question">' + escapeHtml(comment) + "</p>" +
+          '<button class="qa-reply-btn" type="button">' + replyIconSvg + "پاسخ</button>";
+
+        list.insertBefore(item, list.firstChild);
+        bindReplyButton(item.querySelector(".qa-reply-btn"));
+
+        form.reset();
+      });
+
+      // ---- show / hide extra questions ----
+      var viewAllBtn = document.getElementById("qaViewAllBtn");
+      var expanded = false;
+
+      viewAllBtn.addEventListener("click", function () {
+        expanded = !expanded;
+        document.querySelectorAll(".qa-item-hidden").forEach(function (el) {
+          el.style.display = expanded ? "block" : "none";
+        });
+        viewAllBtn.querySelector("span").textContent = expanded ? "نمایش کمتر" : "مشاهده همه سوالات";
+        viewAllBtn.classList.toggle("qa-viewall-btn-open", expanded);
+      });
+    })();
+</script>

@@ -1,29 +1,47 @@
 ﻿using AriaPrint.Repository;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
-namespace AriaPrint.Models
+namespace AriaPrint.Data_Access_Layer
 {
     public class SetComments
     {
-        public List<Comment> GetComments()
+        List<Comment> CommentsList = new();
+        ClassSQL db = new();
+        public async Task<List<Comment>> GetCommentsAsync()
         {
-            var Comments = new List<Comment>
+            var Result = await db.SelectAsync<Comment>(@"
+            SELECT TOP (1000) [FullName]
+            ,[PhoneNumber]
+            ,[Text]
+            ,[NewsId]
+            ,[IsDelete]
+            ,[DeleteTime]
+            ,[IP]
+            ,[Admin]
+            FROM [AriaPrintDB].[dbo].[CommentsTbl]");
+
+            foreach (var item in Result)
             {
-                new Comment
-                {
-                    Text = "از سرعت عمل و برخورد حرفه‌ای کافینت آریا بسیار راضی هستم. همیشه بهترین انتخاب من بوده‌اند",
-                    Name = "مریم احمدی",
-                    Role = "دانشجو",
-                    Rating = 5,
-                },
-                new Comment
-                {
-                    Text = "یکی از بهترین مساجر هایی که طی صد سال گذشته داشتم. به خوبی میتونم روز اولی که دیدمشون رو به یاد بیارم",
-                    Name = "مستر کریم پور",
-                    Role = "مالک مهربان",
-                    Rating = 5,
-                },
+                CommentsList.Add(item);
+            }
+
+            return CommentsList;
+        }
+        public async Task<int> AddCommentAsync(Comment comment, string? ip)
+        {
+            var insertData = new
+            {
+                comment.FullName,
+                comment.PhoneNumber,
+                comment.Text,
+                comment.NewsId,
+                IsDelete = false,
+                IP = ip,
+                Admin = (string?)null
             };
-            return Comments;
+
+            return await db.InsertDynamicAsync("CommentsTbl", insertData);
         }
     }
 }

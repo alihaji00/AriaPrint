@@ -8,12 +8,12 @@ namespace AriaPrint.Models
         public News NewsPage { get; set; }
         public NewsViewModel(News news)
         {
-            this.NewsPage=news;
+            this.NewsPage = news;
         }
-        public List<News> GetNews()
+        public async Task<List<News>> GetNewsAsync()
         {
             SetNews setNews = new();
-            var NewsList = setNews.GetNews();
+            var NewsList = await setNews.GetNewsAsync();
             return NewsList;
         }
     }

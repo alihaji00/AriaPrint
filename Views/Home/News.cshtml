@@ -80,7 +80,7 @@
                 <div class="article-meta">
                     <span class="article-meta-item"><svg><use href="#i-folder"></use></svg>دسته‌بندی: @Model.NewsPage.Category</span>
                     <span class="article-meta-item"><svg><use href="#i-user"></use></svg>نویسنده: @Model.NewsPage.Author</span>
-                    <span class="article-meta-item"><svg><use href="#i-calendar"></use></svg>تاریخ انتشار: @Model.NewsPage.ReleaseDate</span>
+                    <span class="article-meta-item"><svg><use href="#i-calendar"></use></svg>تاریخ انتشار: @Model.NewsPage.ReleaseDateFormatted</span>
                 </div>
             </div>
 
@@ -130,12 +130,12 @@
                         <h4>مهلت ثبت‌نام</h4>
                     </div>
                     <p class="deadline-date-label">آخرین مهلت ثبت‌نام</p>
-                    <p class="deadline-date">@Model.NewsPage.deadline</p>
+                    <p class="deadline-date">@Model.NewsPage.DeadlineFormatted</p>
                     <p class="deadline-sub">زمان باقی‌مانده تا پایان مهلت</p>
                     <!-- data-deadline: ISO date/time — update per article -->
                     @{
                         var pc = new PersianCalendar();
-                        var date = Model.NewsPage.deadline.Split('/');
+                        var date = Model.NewsPage.DeadlineFormatted.Split('/');
                         var year = int.Parse(date[0]);
                         var month = int.Parse(date[1]);
                         var day = int.Parse(date[2]);
@@ -196,7 +196,7 @@
 
                         @{
                             // var Newest4 = Model.GetNews().OrderByDescending(n => n.Id).Take(4).ToArray();
-                            var News = Model.GetNews().ToArray();
+                            var News = (await Model.GetNewsAsync()).ToArray();
                             foreach (var item in News)
                             {
                                 <partial name="_NewsList" model="item"></partial>
@@ -212,39 +212,9 @@
         </div>
     </section>
 
-    <!-- ================= ARTICLE COMMENTS ================= -->
-    @* <section class="article-bottom">
-        <div class="article-Comments" style="">
-            <div class="comments-header" style="">
-                <div class="comments-header-txt" style="">
-                    <span>
-                        <svg style="width:18px;height:18px;color:#fff;">
-                            <use href="#i-folder"></use>
-                        </svg>
-                    </span>
-                    <h4 style="">سوالات و پاسخ ها</h4>
-                </div>
-                <div class="submit-new-comment">
-                    <div>
-                        <span class="comment-name" style=""></span>
-                        <span class="comment-number" style=""></span>
-                    </div>
-                    <div>
-                        <span class="comment-text" style=""></span>
-                        <span style="flex:0 1 20%;align-content:center;">
-                            <a href="#" class="btn-submit-quasuion" style="" >ارسال سوال</a>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            @{
-            }
-            <div style="padding: 50px 0;text-align: center;">
-                <a class="btn btn-ghost btn-more-comments" href="#" style="margin: 0 auto;backdrop-filter: blur(5px);">مشاهده سوالات بیشتر</a>
-            </div>
-        </div>
-    </section> *@
+    <!-- ================= COMMENTS ================= -->
 
+    <partial name="_CommentsSection"></partial>
 
 </div>
 
