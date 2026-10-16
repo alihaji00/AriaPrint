@@ -1,0 +1,14 @@
+﻿@model AllNewsViewModel
+
+<div class="all-news">
+    <div>
+        @{
+            var news = Model.News.Where(n=>n.Id > 0).ToArray();
+
+            foreach (var item in news)
+            {
+                <partial name="_NewsCard" model="item"></partial>
+            }
+        }
+    </div>
+</div>

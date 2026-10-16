@@ -3,8 +3,9 @@
 
 <!-- ================= HERO ================= -->
 <div class="hero-news-bg">
+    <canvas class="starfield-canvas" data-count="50" data-colors="#49b9ff,#8fd8ff,#6fc3ff" data-avoid=".hero-video-wrap"></canvas>
     <section class="hero" id="home">
-        <canvas class="starfield-canvas" data-count="20" data-colors="#49b9ff,#8fd8ff,#6fc3ff" data-avoid-pixels="#heroCanvas"></canvas>        <div class="container hero-inner">
+        <div class="container hero-inner">
 
             <div class="hero-text">
                 <a href="#services" class="hero-badge">
@@ -30,8 +31,7 @@
 
     <!-- ================= NEWS ================= -->
     <section class="news-section" id="news">
-        <canvas class="starfield-canvas" data-count="30" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
-        <div class="container">
+        <div class="container News-Container">
             <div class="section-head">
                 <p class="eyebrow on-dark">آخرین اخبار و اطلاعیه‌ها</p>
                 <h2 class="section-title on-dark">همیشه به‌روز باشید</h2>
@@ -49,6 +49,18 @@
                 }
 
             </div>
+
+            <div class="more-news">
+                <a href="AllNews" class="btn btn-ghost">
+                    <span>مشاهده تمامی اخبار</span>
+                    <svg class="icon">
+                        <use href="#i-chevron-left">
+
+                        </use>
+                    </svg>
+                </a>
+            </div>
+
         </div>
     </section>
 </div>

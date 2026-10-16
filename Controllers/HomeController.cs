@@ -30,5 +30,17 @@ namespace AriaPrint.Controllers
             var Model = new NewsViewModel(News);
             return View(Model);
         }
+
+        [Route("AllNews")]
+        public IActionResult AllNews()
+        {
+            SetAllNewsPage SetAllNewsPage = new();
+            var NewsList = SetAllNewsPage.GetNewsList();
+            var Model = new AllNewsViewModel
+            {
+                News = NewsList
+            };
+            return View(Model);
+        }
     }
 }

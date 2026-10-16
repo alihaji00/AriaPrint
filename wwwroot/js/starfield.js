@@ -1,8 +1,6 @@
 // starfield.js — a soft, slowly-wandering animated starfield used behind
 // several sections of the site (hero, news, article pages, footer).
 // Usage: <canvas class="starfield-canvas" data-count="24" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
-// Optional: data-avoid-pixels="#someCanvas" — stars bounce off actual bright
-// pixels drawn on that other canvas (e.g. a logo), instead of a fixed box.
 (function () {
     'use strict';
 
@@ -23,26 +21,7 @@
         var colors = (canvas.dataset.colors || '#49b9ff,#8fd8ff,#6fc3ff').split(',');
         var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var stars = [];
-        var w = 0, h = 0, running = true, rafId = null;
-
-        var avoidCanvasSel = canvas.dataset.avoidPixels; // e.g. "#heroCanvas"
-        var avoidCanvas = avoidCanvasSel ? document.querySelector(avoidCanvasSel) : null;
-        var avoidCtx = avoidCanvas ? avoidCanvas.getContext('2d') : null;
-
-        function isOnLogo(pageX, pageY) {
-            if (!avoidCanvas || !avoidCtx) return false;
-            var rect = avoidCanvas.getBoundingClientRect();
-            if (pageX < rect.left || pageX > rect.right || pageY < rect.top || pageY > rect.bottom) return false;
-            var px = Math.round((pageX - rect.left) * (avoidCanvas.width / rect.width));
-            var py = Math.round((pageY - rect.top) * (avoidCanvas.height / rect.height));
-            if (px < 0 || py < 0 || px >= avoidCanvas.width || py >= avoidCanvas.height) return false;
-            try {
-                var d = avoidCtx.getImageData(px, py, 1, 1).data;
-                return (d[0] + d[1] + d[2]) > 40; // above this = actual logo pixel, not black background
-            } catch (e) {
-                return false; // fail-safe: never block stars if reading fails
-            }
-        }
+        var w = 0, h = 0, running = true, rafId = null, avoidRect = null;
 
         function resize() {
             var rect = canvas.getBoundingClientRect();
@@ -51,6 +30,22 @@
             canvas.width = Math.round(w * dpr);
             canvas.height = Math.round(h * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            avoidRect = null;
+            var avoidSelector = canvas.dataset.avoid;
+            if (avoidSelector) {
+                var avoidEl = document.querySelector(avoidSelector);
+                if (avoidEl) {
+                    var ar = avoidEl.getBoundingClientRect();
+                    var pad = 14;
+                    avoidRect = {
+                        left: ar.left - rect.left - pad,
+                        top: ar.top - rect.top - pad,
+                        right: ar.right - rect.left + pad,
+                        bottom: ar.bottom - rect.top + pad
+                    };
+                }
+            }
         }
 
         function makeStar() {
@@ -60,9 +55,17 @@
                     : (0.7 + Math.random() * 0.9);
             var angle = Math.random() * Math.PI * 2;
             var speed = 0.0035 + Math.random() * 0.012; // slow, gentle drift
+
+            var x, y, tries = 0;
+            do {
+                x = Math.random() * w;
+                y = Math.random() * h;
+                tries++;
+            } while (avoidRect && x > avoidRect.left && x < avoidRect.right && y > avoidRect.top && y < avoidRect.bottom && tries < 20);
+
             return {
-                x: Math.random() * w,
-                y: Math.random() * h,
+                x: x,
+                y: y,
                 r: radius,
                 color: colors[(Math.random() * colors.length) | 0],
                 baseAlpha: 0.45 + Math.random() * 0.5,
@@ -96,7 +99,6 @@
 
         function frame(t) {
             if (!running) { rafId = null; return; }
-            var canvasRect = canvas.getBoundingClientRect();
             ctx.clearRect(0, 0, w, h);
             for (var i = 0; i < stars.length; i++) {
                 var s = stars[i];
@@ -107,15 +109,17 @@
                     if (s.x > w + 12) s.x = -12;
                     if (s.y < -12) s.y = h + 12;
                     if (s.y > h + 12) s.y = -12;
-
-                    var pageX = canvasRect.left + s.x;
-                    var pageY = canvasRect.top + s.y;
-                    if (isOnLogo(pageX, pageY)) {
-                        s.x -= s.vx * 16;
-                        s.y -= s.vy * 16;
-                        s.vx = -s.vx;
-                        s.vy = -s.vy;
-                    }
+                }
+                if (avoidRect && s.x > avoidRect.left && s.x < avoidRect.right && s.y > avoidRect.top && s.y < avoidRect.bottom) {
+                    var distLeft = s.x - avoidRect.left;
+                    var distRight = avoidRect.right - s.x;
+                    var distTop = s.y - avoidRect.top;
+                    var distBottom = avoidRect.bottom - s.y;
+                    var minDist = Math.min(distLeft, distRight, distTop, distBottom);
+                    if (minDist === distLeft) { s.x = avoidRect.left; s.vx = -Math.abs(s.vx); }
+                    else if (minDist === distRight) { s.x = avoidRect.right; s.vx = Math.abs(s.vx); }
+                    else if (minDist === distTop) { s.y = avoidRect.top; s.vy = -Math.abs(s.vy); }
+                    else { s.y = avoidRect.bottom; s.vy = Math.abs(s.vy); }
                 }
                 var twinkle = reduceMotion ? 1 : (0.62 + 0.38 * Math.sin(t * s.twinkleSpeed + s.twinklePhase));
                 drawStar(s, s.baseAlpha * twinkle);
