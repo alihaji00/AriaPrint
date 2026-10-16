@@ -1557,6 +1557,7 @@ button {
     color: var(--qa-text-name);
     font-family: inherit;
     font-size: 14px;
+    direction:rtl;
     outline: none;
     transition: border-color 0.15s ease, background 0.15s ease;
 }
