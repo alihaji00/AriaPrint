@@ -14,14 +14,11 @@
         <span class="qa-username">@Model.FullName</span>
 
         @{
-            var Date = Model.Date.FromPersianDateNumber();
-            @if(Date == null)
-            {
-                throw new Exception();
-            }
+            var Date = Model.Date.FromPersianDateTimeNumberToDateTime();
+            string DateFormated = Date.ToPersianDateTimeString();
         }
 
-        <span class="qa-time">@Date</span>
+        <span class="qa-time">@DateFormated</span>
     </div>
 </div>
 
@@ -33,6 +30,15 @@
         <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
     پاسخ
+</button>
+<button class="qa-like-btn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+    </svg>
+    @{
+        var likes = @Model.LikesCount.ToString().ToEnglishDigits();
+    }
+    <span class="qa-like-count" data-count="@likes">@likes</span>
 </button>
 
 

@@ -2,7 +2,9 @@
 @model ServicesCard
 
 <div class="service-card">
-    <span class="ph ph-tone"><svg><use href="@Model.PictureUrl"></use></svg></span>
+    <span class="ph ph-tone">
+        <img src="@Url.Content(Model.PictureUrl)" alt="">
+    </span>
     <h3>@Model.Title</h3>
     <p>@Model.Paragraph</p>
 </div>

@@ -1050,26 +1050,309 @@ public static class DateTimeExtensions
     }
 
     /// <summary>
-    /// Converts a Persian yyyyMMdd number to Date.
+    /// Converts a yyyyMMddHHmm (10 digits) — or yyyyMMddHHmmss (12 digits),                                                    
+    /// or yyyyMMddHH (8 digits) — numeric value to a yyyyMMdd date number.
     /// </summary>
-    /// <returns>The converted date, or null when invalid.</returns>
-    public static DateTime? FromPersianNumberToDate(this int persianDateNumber)
+    /// <returns>The yyyyMMdd date number, or null when the input is invalid.</returns>
+    public static int? ToDateNumberFromDateTimeNumber(this long dateTimeNumber)
     {
-        string value = persianDateNumber.FromPersianNumberToDateTime().ToString();
+        string value = dateTimeNumber.ToString(CultureInfo.InvariantCulture);
 
-        DateOnly date = value.Substring(0, 4);
+        if (value.Length < 8 || value.Length > 12)
+        {
+            return null;
+        }
+
+        int year = value.Substring(0, 4).ToSafeInt();
         int month = value.Substring(4, 2).ToSafeInt();
         int day = value.Substring(6, 2).ToSafeInt();
 
+        if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31)
+        {
+            return null;
+        }
+
         try
         {
-            return new PersianCalendar().ToDateTime(year, month, day);
+            return new DateTime(year, month, day).ToDateNumber();
         }
         catch
         {
             return null;
         }
     }
+
+    /// <summary>
+    /// Converts a yyyyMMddHHmm, yyyyMMddHHmmss, or yyyyMMddHH text
+    /// to a yyyyMMdd date number.
+    /// </summary>
+    /// <returns>The yyyyMMdd date number, or null when the input is invalid.</returns>
+    public static int? ToDateNumberFromDateTimeNumber(this string? dateTimeNumber)
+    {
+        if (string.IsNullOrWhiteSpace(dateTimeNumber))
+        {
+            return null;
+        }
+
+        long? numericValue = dateTimeNumber.ToEnglishDigits().ToNullableLong();
+
+        return numericValue?.ToDateNumberFromDateTimeNumber();
+    }
+
+    /// <summary>
+    /// Converts a yyyyMMdd numeric value to a DateOnly.
+    /// </summary>
+    /// <returns>The converted DateOnly, or null when the input is invalid.</returns>
+    public static DateOnly? FromDateNumberToDateOnly(this int dateNumber)
+    {
+        string value = dateNumber.ToString(CultureInfo.InvariantCulture);
+
+        if (value.Length != 8)
+        {
+            return null;
+        }
+
+        int year = value.Substring(0, 4).ToSafeInt();
+        int month = value.Substring(4, 2).ToSafeInt();
+        int day = value.Substring(6, 2).ToSafeInt();
+
+        if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31)
+        {
+            return null;
+        }
+
+        try
+        {
+            return new DateOnly(year, month, day);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts a yyyyMMdd text to a DateOnly.
+    /// </summary>
+    /// <returns>The converted DateOnly, or null when the input is invalid.</returns>
+    public static DateOnly? FromDateNumberToDateOnly(this string? dateNumber)
+    {
+        if (string.IsNullOrWhiteSpace(dateNumber))
+        {
+            return null;
+        }
+
+        int? numericValue = dateNumber.ToEnglishDigits().ToNullableInt();
+
+        return numericValue?.FromDateNumberToDateOnly();
+    }
+
+    /// <summary>
+    /// Converts a Persian yyyyMMdd numeric value to a DateOnly that
+    /// represents the same year/month/day on the Persian calendar.
+    /// The returned DateOnly stores the year/month/day numerically as
+    /// 1405/06/30 — it is not converted to Gregorian.
+    /// </summary>
+    /// <returns>The DateOnly with Persian year/month/day, or null when invalid.</returns>
+    public static DateOnly? FromPersianDateNumberToPersianDateOnly(this int persianDateNumber)
+    {
+        string value = persianDateNumber.ToString(CultureInfo.InvariantCulture);
+
+        if (value.Length != 8)
+        {
+            return null;
+        }
+
+        int year = value.Substring(0, 4).ToSafeInt();
+        int month = value.Substring(4, 2).ToSafeInt();
+        int day = value.Substring(6, 2).ToSafeInt();
+
+        if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31)
+        {
+            return null;
+        }
+
+        try
+        {
+            // Validate the date is real on the Persian calendar
+            _ = new PersianCalendar().ToDateTime(year, month, day, 0, 0, 0, 0);
+            return new DateOnly(year, month, day);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static string ToPersianDateOnlyString(this DateOnly dateOnly, string separator = "/")
+    {
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0:D4}{1}{2:D2}{1}{3:D2}",
+            dateOnly.Year,
+            separator,
+            dateOnly.Month,
+            dateOnly.Day
+        );
+    }
+
+    /// <summary>
+    /// Converts a Persian date text in dd/MM/yyyy [HH:mm] format to a DateTime
+    /// (Persian calendar, time component preserved when provided).
+    /// </summary>
+    /// <returns>The DateTime on the Persian calendar, or null when invalid.</returns>
+    public static DateTime? FromPersianDateStringToDateTime(this string? persianDateText)
+    {
+        if (string.IsNullOrWhiteSpace(persianDateText))
+        {
+            return null;
+        }
+
+        string[] parts = persianDateText
+            .ToEnglishDigits()
+            .Trim()
+            .Split(new[] { ' ', '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length < 3 || parts.Length > 4)
+        {
+            return null;
+        }
+
+        int day = parts[0].ToSafeInt();
+        int month = parts[1].ToSafeInt();
+        int year = parts[2].ToSafeInt();
+        int hour = parts.Length == 4 ? parts[3].ToSafeInt() : 0;
+        int minute = 0;
+
+        // Allow HH:mm or HHmm
+        if (parts.Length == 4 && parts[3].Contains(':'))
+        {
+            string[] timeParts = parts[3].Split(':', StringSplitOptions.RemoveEmptyEntries);
+            if (timeParts.Length != 2)
+            {
+                return null;
+            }
+
+            hour = timeParts[0].ToSafeInt();
+            minute = timeParts[1].ToSafeInt();
+        }
+
+        if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31 ||
+            hour < 0 || hour > 23 || minute < 0 || minute > 59)
+        {
+            return null;
+        }
+
+        try
+        {
+            return new PersianCalendar().ToDateTime(year, month, day, hour, minute, 0, 0);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Persian yyyyMMddHHmm (12 digits) or shorter/longer numeric value
+    /// to a DateTime on the Persian calendar.
+    /// </summary>
+    /// <returns>The DateTime on the Persian calendar, or null when invalid.</returns>
+    public static DateTime? FromPersianDateTimeNumberToDateTime(this long persianDateTimeNumber)
+    {
+        string value = persianDateTimeNumber.ToString(CultureInfo.InvariantCulture);
+
+        if (value.Length < 8 || value.Length > 14)
+        {
+            return null;
+        }
+
+        int year = value.Substring(0, 4).ToSafeInt();
+        int month = value.Substring(4, 2).ToSafeInt();
+        int day = value.Substring(6, 2).ToSafeInt();
+
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+
+        if (value.Length >= 10)
+        {
+            hour = value.Substring(8, 2).ToSafeInt();
+        }
+
+        if (value.Length >= 12)
+        {
+            minute = value.Substring(10, 2).ToSafeInt();
+        }
+
+        if (value.Length == 14)
+        {
+            second = value.Substring(12, 2).ToSafeInt();
+        }
+
+        if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31 ||
+            hour < 0 || hour > 23 || minute < 0 || minute > 59 ||
+            second < 0 || second > 59)
+        {
+            return null;
+        }
+
+        try
+        {
+            return new PersianCalendar().ToDateTime(year, month, day, hour, minute, second, 0);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Persian yyyyMMddHHmm (12 digits) or shorter/longer text
+    /// to a DateTime on the Persian calendar.
+    /// </summary>
+    /// <returns>The DateTime on the Persian calendar, or null when invalid.</returns>
+    public static DateTime? FromPersianDateTimeNumberToDateTime(this string? persianDateTimeNumber)
+    {
+        if (string.IsNullOrWhiteSpace(persianDateTimeNumber))
+        {
+            return null;
+        }
+
+        long? numericValue = persianDateTimeNumber.ToEnglishDigits().ToNullableLong();
+
+        return numericValue?.FromPersianDateTimeNumberToDateTime();
+    }
+
+    /// <summary>
+    /// Formats a DateTime as Persian yyyy/MM/dd HH:mm:ss text using the
+    /// PersianCalendar (so the year/month/day stay Persian, not Gregorian).
+    /// </summary>
+    /// <returns>The Persian-formatted text, or an empty string when null.</returns>
+    public static string ToPersianDateTimeString(this DateTime? dateTime, string separator = "/")
+    {
+        if (dateTime == null)
+        {
+            return "";
+        }
+
+        PersianCalendar calendar = new();
+        int year = calendar.GetYear(dateTime.Value);
+        int month = calendar.GetMonth(dateTime.Value);
+        int day = calendar.GetDayOfMonth(dateTime.Value);
+
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{4:D2}:{5:D2} - {0:D4}{1}{2:D2}{1}{3:D2}",
+            year,
+            separator,
+            month,
+            day,
+            dateTime.Value.Hour,
+            dateTime.Value.Minute
+        );
+    }
+
 }
 
 public static class JsonExtensions

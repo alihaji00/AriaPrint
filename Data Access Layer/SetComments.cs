@@ -1,4 +1,5 @@
 ﻿using AriaPrint.Repository;
+using Common.Extensions;
 
 namespace AriaPrint.Data_Access_Layer
 {
@@ -14,6 +15,7 @@ namespace AriaPrint.Data_Access_Layer
             ,[Text]
             ,[NewsId]
             ,[Date]
+            ,[LikesCount]
             ,[IP]
             ,[IsDelete]
             ,[DeleteTime]
@@ -32,6 +34,8 @@ namespace AriaPrint.Data_Access_Layer
                 comment.PhoneNumber,
                 comment.Text,
                 comment.NewsId,
+                Date = DateTime.Now.ToPersianDateTimeNumber(),
+                LikesCount = 0,
                 IP = ip,
                 Admin = (string?)null
             };
@@ -47,6 +51,7 @@ namespace AriaPrint.Data_Access_Layer
             ,[Text]
             ,[NewsId]
             ,[Date]
+            ,[LikesCount]
             ,[IP]
             ,[IsDelete]
             ,[DeleteTime]

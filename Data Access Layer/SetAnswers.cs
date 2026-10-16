@@ -1,4 +1,5 @@
 ﻿using AriaPrint.Repository;
+using Common.Extensions;
 
 namespace AriaPrint.Data_Access_Layer
 {
@@ -9,8 +10,9 @@ namespace AriaPrint.Data_Access_Layer
         {
             var Result = await db.SelectAsync<Answer>(@"
             SELECT TOP (1000) [AnswerId]
-            ,[Date]
             ,[Text]
+            ,[Date]
+            ,[LikesCount]
             ,[IsDelete]
             ,[DeleteTime]
             ,[IP]
@@ -26,8 +28,9 @@ namespace AriaPrint.Data_Access_Layer
             var insertData = new
             {
                 answer.AnswerId,
-                answer.Date,
                 answer.Text,
+                Date = DateTime.Now.ToPersianDateTimeNumber(),
+                LikesCount = 0,
                 IP = ip,
                 Admin = (string?)null
             };
