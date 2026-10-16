@@ -1,0 +1,23 @@
+﻿@using AriaPrint.Repository
+@model Answer
+
+<div class="qa-answer">
+    <div class="qa-answer-top">
+        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
+                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+            </svg>
+        </div>
+        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
+    </div>
+    <p class="qa-answer-text">@Model.Text</p>
+    <button class="qa-like-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+        <span class="qa-like-count" data-count="8">۸</span>
+    </button>
+</div>

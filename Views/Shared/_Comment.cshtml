@@ -1,0 +1,38 @@
+﻿@using AriaPrint.Repository
+@using Common.Extensions
+@model Comment
+
+
+<div class="qa-item-top">
+    <div class="qa-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
+            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+    </div>
+    <div class="qa-user-meta">
+        <span class="qa-username">@Model.FullName</span>
+
+        @{
+            var Date = Model.Date.FromPersianDateNumber();
+            @if(Date == null)
+            {
+                throw new Exception();
+            }
+        }
+
+        <span class="qa-time">@Date</span>
+    </div>
+</div>
+
+<p class="qa-question">@Model.Text</p>
+
+<button class="qa-reply-btn" type="button" data-question-id="@Model.CommentId">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    پاسخ
+</button>
+
+

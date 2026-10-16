@@ -1025,8 +1025,8 @@ public static class DateTimeExtensions
     /// <summary>
     /// Converts a Persian yyyyMMdd number to DateTime.
     /// </summary>
-    /// <returns>The converted date, or null when invalid.</returns>
-    public static DateTime? FromPersianDateNumber(this int persianDateNumber)
+    /// <returns>The converted datetime, or null when invalid.</returns>
+    public static DateTime? FromPersianNumberToDateTime(this int persianDateNumber)
     {
         string value = persianDateNumber.ToString(CultureInfo.InvariantCulture);
 
@@ -1042,6 +1042,28 @@ public static class DateTimeExtensions
         try
         {
             return new PersianCalendar().ToDateTime(year, month, day, 0, 0, 0, 0);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Persian yyyyMMdd number to Date.
+    /// </summary>
+    /// <returns>The converted date, or null when invalid.</returns>
+    public static DateTime? FromPersianNumberToDate(this int persianDateNumber)
+    {
+        string value = persianDateNumber.FromPersianNumberToDateTime().ToString();
+
+        DateOnly date = value.Substring(0, 4);
+        int month = value.Substring(4, 2).ToSafeInt();
+        int day = value.Substring(6, 2).ToSafeInt();
+
+        try
+        {
+            return new PersianCalendar().ToDateTime(year, month, day);
         }
         catch
         {

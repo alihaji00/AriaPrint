@@ -2121,6 +2121,8 @@ section {
     padding: 0;
     position: relative;
     overflow: hidden;
+    z-index: 100;
+    height: 100vh;
 }
 .site-footer > .starfield-canvas { filter: blur(2px); opacity: 0.4; }
 

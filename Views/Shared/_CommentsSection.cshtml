@@ -40,31 +40,15 @@
         <!-- لیست سوالات و پاسخ‌ها -->
         <div class="qa-list" id="qaList">
 
-            @foreach (var item in Model.CommentsList)
+            @{
+                var Top3Comments = Model.CommentsList.OrderByDescending(c => c.CommentId).Take(3).ToArray();
+            }
+
+            @foreach (var item in Top3Comments)
             {
                 <article class="qa-item">
-                    <div class="qa-item-top">
-                        <div class="qa-avatar" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
-                                <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <div class="qa-user-meta">
-                            <span class="qa-username">@item.FullName</span>
-                            <span class="qa-time">۲ روز پیش</span>
-                        </div>
-                    </div>
 
-                    <p class="qa-question">@item.Text</p>
-
-                    <button class="qa-reply-btn" type="button" data-question-id="@item.CommentId">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        پاسخ
-                    </button>
+                    <partial name="_Comment" model="item"></partial>
 
                     @{
                         int id = item.CommentId;
@@ -73,245 +57,43 @@
 
                     @if (answer != null)
                     {
-                        <div class="qa-answer">
-                            <div class="qa-answer-top">
-                                <div class="qa-avatar qa-avatar-support" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                        <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                        <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                        <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                    </svg>
-                                </div>
-                                <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
-                            </div>
-                            <p class="qa-answer-text">@answer.Text</p>
-                            <button class="qa-like-btn" type="button">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                                </svg>
-                                <span class="qa-like-count" data-count="8">۸</span>
-                            </button>
-                        </div>
+                        <partial name="_Answer" model="answer"></partial>
                     }
-
-
 
                 </article>
             }
 
-            @* 
-                <div class="qa-answer">
-                            <div class="qa-answer-top">
-                                <div class="qa-avatar qa-avatar-support" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                        <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                        <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                        <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                    </svg>
-                                </div>
-                                <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
-                            </div>
-                            <p class="qa-answer-text">سلام، بله، امکان ویرایش اطلاعات تا قبل از تایید نهایی وجود دارد. به بخش کاربری خود مراجعه کنید.</p>
-                            <button class="qa-like-btn" type="button">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                                </svg>
-                                <span class="qa-like-count" data-count="8">۸</span>
-                            </button>
-                        </div>
-            
-            
-            <article class="qa-item">
-                <div class="qa-item-top">
-                    <div class="qa-avatar" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
-                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                    <div class="qa-user-meta">
-                        <span class="qa-username">مریم احمدی</span>
-                        <span class="qa-time">۲ روز پیش</span>
-                    </div>
-                </div>
-
-                <p class="qa-question">آیا امکان ویرایش اطلاعات پس از ثبت نام وجود دارد؟</p>
-
-                <button class="qa-reply-btn" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    پاسخ
-                </button>
-
-                <div class="qa-answer">
-                    <div class="qa-answer-top">
-                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
-                    </div>
-                    <p class="qa-answer-text">سلام، بله، امکان ویرایش اطلاعات تا قبل از تایید نهایی وجود دارد. به بخش کاربری خود مراجعه کنید.</p>
-                    <button class="qa-like-btn" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                        </svg>
-                        <span class="qa-like-count" data-count="8">۸</span>
-                    </button>
-                </div>
-            </article>
-
-            <article class="qa-item">
-                <div class="qa-item-top">
-                    <div class="qa-avatar" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
-                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                    <div class="qa-user-meta">
-                        <span class="qa-username">علی رضایی</span>
-                        <span class="qa-time">۴ روز پیش</span>
-                    </div>
-                </div>
-
-                <p class="qa-question">حداقل مبلغ وام ازدواج چقدر است؟</p>
-
-                <button class="qa-reply-btn" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    پاسخ
-                </button>
-
-                <div class="qa-answer">
-                    <div class="qa-answer-top">
-                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
-                    </div>
+                    @* 
                     <p class="qa-answer-text">حداقل مبلغ وام ازدواج ۲۲۰ میلیون تومان و حداکثر ۳۰۰ میلیون تومان است.</p>
-                    <button class="qa-like-btn" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                        </svg>
-                        <span class="qa-like-count" data-count="9">۹</span>
-                    </button>
-                </div>
-            </article> *@
+                     *@
+
+
 
             <!-- این دو مورد با کلیک روی «مشاهده همه سوالات» نمایش داده می‌شوند -->
             @if (Model.CommentsList.Count > 3)
             {
-                <article class="qa-item qa-item-hidden">
-                    @*     <div class="qa-item-top">
-                    <div class="qa-avatar" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
-                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                    <div class="qa-user-meta">
-                        <span class="qa-username">سارا محمدی</span>
-                        <span class="qa-time">۶ روز پیش</span>
-                    </div>
-                </div>
 
-                <p class="qa-question">آیا امکان پرداخت قسطی هزینه هم وجود دارد؟</p>
+                var OtherComments = Model.CommentsList.OrderByDescending(c => c.CommentId).Skip(3).ToArray();
 
-                <button class="qa-reply-btn" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    پاسخ
-                </button>
+                @foreach (var item in OtherComments)
+                {
+                    <article class="qa-item qa-item-hidden">
 
-                <div class="qa-answer">
-                    <div class="qa-answer-top">
-                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
-                    </div>
-                    <p class="qa-answer-text">بله، امکان پرداخت اقساطی وجود دارد. برای اطلاعات بیشتر با پشتیبانی تماس بگیرید.</p>
-                    <button class="qa-like-btn" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                        </svg>
-                        <span class="qa-like-count" data-count="4">۴</span>
-                    </button>
-                </div>
-            </article>
+                        <partial name="_Comment" model="item"></partial>
 
-            <article class="qa-item qa-item-hidden">
-                <div class="qa-item-top">
-                    <div class="qa-avatar" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
-                            <path d="M4.5 20C5.72925 16.9704 8.63324 15 12 15C15.3668 15 18.2708 16.9704 19.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                    <div class="qa-user-meta">
-                        <span class="qa-username">حسین کریمی</span>
-                        <span class="qa-time">۱ هفته پیش</span>
-                    </div>
-                </div>
+                        @{
+                            int id = item.CommentId;
+                            var answer = Model.AnswersList.FirstOrDefault(a => a.AnswerId == id);
+                        }
 
-                <p class="qa-question">مدت زمان بررسی درخواست چقدر طول می‌کشد؟</p>
+                        @if (answer != null)
+                        {
+                            <partial name="_Answer" model="answer"></partial>
+                        }
 
-                <button class="qa-reply-btn" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M4 9H15C17.7614 9 20 11.2386 20 14C20 16.7614 17.7614 19 15 19H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    پاسخ
-                </button>
-
-                <div class="qa-answer">
-                    <div class="qa-answer-top">
-                        <div class="qa-avatar qa-avatar-support" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 13V11C4 6.58172 7.58172 3 12 3C16.4183 3 20 6.58172 20 11V13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                                <rect x="3" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <rect x="17" y="13" width="4" height="6" rx="1.5" stroke="currentColor" stroke-width="1.7" />
-                                <path d="M20 19C20 20.6569 18.6569 22 17 22H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <span class="qa-answer-name">پشتیبانی کافینت آریا</span>
-                    </div>
-                    <p class="qa-answer-text">معمولاً بررسی درخواست بین ۲۴ تا ۴۸ ساعت کاری زمان می‌برد.</p>
-                    <button class="qa-like-btn" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 10V21H4C3.44772 21 3 20.5523 3 20V11C3 10.4477 3.44772 10 4 10H7ZM7 10L11.6923 3.3945C12.0735 2.85567 12.7963 2.68664 13.376 3.00227C14.5164 3.62194 15.1622 4.87275 14.9829 6.15626L14.5 9.6H18.9925C20.0684 9.6 20.9 10.5305 20.8055 11.6023L20.0949 19.6023C20.0104 20.5606 19.2077 21.3 18.2456 21.3H10C8.34315 21.3 7 19.9569 7 18.3V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                        </svg>
-                        <span class="qa-like-count" data-count="3">۳</span>
-                    </button>
-                </div> *@
-                </article>
+                    </article>
+                }
             }
-
-
         </div>
 
         <!-- دکمه مشاهده همه سوالات -->
