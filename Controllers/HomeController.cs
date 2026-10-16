@@ -34,10 +34,15 @@ namespace AriaPrint.Controllers
             var News = await NewsPage.GetNews();
             var Model = new NewsViewModel(News);
 
+            var comments = await _commentService.GetCommentsAsync(id);
+            var answers = await _answerService.GetAnswersAsync(id);
+
             ViewData["CommentsModel"] = new CommentsViewModel
             {
-                CommentsList = await _commentService.GetCommentsAsync(id),
-                NewComment = new Comment { NewsId = id }
+                CommentsList = comments,
+                NewComment = new Comment { NewsId = id },
+                AnswersList = answers,
+                NewAnswer = new Answer { AnswerId = id }
             };
 
             return View(Model);
@@ -79,6 +84,7 @@ namespace AriaPrint.Controllers
                 string ip = Request.GetClientIpAddress();
                 await _commentService.AddCommentAsync(newComment, ip);
             }
+
             return RedirectToAction("News", new { id = newComment.NewsId });
         }
 
@@ -92,10 +98,11 @@ namespace AriaPrint.Controllers
             }
 
             var parentComment = await _commentService.GetCommentByIdAsync(newAnswer.AnswerId);
+            if (parentComment == null)
+                return RedirectToAction("Index");
+
             return RedirectToAction("News", new { id = parentComment.NewsId });
         }
-
-
 
         [Route("AllNews")]
         public async Task<IActionResult> AllNews()

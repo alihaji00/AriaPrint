@@ -16,7 +16,7 @@ namespace AriaPrint.Data_Access_Layer
             ,[IP]
             ,[Admin]
             FROM [AriaPrintDB].[dbo].[AnswersTbl]
-            WHERE [CommentId] = @CommentId AND [IsDelete] = 0",
+            WHERE [AnswerId] = @CommentId AND [IsDelete] = 0",
             new { CommentId = commentId });
 
             return Result.ToList();
