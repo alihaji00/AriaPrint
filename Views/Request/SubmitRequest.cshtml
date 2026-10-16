@@ -1,0 +1,181 @@
+<head>
+    <link rel="stylesheet" href="/css/submit-request.css">
+</head>
+
+<!-- =====================================================================
+     PREVIEW-ONLY: a copy of the site header so this file looks right when
+     opened on its own. In the MVC project the header comes from _Layout,
+     so DELETE everything from here down to "PAGE CONTENT START" when you
+     move this page into a .cshtml view.
+     ===================================================================== -->
+<!-- ======================== PAGE CONTENT START ======================== -->
+<div class="req-zone">
+    <canvas class="starfield-canvas" data-count="30" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
+
+    <!-- Hero -->
+    <section class="req-hero">
+        <div class="container req-container">
+            <a class="req-back" href="/Profile">
+                <svg class="req-ico req-ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                بازگشت به پروفایل
+            </a>
+            <p class="eyebrow on-dark">ثبت درخواست</p>
+            <h1 class="req-title">درخواست جدید خود را ثبت کنید</h1>
+            <p class="req-sub">نوع درخواست را انتخاب کنید؛ مدارک و اطلاعات لازم به‌صورت خودکار نمایش داده می‌شود.</p>
+        </div>
+    </section>
+
+    <section class="req-body">
+        <div class="container req-container">
+
+            <form class="req-form" id="requestForm" novalidate data-default-phone="09923365373">
+
+                <!-- 1 · Request type -->
+                <div class="profile-card glass-strong">
+                    <div class="req-card-head">
+                        <span class="req-step">۱</span>
+                        <div>
+                            <h2>نوع درخواست</h2>
+                            <p>ابتدا موضوع درخواست خود را مشخص کنید.</p>
+                        </div>
+                    </div>
+                    <div class="profile-field">
+                        <label for="requestType">نوع درخواست <em class="req-required">*</em></label>
+                        <div class="req-select-wrap">
+                            <select id="requestType" name="requestType" class="profile-input req-select" required>
+                                <option value="" disabled selected>یک مورد را انتخاب کنید…</option>
+                            </select>
+                        </div>
+                        <p class="req-type-hint" id="typeHint" hidden></p>
+                        <p class="profile-hint">با تغییر نوع درخواست، فیلدها و مدارک بارگذاری‌شده‌ی قبلی بازنشانی می‌شوند.</p>
+                        <p class="req-error" hidden></p>
+                    </div>
+                </div>
+
+                <!-- Everything below appears after a type is chosen -->
+                <div class="req-form" id="afterType" hidden>
+
+                    <!-- 2 · Details + documents (filled by JS) -->
+                    <div class="profile-card glass-strong" id="detailsCard">
+                        <div class="req-card-head">
+                            <span class="req-step">۲</span>
+                            <div>
+                                <h2>اطلاعات و مدارک</h2>
+                                <p>موارد ستاره‌دار الزامی هستند.</p>
+                            </div>
+                        </div>
+                        <div class="profile-form-grid" id="dynamicFields"></div>
+                        <div class="req-files" id="dynamicFiles"></div>
+                    </div>
+
+                    <!-- 3 · Phone -->
+                    <div class="profile-card glass-strong">
+                        <div class="req-card-head">
+                            <span class="req-step">۳</span>
+                            <div>
+                                <h2>شماره تماس</h2>
+                                <p>برای هماهنگی درباره‌ی این درخواست با کدام شماره تماس بگیریم؟</p>
+                            </div>
+                        </div>
+
+                        <div class="req-choice-group" role="radiogroup" aria-label="شماره تماس">
+                            <label class="req-choice">
+                                <input type="radio" name="phoneMode" value="default" checked>
+                                <span class="req-choice-box">
+                                    <span class="req-radio-dot"></span>
+                                    <span class="req-choice-text">
+                                        <strong>استفاده از شماره پیش‌فرض</strong>
+                                        <small dir="ltr" style="text-align:right" id="defaultPhoneText"></small>
+                                    </span>
+                                </span>
+                            </label>
+                            <label class="req-choice">
+                                <input type="radio" name="phoneMode" value="new">
+                                <span class="req-choice-box">
+                                    <span class="req-radio-dot"></span>
+                                    <span class="req-choice-text">
+                                        <strong>وارد کردن شماره جدید</strong>
+                                        <small>شماره‌ی دیگری برای این درخواست</small>
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="profile-field req-newphone" id="newPhoneWrap" hidden>
+                            <label for="newPhone">شماره موبایل جدید <em class="req-required">*</em></label>
+                            <input type="tel" id="newPhone" name="newPhone" class="profile-input" inputmode="numeric" maxlength="11" dir="ltr" style="text-align:right" placeholder="09123456789" autocomplete="tel">
+                            <p class="req-error" hidden></p>
+                        </div>
+                    </div>
+
+                    <!-- 4 · Notes -->
+                    <div class="profile-card glass-strong">
+                        <div class="req-card-head">
+                            <span class="req-step">۴</span>
+                            <div>
+                                <h2>توضیحات تکمیلی</h2>
+                                <p>هر نکته‌ای که فکر می‌کنید لازم است بدانیم.</p>
+                            </div>
+                        </div>
+                        <div class="profile-field">
+                            <label for="notes">توضیحات تکمیلی <span class="req-optional">(اختیاری)</span></label>
+                            <textarea id="notes" name="notes" class="profile-input req-notes" rows="5" placeholder="هر موضوع یا توضیح اضافه‌ای درباره‌ی درخواست‌تان دارید این‌جا بنویسید؛ مثلاً زمان مناسب تماس، جزئیات خاص یا هر نکته‌ی دیگر…"></textarea>
+                            <span class="req-counter" id="notesCounter" aria-hidden="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="req-alert" id="formAlert" role="alert" hidden>
+                        <svg class="req-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="13" /><line x1="12" y1="16.5" x2="12.01" y2="16.5" /></svg>
+                        <span></span>
+                    </div>
+
+                    <div class="req-submit-bar">
+                        <p class="req-submit-note">پس از ثبت، نتیجه از طریق شماره‌ی تماس شما اطلاع‌رسانی می‌شود.</p>
+                        <div class="req-submit-actions">
+                            <button type="button" class="btn btn-ghost" id="resetBtn">پاک کردن فرم</button>
+                            <button type="submit" class="btn btn-solid" id="submitBtn"><span>ثبت درخواست</span></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Success state -->
+            <div class="req-success profile-card glass-strong" id="reqSuccess" hidden>
+                <div class="req-success-icon">
+                    <svg class="req-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                </div>
+                <h2>درخواست شما ثبت شد</h2>
+                <p>کد پیگیری شما:</p>
+                <div class="req-code" id="reqCode"></div>
+                <p class="profile-hint">این صفحه نمایشی است و درخواست به سرور ارسال نشده است.</p>
+                <div class="req-submit-actions" style="justify-content:center;margin-top:10px">
+                    <button type="button" class="btn btn-solid" id="newRequestBtn"><span>ثبت درخواست جدید</span></button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Full-screen file viewer -->
+<div class="req-lightbox" id="viewer" role="dialog" aria-modal="true" aria-label="نمایش تمام‌صفحه‌ی فایل" hidden>
+    <div class="req-lightbox-bar">
+        <span class="req-lightbox-name" id="viewerName"></span>
+        <button type="button" class="req-lightbox-close" id="viewerClose" aria-label="بستن نمایش تمام‌صفحه">
+            <svg class="req-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+            <span>بستن</span>
+        </button>
+    </div>
+    <div class="req-lightbox-stage" id="viewerStage"></div>
+</div>
+
+<div class="req-sr-live" id="reqLive" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div>
+
+<!-- PREVIEW-ONLY (the layout already provides site.js / starfield.js / nav toggle) -->
+<script src="/js/site.js"></script>
+<script src="/js/starfield.js"></script>
+<script>
+    var t = document.getElementById('navToggle'), n = document.getElementById('mainNav');
+    if (t && n) t.addEventListener('click', function () { n.classList.toggle('open'); });
+</script>
+<!-- PAGE SCRIPT -->
+<script src="/js/submit-request.js"></script>
