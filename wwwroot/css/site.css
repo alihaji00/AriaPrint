@@ -359,6 +359,8 @@ section {
    SECTION HEADING
    ========================================================= */
 .section-head {
+    display: grid;
+    justify-items:center;
     text-align: center;
     margin-bottom: clamp(20px, 2.4vw, 36px);
 }
@@ -378,6 +380,7 @@ section {
     text-align: center;
 }
 .eyebrow.on-dark {
+    width:fit-content;
     color: var(--cyan-200);
     background: rgba(125, 211, 252, 0.08);
     border-color: rgba(125, 211, 252, 0.25);
@@ -595,6 +598,7 @@ section {
 .hero-video {
     width: 100%;
     max-width: 360px;
+    background: transparent !important;
     aspect-ratio: 400 / 440;
     height: auto;
     display: block;
@@ -2031,7 +2035,9 @@ section {
 .slider-btn--prev { order: 3; }
 
 .testimonial-card {
-    max-width: 50vw;
+    max-width: 47vw;
+    justify-items:center;
+    display:grid;
     order: 2;
     position: relative;
     flex: 1 1 auto;

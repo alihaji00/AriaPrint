@@ -18,7 +18,7 @@ namespace AriaPrint.Data_Access_Layer
             ,[DeleteTime]
             ,[Admin]
             FROM [AriaPrintDB].[dbo].[CommentsTbl]
-            WHERE [NewsId] = @NewsId AND [IsDelete] = 0",
+            WHERE [NewsId] = @NewsId AND (IsDelete = 0 OR IsDelete IS NULL)",
             new { NewsId = newsId });
 
             return Result.ToList();
@@ -50,10 +50,10 @@ namespace AriaPrint.Data_Access_Layer
             ,[DeleteTime]
             ,[Admin]
             FROM [AriaPrintDB].[dbo].[CommentsTbl]
-            WHERE [CommentId] = @CommentId AND [IsDelete] = 0",
+            WHERE [CommentId] = @CommentId AND (IsDelete = 0 OR IsDelete IS NULL)",
             new { CommentId = id });
 
-            return Result.FirstOrDefault();
+            return Result.First();
         }
     }
 }

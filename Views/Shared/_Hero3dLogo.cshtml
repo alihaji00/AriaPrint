@@ -3,7 +3,7 @@
         <video id="sourceVideo" autoplay loop muted playsinline disablePictureInPicture tabindex="-1"
                controlsList="nodownload nofullscreen noremoteplayback" aria-hidden="true"
                style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;">
-            <source src="~/Aria3d.mp4" type="video/mp4">
+            <source src="/Aria3d.mp4" type="video/mp4">
         </video>
         <canvas id="heroCanvas" class="hero-video" width="400" height="440" aria-hidden="true"></canvas>
         <div class="hero-video-shield"></div>
@@ -14,7 +14,7 @@
     (function () {
         const video = document.getElementById('sourceVideo');
         const canvas = document.getElementById('heroCanvas');
-        const ctx = canvas.getContext('2d', { alpha: false });
+        const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
             const dpr = window.devicePixelRatio || 1;
@@ -24,8 +24,32 @@
         }
 
         function drawFrame() {
+            // Clear canvas with transparent background first
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
             if (video.readyState >= 2 && video.videoWidth) {
+                // Draw video frame
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // For mix-blend-mode: screen to work well, we might need to
+                // adjust the video colors. Let's try a simple approach:
+                // Apply a filter to make dark areas more transparent
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                // Simple threshold: make very dark pixels transparent
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    // If pixel is very dark (near black), make it transparent
+                    if (r < 30 && g < 30 && b < 30) {
+                        data[i + 3] = 0; // Set alpha to 0 (fully transparent)
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
             }
             if (video.requestVideoFrameCallback) {
                 video.requestVideoFrameCallback(drawFrame);

@@ -71,7 +71,6 @@
                         var answer = Model.AnswersList.FirstOrDefault(a => a.AnswerId == id);
                     }
 
-
                     @if (answer != null)
                     {
                         <div class="qa-answer">
@@ -217,8 +216,10 @@
             </article> *@
 
             <!-- این دو مورد با کلیک روی «مشاهده همه سوالات» نمایش داده می‌شوند -->
-            <article class="qa-item qa-item-hidden">
-                <div class="qa-item-top">
+            @if (Model.CommentsList.Count > 3)
+            {
+                <article class="qa-item qa-item-hidden">
+                    @*     <div class="qa-item-top">
                     <div class="qa-avatar" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.6" />
@@ -306,18 +307,23 @@
                         </svg>
                         <span class="qa-like-count" data-count="3">۳</span>
                     </button>
-                </div>
-            </article>
+                </div> *@
+                </article>
+            }
+
 
         </div>
 
         <!-- دکمه مشاهده همه سوالات -->
-        <button class="qa-viewall-btn" id="qaViewAllBtn" type="button">
-            <span>مشاهده همه سوالات</span>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </button>
+        @if (Model.CommentsList.Count > 3)
+        {
+            <button class="qa-viewall-btn" id="qaViewAllBtn" type="button">
+                <span>مشاهده همه سوالات</span>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        }
 
     </section>
 
@@ -369,17 +375,12 @@
           var box = document.createElement("div");
           box.className = "qa-reply-box";
           box.innerHTML =
-
             '<form method="post" action="/Home/Answers" class="qa-reply-form qa-reply-box">' +
                 '<input type="hidden" name="__RequestVerificationToken" value="' + tokenValue + '">' +
                 '<input type="hidden" name="AnswerId" value="' + commentId + '">' +
                 '<input name="Text" type="text" class="qa-input qa-reply-input" placeholder="پاسخ خود را بنویسید...">' +
                 '<button type="submit" class="qa-reply-send">ارسال</button>' +
             '</form>';
-
-
-            '<input type="text" class="qa-input qa-reply-input" placeholder="پاسخ خود را بنویسید...">' +
-            '<button type="button" class="qa-reply-send">ارسال</button>';
 
 
 
