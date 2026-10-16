@@ -1,0 +1,262 @@
+﻿@using AriaPrint.Data_Access_Layer
+@using System.Globalization
+@using System.Linq
+@model NewsViewModel
+
+@if (Model.NewsPage == null)
+{
+    <p>خبر مورد نظر یافت نشد.</p>
+}
+
+<!-- ================= ARTICLE BANNER ================= -->
+<div class="article-dark-zone">
+    <section class="article-banner">
+        <div class="container article-banner-inner">
+
+            <div class="article-illustration-wrap">
+                <svg class="article-illustration" viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <radialGradient id="illGlow" cx="50%" cy="45%" r="60%">
+                            <stop offset="0%" stop-color="#49b9ff" stop-opacity=".55" />
+                            <stop offset="100%" stop-color="#49b9ff" stop-opacity="0" />
+                        </radialGradient>
+                        <linearGradient id="illCalHead" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#2f7dff" />
+                            <stop offset="100%" stop-color="#0a5cf2" />
+                        </linearGradient>
+                        <linearGradient id="illClock" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#ffffff" />
+                            <stop offset="100%" stop-color="#dcefff" />
+                        </linearGradient>
+                    </defs>
+
+                    <circle cx="160" cy="150" r="140" fill="url(#illGlow)" />
+
+                    <circle cx="52" cy="58" r="7" fill="#8fd8ff" opacity=".55" />
+                    <circle cx="268" cy="90" r="5" fill="#ffffff" opacity=".5" />
+                    <circle cx="252" cy="235" r="9" fill="#2f7dff" opacity=".4" />
+                    <circle cx="40" cy="222" r="5" fill="#8fd8ff" opacity=".6" />
+
+                    <g>
+                        <rect x="70" y="70" width="150" height="150" rx="18" fill="#eaf5ff" />
+                        <rect x="70" y="70" width="150" height="40" rx="18" fill="url(#illCalHead)" />
+                        <rect x="70" y="92" width="150" height="18" fill="url(#illCalHead)" />
+                        <rect x="98" y="58" width="10" height="24" rx="5" fill="#123a7a" />
+                        <rect x="182" y="58" width="10" height="24" rx="5" fill="#123a7a" />
+
+                        <g fill="#bfe0ff">
+                            <rect x="86" y="126" width="18" height="18" rx="4" />
+                            <rect x="112" y="126" width="18" height="18" rx="4" />
+                            <rect x="138" y="126" width="18" height="18" rx="4" />
+                            <rect x="164" y="126" width="18" height="18" rx="4" />
+                            <rect x="190" y="126" width="18" height="18" rx="4" />
+
+                            <rect x="86" y="152" width="18" height="18" rx="4" />
+                            <rect x="112" y="152" width="18" height="18" rx="4" />
+                            <rect x="164" y="152" width="18" height="18" rx="4" />
+                            <rect x="190" y="152" width="18" height="18" rx="4" />
+
+                            <rect x="86" y="178" width="18" height="18" rx="4" />
+                            <rect x="112" y="178" width="18" height="18" rx="4" />
+                            <rect x="138" y="178" width="18" height="18" rx="4" />
+                        </g>
+                        <rect x="138" y="152" width="18" height="18" rx="4" fill="#ff93ab" />
+                    </g>
+
+                    <g>
+                        <circle cx="222" cy="196" r="46" fill="url(#illClock)" stroke="#ffffff" stroke-width="4" />
+                        <circle cx="222" cy="196" r="46" fill="none" stroke="#2f7dff" stroke-width="3" />
+                        <line x1="222" y1="196" x2="222" y2="172" stroke="#123a7a" stroke-width="4" stroke-linecap="round" />
+                        <line x1="222" y1="196" x2="240" y2="200" stroke="#2f7dff" stroke-width="4" stroke-linecap="round" />
+                        <circle cx="222" cy="196" r="3.5" fill="#123a7a" />
+                    </g>
+                </svg>
+            </div>
+
+            <div class="article-banner-text">
+                <span class="article-badge">@Model.NewsPage.Category</span>
+                <h1 class="article-title">@Model.NewsPage.Title</h1>
+                <div class="article-meta">
+                    <span class="article-meta-item"><svg><use href="#i-folder"></use></svg>دسته‌بندی: @Model.NewsPage.Category</span>
+                    <span class="article-meta-item"><svg><use href="#i-user"></use></svg>نویسنده: @Model.NewsPage.Author</span>
+                    <span class="article-meta-item"><svg><use href="#i-calendar"></use></svg>تاریخ انتشار: @Model.NewsPage.ReleaseDate</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ================= ARTICLE LAYOUT ================= -->
+    <section class="article-section">
+        <div class="container article-layout">
+
+            <!-- RIGHT SIDEBAR -->
+            <aside class="article-sidebar-right">
+
+                <div class="side-card">
+                    <div class="side-card-head">
+                        <span class="icon-wrap"><svg><use href="#i-folder"></use></svg></span>
+                        <h4>مدارک مورد نیاز</h4>
+                    </div>
+                    <ul class="doc-list">
+
+                        @foreach (var item in Model.NewsPage.Documents)
+                        {
+                            <li><span class="dot"><svg><use href="#i-check"></use></svg></span>@item</li>
+                        }
+
+                    </ul>
+                </div>
+
+                <div class="side-card">
+                    <div class="side-card-head">
+                        <span class="icon-wrap"><svg><use href="#i-shield-check"></use></svg></span>
+                        <h4>شرایط ثبت‌نام</h4>
+                    </div>
+                    <ul class="cond-list">
+
+                        @foreach (var item in @Model.NewsPage.Conditions)
+                        {
+                            <li><span class="dot"><svg><use href="#i-check"></use></svg></span>@item</li>
+                        }
+
+                    </ul>
+                </div>
+
+                <div class="side-card">
+                    <div class="side-card-head">
+                        <span class="icon-wrap"><svg><use href="#i-clock"></use></svg></span>
+                        <h4>مهلت ثبت‌نام</h4>
+                    </div>
+                    <p class="deadline-date-label">آخرین مهلت ثبت‌نام</p>
+                    <p class="deadline-date">@Model.NewsPage.deadline</p>
+                    <p class="deadline-sub">زمان باقی‌مانده تا پایان مهلت</p>
+                    <!-- data-deadline: ISO date/time — update per article -->
+                    @{
+                        var pc = new PersianCalendar();
+                        var date = Model.NewsPage.deadline.Split('/');
+                        var year = int.Parse(date[0]);
+                        var month = int.Parse(date[1]);
+                        var day = int.Parse(date[2]);
+                        var ConvertedDate = pc.ToDateTime(year, month, day, 0, 0, 0, 0);
+                        var EnDate = ConvertedDate.ToString("yyyy-MM-dd");
+                    }
+                    <div class="countdown-grid" id="countdownGrid" data-deadline="@(EnDate)T23:59:59">
+                        <div class="cd-box"><span class="cd-num" id="cdDays">--</span><span class="cd-label">روز</span></div>
+                        <div class="cd-box"><span class="cd-num" id="cdHours">--</span><span class="cd-label">ساعت</span></div>
+                        <div class="cd-box"><span class="cd-num" id="cdMinutes">--</span><span class="cd-label">دقیقه</span></div>
+                        <div class="cd-box"><span class="cd-num" id="cdSeconds">--</span><span class="cd-label">ثانیه</span></div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <article class="article-main">
+                <h2>متن خبر</h2>
+                <p>@Model.NewsPage.Content</p>
+
+                <h3>جزئیات بیشتر</h3>
+                <p>این فراخوان استخدام یکی از مهم‌ترین برنامه‌های کافینت آریا در سال جاری است که با هدف ارتقای کیفیت خدمات و رضایت مشتریان طراحی شده است. افراد پذیرفته‌شده پس از طی دوره‌های آموزشی تخصصی، به تیم خدمات کافینت آریا خواهند پیوست.</p>
+
+                <h3>مزایای همکاری</h3>
+                <ul class="benefit-list">
+                    <li><span class="check-dot"><svg><use href="#i-check"></use></svg></span>حقوق و مزایای رقابتی</li>
+                    <li><span class="check-dot"><svg><use href="#i-check"></use></svg></span>بیمه و مزایای شغلی</li>
+                    <li><span class="check-dot"><svg><use href="#i-check"></use></svg></span>محیط کاری حرفه‌ای و دوستانه</li>
+                    <li><span class="check-dot"><svg><use href="#i-check"></use></svg></span>فرصت رشد و پیشرفت شغلی</li>
+                </ul>
+
+                <div class="note-box">
+                    <svg><use href="#i-info"></use></svg>
+                    <p>نکته: ثبت‌نام تنها از طریق سامانه رسمی کافینت آریا انجام می‌شود.</p>
+                </div>
+
+                <div class="share-row">
+                    <span class="share-label">اشتراک‌گذاری:</span>
+                    <a class="share-circle" href="#" aria-label="اشتراک در تلگرام"><svg><use href="#i-telegram"></use></svg></a>
+                    <a class="share-circle" href="#" aria-label="اشتراک در واتساپ"><svg><use href="#i-whatsapp"></use></svg></a>
+                    <button type="button" class="share-circle" id="copyLinkBtn" aria-label="کپی لینک صفحه">
+                        <svg><use href="#i-link"></use></svg>
+                        <span class="copy-tip" id="copyTip">لینک کپی شد</span>
+                    </button>
+                </div>
+            </article>
+
+            <!-- LEFT SIDEBAR -->
+            <aside class="article-sidebar-left">
+                <div class="side-card">
+                    <div class="side-card-head">
+                        <span class="icon-wrap"><svg><use href="#i-list"></use></svg></span>
+                        <h4>آخرین اخبار</h4>
+                    </div>
+
+                    <div class="related-list">
+
+                        @{
+                            var Newest4 = Model.GetNews().OrderByDescending(n => n.Id).Take(4).ToArray();
+                            foreach (var item in Newest4)
+                            {
+                                <partial name="_NewsList" model="item"></partial>
+                            }
+                        }
+
+                    </div>
+
+                    <a href="aria-cafenet.html#news" class="related-more"><span>مشاهده همه اخبار</span><svg><use href="#i-chevron-left"></use></svg></a>
+                </div>
+            </aside>
+
+        </div>
+    </section>
+</div>
+
+<script>
+    // countdown to registration deadline
+    (function(){
+      const grid = document.getElementById('countdownGrid');
+      if(!grid) return;
+      const deadline = new Date(grid.dataset.deadline).getTime();
+      const dEl = document.getElementById('cdDays');
+      const hEl = document.getElementById('cdHours');
+      const mEl = document.getElementById('cdMinutes');
+      const sEl = document.getElementById('cdSeconds');
+      const faDigits = '۰۱۲۳۴۵۶۷۸۹';
+      function toFa(n){ return String(n).padStart(2,'0').replace(/[0-9]/g, d => faDigits[d]); }
+      function tick(){
+        const diff = Math.max(0, deadline - Date.now());
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        dEl.textContent = toFa(days);
+        hEl.textContent = toFa(hours);
+        mEl.textContent = toFa(minutes);
+        sEl.textContent = toFa(seconds);
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    // copy article link
+    const copyBtn = document.getElementById('copyLinkBtn');
+    const copyTip = document.getElementById('copyTip');
+    function showCopiedTip(){
+      if(!copyTip) return;
+      copyTip.classList.add('show');
+      setTimeout(() => copyTip.classList.remove('show'), 1600);
+    }
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const url = window.location.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(showCopiedTip).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = url; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); showCopiedTip(); } catch(e) {}
+            document.body.removeChild(ta);
+          });
+        }
+      });
+    }
+</script>

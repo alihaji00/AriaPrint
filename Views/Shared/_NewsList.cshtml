@@ -1,0 +1,11 @@
+﻿@using AriaPrint.Repository
+@model News
+
+<a href="/News/@Model.Id" class="related-item">
+    <span class="related-icon"><svg><use href="@Model.PictureUrl"></use></svg></span>
+    <span class="related-body">
+        <span class="related-badge">@Model.Category</span>
+        <h5>@Model.Title</h5>
+        <span class="related-date"><svg><use href="#i-calendar"></use></svg>@Model.ReleaseDate</span>
+    </span>
+</a>

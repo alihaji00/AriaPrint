@@ -1,0 +1,8 @@
+﻿@using AriaPrint.Repository
+@model ServicesCard
+
+<div class="service-card">
+    <span class="ph ph-tone"><svg><use href="@Model.PictureUrl"></use></svg></span>
+    <h3>@Model.Title</h3>
+    <p>@Model.Paragraph</p>
+</div>
