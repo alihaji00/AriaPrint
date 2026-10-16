@@ -3931,7 +3931,6 @@ section {
 .profile-hero-actions {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
 .profile-logout-form {
@@ -5352,6 +5351,8 @@ section {
     .profile-toggle-group {
         align-self: flex-start;
     }
+
+    
 }
 
 @media (max-width: 560px) {
@@ -5533,5 +5534,13 @@ section {
 
     .profile-session-meta {
         font-size: 11px;
+    }
+
+    .dashboard-svg {
+        max-width: 7%;
+    }
+
+    .profile-logout-form{
+        width:100%;
     }
 }

@@ -1,14 +1,9 @@
+@model ProfileViewModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "پروفایل | کافینت آریا";
 
-    var firstName = User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "کاربر";
-    var lastName = User.FindFirst(System.Security.Claims.ClaimTypes.Surname)?.Value ?? "";
-    var phone = User.Identity?.Name ?? "—";
-    var fullName = (firstName + " " + lastName).Trim();
-    if (string.IsNullOrWhiteSpace(fullName)) fullName = "کاربر گرامی";
-    var isAdmin = User.IsInRole("Admin");
-    var initial = string.IsNullOrWhiteSpace(firstName) ? "?" : firstName.Substring(0, 1);
+    ViewData["HideFooter"] = true;
 }
 
 <div class="profile-zone">
@@ -19,27 +14,27 @@
         <div class="container profile-hero-inner">
             <div class="profile-hero-left">
                 <div class="profile-avatar">
-                    <span id="profileAvatarText">@initial</span>
+                    <span id="profileAvatarText">@Model.Initial</span>
                 </div>
                 <div class="profile-hero-meta">
                     <p class="eyebrow on-dark">حساب کاربری</p>
-                    <h1 class="profile-hero-name" id="profileName">@fullName</h1>
-                    <p class="profile-hero-phone" id="profilePhone">@phone</p>
+                    <h1 class="profile-hero-name" id="profileName">@Model.FullName</h1>
+                    <p class="profile-hero-phone" id="profilePhone">@Model.Phone</p>
                 </div>
             </div>
 
             <div class="profile-hero-actions">
-                @if (isAdmin)
+                @if (Model.IsAdmin)
                 {
                     <a class="btn btn-ghost" href="/AdminPanel/Dashboard">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z" /><path d="M9 12l2 2 4-4" /></svg>
+                        <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z" /><path d="M9 12l2 2 4-4" /></svg>
                         <span>پنل مدیریت</span>
                     </a>
                 }
                 <form asp-controller="Account" asp-action="Logout" method="post" class="profile-logout-form">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-ghost profile-logout">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                        <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
                         <span>خروج</span>
                     </button>
                 </form>
@@ -81,7 +76,7 @@
                 </nav>
 
                 <div class="profile-role-badge">
-                    @if (isAdmin)
+                    @if (Model.IsAdmin)
                     {
                         <span class="profile-role-tag profile-role-tag--admin">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8.5 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 9 8.5 12 2" /></svg>
@@ -169,10 +164,10 @@
 
                         <form class="profile-form" id="profileEditForm" novalidate>
                             <div class="profile-avatar-edit">
-                                <div class="profile-avatar profile-avatar--lg" id="profileAvatarBig">@initial</div>
+                                <div class="profile-avatar profile-avatar--lg" id="profileAvatarBig">@Model.Initial</div>
                                 <div class="profile-avatar-actions">
                                     <button type="button" class="btn btn-ghost" disabled>
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
+                                        <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
                                         <span>تغییر تصویر (به‌زودی)</span>
                                     </button>
                                     <p class="profile-hint">پشتیبانی از تصویر پروفایل به‌زودی فعال خواهد شد.</p>
@@ -182,22 +177,22 @@
                             <div class="profile-form-grid">
                                 <div class="profile-field">
                                     <label>نام</label>
-                                    <input type="text" name="FirstName" value="@firstName" class="profile-input" required>
+                                    <input type="text" name="FirstName" value="@Model.FirstName" class="profile-input" required>
                                 </div>
                                 <div class="profile-field">
                                     <label>نام خانوادگی</label>
-                                    <input type="text" name="LastName" value="@lastName" class="profile-input">
+                                    <input type="text" name="LastName" value="@Model.LastName" class="profile-input">
                                 </div>
                                 <div class="profile-field profile-field--full">
                                     <label>شماره موبایل (غیرقابل تغییر)</label>
-                                    <input type="text" name="PhoneNumber" value="@phone" class="profile-input" disabled>
+                                    <input type="text" name="PhoneNumber" value="@Model.Phone" class="profile-input" disabled>
                                 </div>
                                 <div class="profile-field profile-field--full">
                                     <label>بیوگرافی</label>
                                     <textarea name="Bio" class="profile-input profile-textarea" rows="3" placeholder="چند کلمه درباره خودتان بنویسید..."></textarea>
                                 </div>
                                 <div class="profile-field profile-field--full">
-                                    <label>ایمیل (اختiarی)</label>
+                                    <label>ایمیل (اختیاری)</label>
                                     <input type="email" name="Email" class="profile-input" placeholder="example@email.com">
                                 </div>
                                 <div class="profile-field">
@@ -216,7 +211,7 @@
                                     <span>ذخیره تغییرات (به‌زودی)</span>
                                 </button>
                             </div>
-                            <p class="profile-hint profile-hint--block">بک‌اند این بخش بعداً توسط شما اضافه خواهد شد.</p>
+                            <p class="profile-hint profile-hint--block">بک‌اند این بخش بعداً اضافه خواهد شد.</p>
                         </form>
                     </div>
                 </section>

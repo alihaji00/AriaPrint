@@ -1,6 +1,9 @@
 @{
+
     Layout = "_Layout";
     ViewData["Title"] = "ورود / ثبت نام | کافینت آریا";
+
+    ViewData["HideFooter"] = true;
 
     // mode: "login" | "register" | "forgot"
     var mode = (Context.Request.Query["mode"].ToString() ?? "login").ToLower();
