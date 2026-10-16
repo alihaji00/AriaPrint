@@ -1,0 +1,217 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "ثبت نام | کافینت آریا";
+    var registerModel = new AriaPrint.Models.RegisterViewModel();
+}
+
+<!-- ================= AUTH PANEL (Register mode) ================= -->
+<section class="auth-section">
+    <canvas class="starfield-canvas" data-count="30" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
+
+    <div class="container auth-container">
+        <div class="auth-grid">
+
+            <aside class="auth-visual glass-strong">
+                <div class="auth-visual-glow"></div>
+                <a class="auth-brand" href="/">
+                    <span class="ph ph-mono auth-brand-icon">
+                        <svg><use href="#ph-mono"></use></svg>
+                    </span>
+                    <span class="auth-brand-text">کافینت آریا</span>
+                </a>
+
+                <h2 class="auth-visual-title">به خانواده آریا بپیوندید</h2>
+                <p class="auth-visual-desc">
+                    با ساخت حساب کاربری می‌توانید در بحث‌ها مشارکت کنید، پاسخ تیم پشتیبانی را سریع‌تر دریافت کنید و از قابلیت‌های شخصی‌سازی حساب خود بهره‌مند شوید.
+                </p>
+
+                <ul class="auth-feature-list">
+                    <li>
+                        <span class="auth-feature-dot"><svg><use href="#i-check"></use></svg></span>
+                        ارسال دیدگاه روی اخبار
+                    </li>
+                    <li>
+                        <span class="auth-feature-dot"><svg><use href="#i-check"></use></svg></span>
+                        پاسخ مستقیم از تیم پشتیبانی
+                    </li>
+                    <li>
+                        <span class="auth-feature-dot"><svg><use href="#i-check"></use></svg></span>
+                        پنل اختصاصی برای هر کاربر
+                    </li>
+                    <li>
+                        <span class="auth-feature-dot"><svg><use href="#i-check"></use></svg></span>
+                        امنیت بالا با رمزگذاری استاندارد
+                    </li>
+                </ul>
+
+                <div class="auth-visual-foot">
+                    <span class="auth-eye">© کافینت آریا — همه حقوق محفوظ است.</span>
+                </div>
+            </aside>
+
+            <div class="auth-card glass-strong">
+                <div class="auth-card-glow"></div>
+
+                <div class="auth-tabs" role="tablist" aria-label="انتخاب عملیات">
+                    <button type="button" class="auth-tab" data-target="login" role="tab" aria-selected="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></svg>
+                        ورود
+                    </button>
+                    <button type="button" class="auth-tab is-active" data-target="register" role="tab" aria-selected="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" /></svg>
+                        ثبت نام
+                    </button>
+                </div>
+
+                <form asp-controller="Account" asp-action="Register" method="post" class="auth-form is-active" data-form="register" novalidate>
+                    @Html.AntiForgeryToken()
+                    <h3 class="auth-form-title">ساخت حساب جدید</h3>
+                    <p class="auth-form-sub">فقط چند ثانیه تا همراهی با ما فاصله دارید.</p>
+
+                    <div class="auth-row-2">
+                        <div class="auth-field">
+                            <label asp-for="@registerModel.FirstName">نام</label>
+                            <div class="auth-input-wrap">
+                                <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                                <input asp-for="@registerModel.FirstName" name="FirstName" id="FirstName" type="text" class="auth-input" placeholder="نام" autocomplete="given-name" required>
+                            </div>
+                            <span data-valmsg-for="FirstName" data-valmsg-replace="true" class="auth-error"></span>
+                        </div>
+
+                        <div class="auth-field">
+                            <label asp-for="@registerModel.LastName">نام خانوادگی</label>
+                            <div class="auth-input-wrap">
+                                <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                                <input asp-for="@registerModel.LastName" name="LastName" id="LastName" type="text" class="auth-input" placeholder="نام خانوادگی" autocomplete="family-name" required>
+                            </div>
+                            <span data-valmsg-for="LastName" data-valmsg-replace="true" class="auth-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="@registerModel.PhoneNumber">شماره موبایل</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5" /><line x1="11" y1="18" x2="13" y2="18" /></svg>
+                            <input asp-for="@registerModel.PhoneNumber" name="PhoneNumber" id="PhoneNumber" type="tel" class="auth-input" placeholder="۰۹۱۲۳۴۵۶۷۸۹" autocomplete="tel" inputmode="numeric" pattern="09[0-9]{9}" maxlength="11" required>
+                        </div>
+                        <span data-valmsg-for="PhoneNumber" data-valmsg-replace="true" class="auth-error"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="@registerModel.Password">رمز عبور</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                            <input asp-for="@registerModel.Password" name="Password" id="Password" type="password" class="auth-input auth-input-password" placeholder="حداقل ۸ کاراکتر" autocomplete="new-password" minlength="8" required>
+                            <button type="button" class="auth-eye-btn" data-toggle-password aria-label="نمایش/مخفی کردن رمز">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" /><circle cx="12" cy="12" r="3" /></svg>
+                            </button>
+                        </div>
+                        <span data-valmsg-for="Password" data-valmsg-replace="true" class="auth-error"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="@registerModel.ConfirmPassword">تکرار رمز عبور</label>
+                        <div class="auth-input-wrap">
+                            <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                            <input asp-for="@registerModel.ConfirmPassword" name="ConfirmPassword" id="ConfirmPassword" type="password" class="auth-input auth-input-password" placeholder="رمز عبور را دوباره وارد کنید" autocomplete="new-password" minlength="8" required>
+                            <button type="button" class="auth-eye-btn" data-toggle-password aria-label="نمایش/مخفی کردن رمز">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" /><circle cx="12" cy="12" r="3" /></svg>
+                            </button>
+                        </div>
+                        <span data-valmsg-for="ConfirmPassword" data-valmsg-replace="true" class="auth-error"></span>
+                    </div>
+
+                    <div class="auth-strength" data-strength>
+                        <span class="auth-strength-bar"></span>
+                        <span class="auth-strength-bar"></span>
+                        <span class="auth-strength-bar"></span>
+                        <span class="auth-strength-bar"></span>
+                        <span class="auth-strength-text">قدرت رمز: —</span>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="auth-summary"></div>
+
+                    <button type="submit" class="auth-submit">
+                        <span>ساخت حساب</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
+                    </button>
+
+                    <p class="auth-switch-line">از قبل حساب دارید؟ <a class="auth-link" href="/Account/Login">وارد شوید</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+        "use strict";
+        const root = document.querySelector('.auth-card');
+        if (!root) return;
+
+        // Tab switching
+        root.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.target;
+                if (target === 'register') {
+                    window.location.href = '/Account/Register';
+                } else {
+                    window.location.href = '/Account/Login';
+                }
+            });
+        });
+
+        // Toggle password visibility
+        root.querySelectorAll('[data-toggle-password]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const wrap = btn.closest('.auth-input-wrap');
+                const input = wrap && wrap.querySelector('input');
+                if (!input) return;
+                const isPwd = input.type === 'password';
+                input.type = isPwd ? 'text' : 'password';
+                btn.classList.toggle('is-active', isPwd);
+            });
+        });
+
+        // Password strength
+        const strength = root.querySelector('[data-strength]');
+        const passwordInput = root.querySelector('input[name="Password"][type="password"]');
+        const bars = strength ? strength.querySelectorAll('.auth-strength-bar') : [];
+        const strengthText = strength ? strength.querySelector('.auth-strength-text') : null;
+        if (passwordInput && bars.length) {
+            const setStrength = (val) => {
+                const labels = ['خیلی ضعیف', 'ضعیف', 'متوسط', 'خوب', 'عالی'];
+                const colors = ['#ff5c7a', '#ff8a4c', '#ffd84c', '#7ddc6c', '#34d399'];
+                bars.forEach((b, i) => {
+                    b.style.background = i < val ? colors[val - 1] : 'rgba(255,255,255,.08)';
+                });
+                if (strengthText) {
+                    strengthText.textContent = val > 0 ? ('قدرت رمز: ' + labels[val - 1]) : 'قدرت رمز: —';
+                    strengthText.style.color = val > 0 ? colors[val - 1] : '';
+                }
+            };
+            const score = (pwd) => {
+                if (!pwd) return 0;
+                let s = 0;
+                if (pwd.length >= 8) s++;
+                if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) s++;
+                if (/\d/.test(pwd)) s++;
+                if (/[^A-Za-z0-9]/.test(pwd)) s++;
+                return Math.min(4, s);
+            };
+            passwordInput.addEventListener('input', () => setStrength(score(passwordInput.value)));
+        }
+
+        // Phone number cleanup
+        root.querySelectorAll('input[type="tel"]').forEach(inp => {
+            inp.addEventListener('input', () => {
+                const cursor = inp.selectionStart;
+                const cleaned = inp.value.replace(/[^0-9]/g, '').slice(0, 11);
+                if (cleaned !== inp.value) {
+                    inp.value = cleaned;
+                    if (cursor != null) inp.setSelectionRange(cursor, cursor);
+                }
+            });
+        });
+    })();
+</script>

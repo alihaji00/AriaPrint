@@ -1,19 +1,14 @@
 ﻿using AriaPrint.BL;
-using AriaPrint.Data_Access_Layer;
 using AriaPrint.Models;
-using AriaPrint.Repository;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Common.Extensions;
 
 namespace AriaPrint.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly SetComments _commentService = new SetComments();
-        private readonly SetAnswers _answerService = new SetAnswers();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -24,92 +19,6 @@ namespace AriaPrint.Controllers
         {
             SetIndexContent SetModelViewModel = new();
             var Model = await SetModelViewModel.GetAllLists();
-            return View(Model);
-        }
-
-        [Route("News/{id}")]
-        public async Task<IActionResult> News(int id)
-        {
-            var NewsPage = new FindNewsPageById(id);
-            var News = await NewsPage.GetNews();
-            var Model = new NewsViewModel(News);
-
-            var comments = await _commentService.GetCommentsAsync(id);
-
-            var answers = new List<Answer>();
-            foreach (var c in comments)
-            {
-                answers.AddRange(await _answerService.GetAnswersAsync(c.CommentId));
-            }
-
-            ViewData["CommentsModel"] = new CommentsViewModel
-            {
-                CommentsList = comments,
-                NewComment = new Comment { NewsId = id },
-                AnswersList = answers,
-                NewAnswer = new Answer { AnswerId = id }
-            };
-
-            return View(Model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Comments(int newsId)
-        {
-            var viewModel = new CommentsViewModel
-            {
-                CommentsList = await _commentService.GetCommentsAsync(newsId)
-            };
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Comments(Comment newComment)
-        {
-            if (ModelState.IsValid)
-            {
-                string ip = Request.GetClientIpAddress();
-                await _commentService.AddCommentAsync(newComment, ip);
-            }
-
-            return RedirectToAction("News", new { id = newComment.NewsId });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Answers(int CommentId)
-        {
-            var viewModel = new CommentsViewModel
-            {
-                AnswersList = await _answerService.GetAnswersAsync(CommentId)
-            };
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Answers(Answer newAnswer)
-        {
-            if (ModelState.IsValid)
-            {
-                string ip = Request.GetClientIpAddress();
-                await _answerService.AddAnswerAsync(newAnswer, ip);
-            }
-
-            var parentComment = await _commentService.GetCommentByIdAsync(newAnswer.AnswerId);
-            if (parentComment == null)
-                return RedirectToAction("Index");
-
-            return RedirectToAction("News", new { id = parentComment.NewsId });
-        }
-
-        [Route("AllNews")]
-        public async Task<IActionResult> AllNews()
-        {
-            SetAllNewsPage SetAllNewsPage = new();
-            var NewsList = await SetAllNewsPage.GetNewsList();
-            var Model = new AllNewsViewModel
-            {
-                News = NewsList
-            };
             return View(Model);
         }
     }

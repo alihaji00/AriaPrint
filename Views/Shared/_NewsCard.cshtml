@@ -13,6 +13,11 @@
     <div class="news-card-body">
         <h3>@Model.Title</h3>
         <p>@Model.Summary</p>
-        <a asp-action="News" asp-route-id="@Model.Id" class="read-more"><span>بیشتر بخوانید</span><svg class="icon-sm"><use href="#i-chevron-left"></use></svg></a>
+        <a asp-action="News" asp-route-id="@Model.Id" class="read-more">
+            <span>بیشتر بخوانید</span>
+            <svg class="icon-sm">
+                <use href="#i-chevron-left"></use>
+            </svg>
+        </a>
     </div>
 </article>

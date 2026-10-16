@@ -3,7 +3,7 @@
     public class Answer
     {
         public int AnswerId { get; set; }
-        public string Text { get; set; }
+        public string Text { get; set; } = "";
         public long Date { get; set; }
         public int LikesCount { get; set; }
         public int IsDelete { get; set; }

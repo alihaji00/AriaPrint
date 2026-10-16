@@ -16,26 +16,28 @@
         </div>
 
         <!-- فرم ثبت سوال جدید -->
-        <form asp-controller="Home" asp-action="Comments" method="post" class="qa-form" id="qaForm">
-            <input type="hidden" asp-for="NewComment.NewsId" />
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-controller="Comments" asp-action="Comments" method="post" class="qa-form" id="qaForm">
+                <input type="hidden" asp-for="NewComment.NewsId" />
+                <input type="hidden" asp-for="NewComment.FullName" value="@(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "") @(User.FindFirst(System.Security.Claims.ClaimTypes.Surname)?.Value ?? "")" />
+                <input type="hidden" asp-for="NewComment.PhoneNumber" value="@(User.Identity.Name ?? "0")" />
 
-            <div class="qa-form-row qa-form-row-double">
-                <div class="qa-field">
-                    <input asp-for="NewComment.FullName" type="text" id="qaName" class="qa-input" placeholder="نام و نام خانوادگی" autocomplete="name" required>
+                <div class="qa-form-row qa-form-row-submit">
+                    <input asp-for="NewComment.Text" type="text" id="qaComment" class="qa-input" placeholder="سوال یا دیدگاه خود را اینجا بنویسید..." required>
+                    <button type="submit" class="qa-submit-btn">ارسال</button>
                 </div>
 
-                <div class="qa-field">
-                    <input asp-for="NewComment.PhoneNumber" type="tel" id="qaPhone" class="qa-input" placeholder="شماره موبایل" autocomplete="tel" inputmode="numeric" pattern="09[0-9]{9}" required>
-                </div>
+                <p class="qa-hint">به‌عنوان <strong>@(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "کاربر")</strong> ارسال می‌کنید.</p>
+            </form>
+        }
+        else
+        {
+            <div class="qa-login-hint">
+                <p>برای ثبت دیدگاه باید <a asp-controller="Account" asp-action="Login">وارد حساب خود شوید</a>.</p>
             </div>
+        }
 
-            <div class="qa-form-row qa-form-row-submit">
-                <input asp-for="NewComment.Text" type="text" id="qaComment" class="qa-input" placeholder="سوال خود را اینجا بنویسید..." required>
-                <button type="submit" class="qa-submit-btn">ارسال سوال</button>
-            </div>
-
-            <p class="qa-hint">لطفاً سوال خود را با جزئیات مطرح کنید تا بهتر راهنمایی شوید.</p>
-        </form>
 
         <!-- لیست سوالات و پاسخ‌ها -->
         <div class="qa-list" id="qaList">
@@ -63,7 +65,7 @@
                 </article>
             }
 
-                    @* 
+            @* 
                     <p class="qa-answer-text">حداقل مبلغ وام ازدواج ۲۲۰ میلیون تومان و حداکثر ۳۰۰ میلیون تومان است.</p>
                      *@
 
@@ -122,17 +124,56 @@
         return String(input).replace(/[0-9]/g, function (d) { return persianDigits[d]; });
       }
 
-      // ---- toggle like buttons ----
+      // ---- toggle like buttons (calls backend) ----
       function bindLikeButton(btn) {
         if (btn.dataset.bound === "1") return;
         btn.dataset.bound = "1";
+
+        var commentId = btn.dataset.commentId;
+        if (!commentId) return;
+
+        var inFlight = false;
         btn.addEventListener("click", function () {
+          if (inFlight) return;
+          inFlight = true;
           var countEl = btn.querySelector(".qa-like-count");
           var count = parseInt(countEl.getAttribute("data-count") || "0", 10);
-          var liked = btn.classList.toggle("qa-like-btn-active");
-          count = liked ? count + 1 : count - 1;
-          countEl.setAttribute("data-count", count);
-          countEl.textContent = toPersianDigits(count);
+          var liked = !btn.classList.contains("qa-like-btn-active");
+          var optimisticCount = liked ? count + 1 : Math.max(0, count - 1);
+
+          // optimistic UI
+          btn.classList.toggle("qa-like-btn-active", liked);
+          countEl.setAttribute("data-count", optimisticCount);
+          countEl.textContent = toPersianDigits(optimisticCount);
+
+          var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+          var tokenValue = tokenInput ? tokenInput.value : "";
+
+          fetch("/Comments/ToggleLike?commentId=" + encodeURIComponent(commentId), {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "RequestVerificationToken": tokenValue || "" }
+          })
+            .then(function (r) {
+              if (!r.ok) throw new Error("HTTP " + r.status);
+              return r.json().catch(function () { return null; });
+            })
+            .then(function (data) {
+              if (data && typeof data.likes === "number") {
+                countEl.setAttribute("data-count", data.likes);
+                countEl.textContent = toPersianDigits(data.likes);
+                if (typeof data.liked === "boolean") {
+                  btn.classList.toggle("qa-like-btn-active", data.liked);
+                }
+              }
+            })
+            .catch(function () {
+              // rollback on failure
+              btn.classList.toggle("qa-like-btn-active", !liked);
+              countEl.setAttribute("data-count", count);
+              countEl.textContent = toPersianDigits(count);
+            })
+            .finally(function () { inFlight = false; });
         });
       }
 
@@ -157,7 +198,7 @@
           var box = document.createElement("div");
           box.className = "qa-reply-box";
           box.innerHTML =
-            '<form method="post" action="/Home/Answers" class="qa-reply-form qa-reply-box">' +
+            '<form method="post" action="/Answers/Answers" class="qa-reply-form qa-reply-box">' +
                 '<input type="hidden" name="__RequestVerificationToken" value="' + tokenValue + '">' +
                 '<input type="hidden" name="AnswerId" value="' + commentId + '">' +
                 '<input name="Text" type="text" class="qa-input qa-reply-input" placeholder="پاسخ خود را بنویسید...">' +
@@ -171,20 +212,66 @@
         });
       }
 
+      // ---- delete button (UI confirmation only — wire to backend later) ----
+      function bindDeleteButton(btn) {
+        if (btn.dataset.bound === "1") return;
+        btn.dataset.bound = "1";
+
+        btn.addEventListener("click", function () {
+          var commentId = btn.dataset.commentId;
+          if (!commentId) return;
+          if (!window.confirm("آیا از حذف این دیدگاه مطمئن هستید؟")) return;
+
+          // optimistic UI — fade out the comment article
+          var article = btn.closest(".qa-item");
+          if (article) {
+            article.style.transition = "opacity .3s ease, transform .3s ease";
+            article.style.opacity = "0.4";
+            article.style.pointerEvents = "none";
+          }
+
+          var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+          var tokenValue = tokenInput ? tokenInput.value : "";
+
+          fetch("/Comments/Delete?commentId=" + encodeURIComponent(commentId), {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "RequestVerificationToken": tokenValue || "" }
+          })
+            .then(function (r) {
+              if (r.ok) {
+                if (article) article.remove();
+              } else {
+                throw new Error("HTTP " + r.status);
+              }
+            })
+            .catch(function () {
+              if (article) {
+                article.style.opacity = "";
+                article.style.pointerEvents = "";
+              }
+              alert("حذف دیدگاه با خطا مواجه شد. لطفاً بعداً تلاش کنید.");
+            });
+        });
+      }
+
       document.querySelectorAll(".qa-like-btn").forEach(bindLikeButton);
       document.querySelectorAll(".qa-reply-btn").forEach(bindReplyButton);
+      document.querySelectorAll(".qa-delete-btn").forEach(bindDeleteButton);
 
       // ---- show / hide extra questions ----
       var viewAllBtn = document.getElementById("qaViewAllBtn");
       var expanded = false;
 
-      viewAllBtn.addEventListener("click", function () {
-        expanded = !expanded;
-        document.querySelectorAll(".qa-item-hidden").forEach(function (el) {
-          el.style.display = expanded ? "block" : "none";
+      if (viewAllBtn) {
+        viewAllBtn.addEventListener("click", function () {
+          expanded = !expanded;
+          document.querySelectorAll(".qa-item-hidden").forEach(function (el) {
+            el.style.display = expanded ? "block" : "none";
+          });
+          viewAllBtn.querySelector("span").textContent = expanded ? "نمایش کمتر" : "مشاهده همه سوالات";
+          viewAllBtn.classList.toggle("qa-viewall-btn-open", expanded);
         });
-        viewAllBtn.querySelector("span").textContent = expanded ? "نمایش کمتر" : "مشاهده همه سوالات";
-        viewAllBtn.classList.toggle("qa-viewall-btn-open", expanded);
-      });
+      }
     })();
 </script>

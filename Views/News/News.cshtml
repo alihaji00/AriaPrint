@@ -91,66 +91,94 @@
     <section class="article-section">
         <div class="container article-layout">
 
-            <!-- RIGHT SIDEBAR -->
-            <aside class="article-sidebar-right">
+            <!-- LEFT STACK: conditions on top, latest news below -->
+            <div class="article-left-stack">
 
-                <div class="side-card">
-                    <div class="side-card-head">
-                        <span class="icon-wrap"><svg><use href="#i-folder"></use></svg></span>
-                        <h4>مدارک مورد نیاز</h4>
+                <aside class="article-sidebar-right">
+
+                    <div class="side-card">
+                        <div class="side-card-head">
+                            <span class="icon-wrap"><svg><use href="#i-folder"></use></svg></span>
+                            <h4>مدارک مورد نیاز</h4>
+                        </div>
+                        <ul class="doc-list">
+
+                            @foreach (var item in Model.NewsPage.Documents)
+                            {
+                                <li><span class="dot"><svg><use href="#i-check"></use></svg></span>@item</li>
+                            }
+
+                        </ul>
                     </div>
-                    <ul class="doc-list">
 
-                        @foreach (var item in Model.NewsPage.Documents)
-                        {
-                            <li><span class="dot"><svg><use href="#i-check"></use></svg></span>@item</li>
+                    <div class="side-card">
+                        <div class="side-card-head">
+                            <span class="icon-wrap"><svg><use href="#i-shield-check"></use></svg></span>
+                            <h4>شرایط ثبت‌نام</h4>
+                        </div>
+                        <ul class="cond-list">
+
+                            @foreach (var item in @Model.NewsPage.Conditions)
+                            {
+                                <li><span class="dot"><svg><use href="#i-check"></use></svg></span>@item</li>
+                            }
+
+                        </ul>
+                    </div>
+
+                    <div class="side-card">
+                        <div class="side-card-head">
+                            <span class="icon-wrap"><svg><use href="#i-clock"></use></svg></span>
+                            <h4>مهلت ثبت‌نام</h4>
+                        </div>
+                        <p class="deadline-date-label">آخرین مهلت ثبت‌نام</p>
+                        <p class="deadline-date">@Model.NewsPage.DeadlineFormatted</p>
+                        <p class="deadline-sub">زمان باقی‌مانده تا پایان مهلت</p>
+                        <!-- data-deadline: ISO date/time — update per article -->
+                        @{
+                            var pc = new PersianCalendar();
+                            var date = Model.NewsPage.DeadlineFormatted.Split('/');
+                            var year = int.Parse(date[0]);
+                            var month = int.Parse(date[1]);
+                            var day = int.Parse(date[2]);
+                            var ConvertedDate = pc.ToDateTime(year, month, day, 0, 0, 0, 0);
+                            var EnDate = ConvertedDate.ToString("yyyy-MM-dd");
                         }
-
-                    </ul>
-                </div>
-
-                <div class="side-card">
-                    <div class="side-card-head">
-                        <span class="icon-wrap"><svg><use href="#i-shield-check"></use></svg></span>
-                        <h4>شرایط ثبت‌نام</h4>
+                        <div class="countdown-grid" id="countdownGrid" data-deadline="@(EnDate)T23:59:59">
+                            <div class="cd-box"><span class="cd-num" id="cdDays">--</span><span class="cd-label">روز</span></div>
+                            <div class="cd-box"><span class="cd-num" id="cdHours">--</span><span class="cd-label">ساعت</span></div>
+                            <div class="cd-box"><span class="cd-num" id="cdMinutes">--</span><span class="cd-label">دقیقه</span></div>
+                            <div class="cd-box"><span class="cd-num" id="cdSeconds">--</span><span class="cd-label">ثانیه</span></div>
+                        </div>
                     </div>
-                    <ul class="cond-list">
 
-                        @foreach (var item in @Model.NewsPage.Conditions)
-                        {
-                            <li><span class="dot"><svg><use href="#i-check"></use></svg></span>@item</li>
-                        }
+                </aside>
 
-                    </ul>
-                </div>
+                <aside class="article-sidebar-left">
+                    <div class="side-card">
+                        <div class="side-card-head">
+                            <span class="icon-wrap"><svg><use href="#i-list"></use></svg></span>
+                            <h4>آخرین اخبار</h4>
+                        </div>
 
-                <div class="side-card">
-                    <div class="side-card-head">
-                        <span class="icon-wrap"><svg><use href="#i-clock"></use></svg></span>
-                        <h4>مهلت ثبت‌نام</h4>
+                        <div class="related-list">
+
+                            @{
+                                // var Newest4 = Model.GetNews().OrderByDescending(n => n.Id).Take(4).ToArray();
+                                var News = (await Model.GetNewsAsync()).ToArray();
+                                foreach (var item in News)
+                                {
+                                    <partial name="_NewsList" model="item"></partial>
+                                }
+                            }
+
+                        </div>
+
+                        <a href="aria-cafenet.html#news" class="related-more"><span>مشاهده همه اخبار</span><svg><use href="#i-chevron-left"></use></svg></a>
                     </div>
-                    <p class="deadline-date-label">آخرین مهلت ثبت‌نام</p>
-                    <p class="deadline-date">@Model.NewsPage.DeadlineFormatted</p>
-                    <p class="deadline-sub">زمان باقی‌مانده تا پایان مهلت</p>
-                    <!-- data-deadline: ISO date/time — update per article -->
-                    @{
-                        var pc = new PersianCalendar();
-                        var date = Model.NewsPage.DeadlineFormatted.Split('/');
-                        var year = int.Parse(date[0]);
-                        var month = int.Parse(date[1]);
-                        var day = int.Parse(date[2]);
-                        var ConvertedDate = pc.ToDateTime(year, month, day, 0, 0, 0, 0);
-                        var EnDate = ConvertedDate.ToString("yyyy-MM-dd");
-                    }
-                    <div class="countdown-grid" id="countdownGrid" data-deadline="@(EnDate)T23:59:59">
-                        <div class="cd-box"><span class="cd-num" id="cdDays">--</span><span class="cd-label">روز</span></div>
-                        <div class="cd-box"><span class="cd-num" id="cdHours">--</span><span class="cd-label">ساعت</span></div>
-                        <div class="cd-box"><span class="cd-num" id="cdMinutes">--</span><span class="cd-label">دقیقه</span></div>
-                        <div class="cd-box"><span class="cd-num" id="cdSeconds">--</span><span class="cd-label">ثانیه</span></div>
-                    </div>
-                </div>
+                </aside>
 
-            </aside>
+            </div>
 
             <!-- MAIN CONTENT -->
             <article class="article-main">
@@ -184,37 +212,13 @@
                 </div>
             </article>
 
-            <!-- LEFT SIDEBAR -->
-            <aside class="article-sidebar-left">
-                <div class="side-card">
-                    <div class="side-card-head">
-                        <span class="icon-wrap"><svg><use href="#i-list"></use></svg></span>
-                        <h4>آخرین اخبار</h4>
-                    </div>
-
-                    <div class="related-list">
-
-                        @{
-                            // var Newest4 = Model.GetNews().OrderByDescending(n => n.Id).Take(4).ToArray();
-                            var News = (await Model.GetNewsAsync()).ToArray();
-                            foreach (var item in News)
-                            {
-                                <partial name="_NewsList" model="item"></partial>
-                            }
-                        }
-
-                    </div>
-
-                    <a href="aria-cafenet.html#news" class="related-more"><span>مشاهده همه اخبار</span><svg><use href="#i-chevron-left"></use></svg></a>
-                </div>
-            </aside>
+            <!-- COMMENTS -->
+            <section class="article-comments">
+                <partial name="_CommentsSection" model="@((CommentsViewModel)ViewData["CommentsModel"])"></partial>
+            </section>
 
         </div>
     </section>
-
-    <!-- ================= COMMENTS ================= -->
-
-    <partial name="_CommentsSection" model="@((CommentsViewModel)ViewData["CommentsModel"])"></partial>
 
 </div>
 

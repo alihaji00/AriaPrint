@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 
 namespace AriaPrint.Repository
 {
@@ -51,12 +52,12 @@ namespace AriaPrint.Repository
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(ReleaseDate) || ReleaseDate.Length != 8)
-                    return ReleaseDate;
+                if (string.IsNullOrWhiteSpace(deadline) || deadline.Length != 8)
+                    return deadline;
 
-                var year = ReleaseDate.Substring(0, 4);
-                var month = ReleaseDate.Substring(4, 2);
-                var day = ReleaseDate.Substring(6, 2);
+                var year = deadline.Substring(0, 4);
+                var month = deadline.Substring(4, 2);
+                var day = deadline.Substring(6, 2);
 
                 return $"{year}/{month}/{day}";
             }

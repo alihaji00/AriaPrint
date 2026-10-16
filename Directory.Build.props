@@ -1,0 +1,18 @@
+<Project>
+  <!-- Override NuGet behavior to exclude problematic compiler packages -->
+  <PropertyGroup>
+    <DisableImplicitFrameworkReferences>false</DisableImplicitFrameworkReferences>
+    <!-- Prevent the old compiler package from being used -->
+    <UseCompiler>false</UseCompiler>
+    <UseSharedCompilation>true</UseSharedCompilation>
+  </PropertyGroup>
+
+  <!-- Create a target to remove the problematic imports -->
+  <Target Name="RemoveProblematicNuGetImports" BeforeTargets="ResolvePackageDependencies">
+    <!-- Empty the properties that point to the old compiler packages -->
+    <PropertyGroup>
+      <PkgMicrosoft_Net_Compilers></PkgMicrosoft_Net_Compilers>
+      <PkgMicrosoft_CodeDom_Providers_DotNetCompilerPlatform></PkgMicrosoft_CodeDom_Providers_DotNetCompilerPlatform>
+    </PropertyGroup>
+  </Target>
+</Project>

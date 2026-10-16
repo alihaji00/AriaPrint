@@ -511,7 +511,7 @@ public static class StringExtensions
             return "";
         }
 
-        string[] parts = value!.Split('@');
+        string[] parts = value.Split('@');
         string username = parts[0];
         string domain = parts[1];
 

@@ -1,0 +1,15 @@
+<Project>
+  <!-- Prevent the old Microsoft.Net.Compilers package from being imported -->
+  <PropertyGroup>
+    <DisableImplicitCompilerReferences>true</DisableImplicitCompilerReferences>
+    <DisableImplicitFrameworkReferences>false</DisableImplicitFrameworkReferences>
+  </PropertyGroup>
+
+  <!-- Remove the problematic imports -->
+  <Target Name="RemoveProblematicImports" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <PkgMicrosoft_Net_Compilers></PkgMicrosoft_Net_Compilers>
+      <PkgMicrosoft_CodeDom_Providers_DotNetCompilerPlatform></PkgMicrosoft_CodeDom_Providers_DotNetCompilerPlatform>
+    </PropertyGroup>
+  </Target>
+</Project>

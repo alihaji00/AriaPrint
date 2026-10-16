@@ -1,5 +1,9 @@
 ﻿using AriaPrint.Repository;
 using Common.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AriaPrint.Data_Access_Layer
 {
@@ -60,7 +64,7 @@ namespace AriaPrint.Data_Access_Layer
             WHERE [CommentId] = @CommentId AND (IsDelete = 0 OR IsDelete IS NULL)",
             new { CommentId = id });
 
-            return Result.First();
+            return Result.FirstOrDefault() ?? new Comment();
         }
     }
 }
