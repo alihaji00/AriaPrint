@@ -131,14 +131,30 @@
         seed();
         rafId = requestAnimationFrame(frame);
 
+        //var resizeTimer;
+        //window.addEventListener('resize', function () {
+        //    clearTimeout(resizeTimer);
+        //    resizeTimer = setTimeout(function () {
+        //        resize();
+        //        seed();
+        //    }, 150);
+        //});
+
         var resizeTimer;
-        window.addEventListener('resize', function () {
+        function scheduleResize() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function () {
                 resize();
                 seed();
             }, 150);
-        });
+        }
+
+        if ('ResizeObserver' in window) {
+            new ResizeObserver(scheduleResize).observe(canvas);
+        } else {
+            window.addEventListener('resize', scheduleResize);
+        }
+
 
         if ('IntersectionObserver' in window) {
             var io = new IntersectionObserver(function (entries) {

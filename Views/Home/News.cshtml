@@ -10,8 +10,8 @@
 
 <!-- ================= ARTICLE BANNER ================= -->
 <div class="article-dark-zone">
+    <canvas class="starfield-canvas" data-count="20" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
     <section class="article-banner">
-        <canvas class="starfield-canvas" data-count="12" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
         <div class="container article-banner-inner">
 
             <div class="article-illustration-wrap">
@@ -89,7 +89,6 @@
 
     <!-- ================= ARTICLE LAYOUT ================= -->
     <section class="article-section">
-        <canvas class="starfield-canvas" data-count="10" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
         <div class="container article-layout">
 
             <!-- RIGHT SIDEBAR -->
@@ -196,8 +195,9 @@
                     <div class="related-list">
 
                         @{
-                            var Newest4 = Model.GetNews().OrderByDescending(n => n.Id).Take(4).ToArray();
-                            foreach (var item in Newest4)
+                            // var Newest4 = Model.GetNews().OrderByDescending(n => n.Id).Take(4).ToArray();
+                            var News = Model.GetNews().ToArray();
+                            foreach (var item in News)
                             {
                                 <partial name="_NewsList" model="item"></partial>
                             }
@@ -211,6 +211,41 @@
 
         </div>
     </section>
+
+    <!-- ================= ARTICLE COMMENTS ================= -->
+    @* <section class="article-bottom">
+        <div class="article-Comments" style="">
+            <div class="comments-header" style="">
+                <div class="comments-header-txt" style="">
+                    <span>
+                        <svg style="width:18px;height:18px;color:#fff;">
+                            <use href="#i-folder"></use>
+                        </svg>
+                    </span>
+                    <h4 style="">سوالات و پاسخ ها</h4>
+                </div>
+                <div class="submit-new-comment">
+                    <div>
+                        <span class="comment-name" style=""></span>
+                        <span class="comment-number" style=""></span>
+                    </div>
+                    <div>
+                        <span class="comment-text" style=""></span>
+                        <span style="flex:0 1 20%;align-content:center;">
+                            <a href="#" class="btn-submit-quasuion" style="" >ارسال سوال</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            @{
+            }
+            <div style="padding: 50px 0;text-align: center;">
+                <a class="btn btn-ghost btn-more-comments" href="#" style="margin: 0 auto;backdrop-filter: blur(5px);">مشاهده سوالات بیشتر</a>
+            </div>
+        </div>
+    </section> *@
+
+
 </div>
 
 <script>

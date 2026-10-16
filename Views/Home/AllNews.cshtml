@@ -1,9 +1,10 @@
 ﻿@model AllNewsViewModel
 
 <div class="all-news">
-    <div>
+    <canvas class="starfield-canvas" data-count="20" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
+    <div class="all-news-div">
         @{
-            var news = Model.News.Where(n=>n.Id > 0).ToArray();
+            var news = Model.News.Where(n => n.Id > 0).ToArray();
 
             foreach (var item in news)
             {

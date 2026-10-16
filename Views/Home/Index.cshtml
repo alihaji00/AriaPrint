@@ -3,66 +3,69 @@
 
 <!-- ================= HERO ================= -->
 <div class="hero-news-bg">
-    <canvas class="starfield-canvas" data-count="50" data-colors="#49b9ff,#8fd8ff,#6fc3ff" data-avoid=".hero-video-wrap"></canvas>
-    <section class="hero" id="home">
-        <div class="container hero-inner">
+    <canvas class="starfield-canvas" data-count="40" data-colors="#49b9ff,#8fd8ff,#6fc3ff" data-avoid=".hero-video-wrap"></canvas>
+    <div class="index-blur-bg">
 
-            <div class="hero-text">
-                <a href="#services" class="hero-badge">
-                    <span class="hero-badge-dot"></span>
-                    ما را در اینستاگرام دنبال کنید
-                    <svg class="icon"><use href="#i-chevron-left"></use></svg>
-                </a>
-                <div class="hero-Sentences">
-                    <h1 class="hero-title">کافینت آریا</h1>
-                    <p class="hero-subtitle">همیشه یک قدم جلوتر از شما</p>
-                    <p class="hero-desc">ارائه انواع خدمات اینترنتی، ثبت نام پرداخت قبوض. پرداخت خدمات دانشجویی اطلاع رسانی جدیدترین اخبار با سرعت، دقت و اطمینان</p>
+        <section class="hero" id="home">
+            <div class="container hero-inner">
+
+                <div class="hero-text">
+                    <a href="#services" class="hero-badge">
+                        <span class="hero-badge-dot"></span>
+                        ما را در اینستاگرام دنبال کنید
+                        <svg class="icon"><use href="#i-chevron-left"></use></svg>
+                    </a>
+                    <div class="hero-Sentences">
+                        <h1 class="hero-title">کافینت آریا</h1>
+                        <p class="hero-subtitle">همیشه یک قدم جلوتر از شما</p>
+                        <p class="hero-desc">ارائه انواع خدمات اینترنتی، ثبت نام پرداخت قبوض. پرداخت خدمات دانشجویی اطلاع رسانی جدیدترین اخبار با سرعت، دقت و اطمینان</p>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#news" class="btn btn-ghost"><span>مشاهده آخرین اخبار</span><svg class="icon"><use href="#i-chevron-left"></use></svg></a>
+                        <a href="#services" class="btn btn-solid"><span>خدمات ما</span><svg class="icon"><use href="#i-grid"></use></svg></a>
+                    </div>
                 </div>
-                <div class="hero-buttons">
-                    <a href="#news" class="btn btn-ghost"><span>مشاهده آخرین اخبار</span><svg class="icon"><use href="#i-chevron-left"></use></svg></a>
-                    <a href="#services" class="btn btn-solid"><span>خدمات ما</span><svg class="icon"><use href="#i-grid"></use></svg></a>
+                
+                <partial name="_Hero3dLogo"></partial>
+
+            </div>
+        </section>
+
+        <!-- ================= NEWS ================= -->
+        <section class="news-section" id="news">
+            <div class="container News-Container">
+                <div class="section-head">
+                    <p class="eyebrow on-dark">آخرین اخبار و اطلاعیه‌ها</p>
+                    <h2 class="section-title on-dark">همیشه به‌روز باشید</h2>
                 </div>
-            </div>
 
-            <partial name="_Hero3dLogo"></partial>
+                <div class="news-grid">
 
-        </div>
-    </section>
+                    @{
+                        var Newest3 = Model.News.OrderByDescending(n => n.Id).Take(3).ToArray();
 
-    <!-- ================= NEWS ================= -->
-    <section class="news-section" id="news">
-        <div class="container News-Container">
-            <div class="section-head">
-                <p class="eyebrow on-dark">آخرین اخبار و اطلاعیه‌ها</p>
-                <h2 class="section-title on-dark">همیشه به‌روز باشید</h2>
-            </div>
-
-            <div class="news-grid">
-
-                @{
-                    var Newest3 = Model.News.OrderByDescending(n => n.Id).Take(3).ToArray();
-
-                    foreach (var item in Newest3)
-                    {
-                        <partial name="_NewsCard" model="item" />
+                        foreach (var item in Newest3)
+                        {
+                            <partial name="_NewsCard" model="item" />
+                        }
                     }
-                }
+
+                </div>
+
+                <div class="more-news">
+                    <a href="AllNews" class="btn btn-ghost">
+                        <span>مشاهده تمامی اخبار</span>
+                        <svg class="icon">
+                            <use href="#i-chevron-left">
+
+                            </use>
+                        </svg>
+                    </a>
+                </div>
 
             </div>
-
-            <div class="more-news">
-                <a href="AllNews" class="btn btn-ghost">
-                    <span>مشاهده تمامی اخبار</span>
-                    <svg class="icon">
-                        <use href="#i-chevron-left">
-
-                        </use>
-                    </svg>
-                </a>
-            </div>
-
-        </div>
-    </section>
+        </section>
+    </div>
 </div>
 
 <!-- ================= SERVICES ================= -->
