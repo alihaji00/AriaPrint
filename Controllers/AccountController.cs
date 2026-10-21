@@ -117,15 +117,6 @@ namespace AriaPrint.Controllers
             new Claim(ClaimTypes.Role, user.Role)
             };
 
-            //var claims = new List<Claim>
-            //{
-            //new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            //new Claim(ClaimTypes.Name, user.PhoneNumber.ToString()),
-            //new Claim(ClaimTypes.GivenName, user.FirstName),
-            //new Claim(ClaimTypes.Surname, user.LastName),
-            //new Claim(ClaimTypes.Role, user.Role)
-            //};
-
             var scheme = CookieAuthenticationDefaults.AuthenticationScheme;
             var identity = new ClaimsIdentity(claims, scheme);
             var principal = new ClaimsPrincipal(identity);
