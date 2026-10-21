@@ -30,7 +30,6 @@ namespace AriaPrint.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            // Convert phone number to long for database query
             if (!long.TryParse(model.PhoneNumber.Trim(), out long phoneNumber))
             {
                 ModelState.AddModelError("", "فرمت شماره موبایل اشتباه است.");
@@ -71,7 +70,6 @@ namespace AriaPrint.Controllers
                 return View(model);
             }
 
-            // Convert phone number to long for database query
             if (!long.TryParse(model.PhoneNumber.Trim(), out long phoneNumber))
             {
                 ModelState.AddModelError("", "فرمت شماره موبایل اشتباه است.");
@@ -102,32 +100,38 @@ namespace AriaPrint.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(ForgotPasswordViewModel model)
         {
-            // UI only — backend flow (SMS / email / token) intentionally not wired here.
-            // Will be implemented by the user. We always show the success screen
-            // to avoid leaking whether the phone number exists.
             return Redirect("/Account/Login?mode=forgot-sent");
         }
 
         [HttpGet]
         public IActionResult AccessDenied() => View();
 
-        // متد کمکی: ساخت کوکی و ثبت هویت کاربر
         private async Task SignInUserAsync(AppUser user)
         {
             var claims = new List<Claim>
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.PhoneNumber.ToString()),
+            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber.ToString()),
             new Claim(ClaimTypes.GivenName, user.FirstName),
             new Claim(ClaimTypes.Surname, user.LastName),
-            new Claim(ClaimTypes.Role, user.Role) // ⚠️ این خط باعث میشه User.IsInRole("Admin") کار کنه
+            new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //var claims = new List<Claim>
+            //{
+            //new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            //new Claim(ClaimTypes.Name, user.PhoneNumber.ToString()),
+            //new Claim(ClaimTypes.GivenName, user.FirstName),
+            //new Claim(ClaimTypes.Surname, user.LastName),
+            //new Claim(ClaimTypes.Role, user.Role)
+            //};
+
+            var scheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            var identity = new ClaimsIdentity(claims, scheme);
             var principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
+                scheme,
                 principal,
                 new AuthenticationProperties { IsPersistent = true }
             );
