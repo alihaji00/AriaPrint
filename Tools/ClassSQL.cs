@@ -1,6 +1,7 @@
 #nullable enable
 
 using Dapper;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,12 +18,7 @@ using System.Threading.Tasks;
 public class ClassSQL
 {
 
-    private string connString =
-    "Server = .;" +
-    "DataBase=AriaPrintDB;" +
-    "Integrated Security = True;" +
-    "Encrypt=True;" +
-    "TrustServerCertificate=True;";
+    private string connString;
 
     public int timeOut_Second = 0;
 
@@ -33,6 +29,13 @@ public class ClassSQL
 
     public ClassSQL()
     {
+        IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false)
+            .Build();
+
+        connString = config.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
     }
 
     private SqlConnection GetSqlConnection()
