@@ -11,8 +11,8 @@
         <span class="ph-mono-wrap"><svg class="ph-mono"><use href="@Model.PictureUrl"></use></svg></span>
     </div>
     <div class="news-card-body">
-        <h3>@Model.Title</h3>
-        <p>@Model.Summary</p>
+        <h3 class="news-card-title">@Model.Title</h3>
+        <p class="news-card-excerpt">@Model.Summary</p>
         <a asp-controller="News" asp-action="News" asp-route-id="@Model.Id" class="read-more">
             <span>بیشتر بخوانید</span>
             <svg class="icon-sm">

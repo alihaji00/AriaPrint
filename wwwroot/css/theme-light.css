@@ -1,0 +1,1699 @@
+/* =========================================================================
+   HONEY & EMBER — warm yellow/orange LIGHT theme for the whole site
+   -------------------------------------------------------------------------
+   Loaded on every page AFTER site.css, home-redesign.css and any page CSS,
+   so it wins on source order (no !important). Every rule is scoped under
+   html.light-theme: dark mode (the default) is never touched by this file.
+
+   Palette (use these names, never raw hex, below the token block):
+     surfaces  cream #FFF8E7 (page) · butter #FFEFC2 (alt sections)
+               milk  #FFFCF4 (cards, inputs, menus, modals) · sun-tint #FFE9A8
+     warm ramp sun #FFC93C · honey #FFB627 · tangerine #FF8A1F · ember #E8590C
+               burnt #C2410C (main accent) · rust #9A3412 (hover) · amber-text #B45309
+     ink       espresso #2B1A06 · cocoa #6B4A1E · line #F3E3BC · line-strong
+
+   Contrast rules (WCAG AA):
+     - text on cream/butter/milk = espresso / cocoa, accents = burnt or rust
+     - sun / honey / tangerine / ember are FILLS only, never small text on cream
+     - white text only on burnt / rust fills, espresso text on sun / honey fills
+     - burnt on sun-tint is 4.3:1, so small text on sun-tint uses rust (6.1:1)
+   ========================================================================= */
+
+
+/* -------------------------------------------------------------------------
+   1. TOKENS
+   ------------------------------------------------------------------------- */
+html.light-theme {
+    color-scheme: light; /* native scrollbars, date inputs, select, checkboxes */
+
+    /* palette (single source of truth) */
+    --lt-cream: #FFF8E7;
+    --lt-butter: #FFEFC2;
+    --lt-milk: #FFFCF4;
+    --lt-sun-tint: #FFE9A8;
+    --lt-sun: #FFC93C;
+    --lt-honey: #FFB627;
+    --lt-tangerine: #FF8A1F;
+    --lt-ember: #E8590C;
+    --lt-burnt: #C2410C;
+    --lt-rust: #9A3412;
+    --lt-amber-text: #B45309;
+    --lt-ink: #2B1A06;
+    --lt-ink-2: #6B4A1E;
+    --lt-ink-3: #7A5826;      /* muted text, 6.1:1 on cream */
+    --lt-ink-faint: #80612F;  /* placeholders, 5.4:1 on cream */
+    --lt-line: #F3E3BC;
+    --lt-line-strong: rgba(120, 72, 0, 0.28);
+
+    /* semantic colors, warm-tuned for cream (errors stay red, success green) */
+    --lt-danger: #B42318;
+    --lt-danger-soft: rgba(180, 35, 24, 0.08);
+    --lt-danger-line: rgba(180, 35, 24, 0.32);
+    --lt-success: #1E7A3C;
+    --lt-success-soft: rgba(30, 122, 60, 0.10);
+    --lt-success-line: rgba(30, 122, 60, 0.32);
+    --lt-warn-text: #7A3E00;
+    --lt-warn-soft: rgba(255, 182, 39, 0.20);
+    --lt-warn-line: rgba(180, 83, 9, 0.40);
+
+    /* warm shadows only: never gray or black */
+    --lt-shadow: 0 4px 20px rgba(146, 84, 0, 0.12);
+    --lt-shadow-hover: 0 14px 36px rgba(146, 84, 0, 0.18);
+    --lt-shadow-btn: 0 10px 24px rgba(194, 65, 12, 0.30);
+    --lt-shadow-btn-hover: 0 14px 30px rgba(154, 52, 18, 0.38);
+
+    /* --- the existing --light-* variables (used by the old home-section rules) --- */
+    --light-bg: var(--lt-cream);
+    --light-bg-alt: var(--lt-butter);
+    --light-text: var(--lt-ink);
+    --light-text-secondary: var(--lt-ink-2);
+    --light-border: var(--lt-line);
+    --light-card-bg: var(--lt-milk);
+    --light-card-shadow: var(--lt-shadow);
+    --light-accent: var(--lt-burnt);
+
+    /* --- remap the project's semantic tokens: most components flip by themselves --- */
+    --navy-1000: var(--lt-cream);   /* body background */
+    --navy-950: var(--lt-cream);    /* home header bar */
+    --navy-900: var(--lt-butter);
+    --navy-850: var(--lt-butter);
+    --navy-800: var(--lt-sun-tint);
+    --navy-700: var(--lt-sun-tint);
+    --blue-700: var(--lt-rust);
+    --blue-600: var(--lt-burnt);
+    --blue-500: var(--lt-burnt);
+    --blue-400: var(--lt-ember);
+    --sky-400: var(--lt-burnt);     /* accent text / borders / icons */
+    --cyan-300: var(--lt-amber-text);
+    --cyan-200: var(--lt-rust);     /* secondary accent text */
+    --accent-violet: var(--lt-honey);
+    --accent-pink: var(--lt-tangerine);
+    --success: var(--lt-success);
+
+    --glass-bg: var(--lt-milk);
+    --glass-bg-strong: var(--lt-milk);
+    --glass-bg-light: rgba(255, 233, 168, 0.55);
+    --glass-border: var(--lt-line);
+    --glass-border-strong: var(--lt-line-strong);
+    --glass-inner-highlight: rgba(255, 255, 255, 0);
+
+    --text-primary: var(--lt-ink);
+    --text-secondary: var(--lt-ink-2);
+    --text-muted: var(--lt-ink-3);
+    --text-faint: var(--lt-ink-faint);
+    --text-on-light: var(--lt-ink);
+    --text-on-light-2: var(--lt-ink-2);
+
+    --shadow-soft: var(--lt-shadow);
+    --shadow-card: var(--lt-shadow);
+    --shadow-hover: var(--lt-shadow-hover);
+    --glow-blue: var(--lt-shadow);
+
+    /* comments / Q&A tokens (declared on :root in site.css) */
+    --qa-blue: var(--lt-burnt);
+    --qa-blue-hover: var(--lt-rust);
+    --qa-blue-soft: rgba(194, 65, 12, 0.10);
+    --qa-blue-soft-border: rgba(194, 65, 12, 0.38);
+    --qa-bg-panel: var(--lt-milk);
+    --qa-bg-card: var(--lt-cream);
+    --qa-bg-card-border: var(--lt-line);
+    --qa-bg-answer: rgba(255, 233, 168, 0.45);
+    --qa-bg-input: var(--lt-milk);
+    --qa-bg-input-border: var(--lt-line-strong);
+    --qa-bg-avatar: var(--lt-sun-tint);
+    --qa-text-title: var(--lt-ink);
+    --qa-text-name: var(--lt-ink);
+    --qa-text-body: var(--lt-ink-2);
+    --qa-text-muted: var(--lt-ink-3);
+    --qa-text-placeholder: var(--lt-ink-faint);
+    --qa-shadow-panel: var(--lt-shadow);
+
+    /* two-tone SVG placeholder (#ph-tone in _SvgSprite) */
+    --ph-tone-a: var(--lt-amber-text);
+    --ph-tone-b: var(--lt-cream);
+
+    /* password strength meter (Login / Register inline script) */
+    --str-1: #B91C1C;
+    --str-2: #C2410C;
+    --str-3: #8A5A00;
+    --str-4: #4D7C0F;
+    --str-5: #166534;
+    --str-empty: rgba(120, 72, 0, 0.14);
+}
+
+
+/* -------------------------------------------------------------------------
+   2. BASE
+   ------------------------------------------------------------------------- */
+html.light-theme body {
+    background: var(--lt-cream);
+    color: var(--lt-ink);
+}
+
+/* the deep-blue aurora and the grid overlay are dark-only decoration */
+html.light-theme body::before {
+    background: var(--lt-cream);
+    animation: none;
+}
+
+html.light-theme body::after {
+    display: none;
+}
+
+html.light-theme ::selection {
+    background: var(--lt-sun);
+    color: var(--lt-ink);
+}
+
+html.light-theme {
+    scrollbar-color: var(--lt-honey) var(--lt-butter);
+}
+
+html.light-theme ::-webkit-scrollbar-track {
+    background: var(--lt-butter);
+}
+
+html.light-theme ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--lt-honey), var(--lt-tangerine));
+    border: 2px solid var(--lt-butter);
+}
+
+html.light-theme ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--lt-tangerine), var(--lt-ember));
+}
+
+/* focus ring: ember, 2px, visible on cream */
+html.light-theme :focus-visible {
+    outline: 2px solid var(--lt-ember);
+}
+
+html.light-theme .btn:focus-visible,
+html.light-theme .req-choice input:focus-visible + .req-choice-box,
+html.light-theme .req-drop:focus-visible,
+html.light-theme .req-mini-btn:focus-visible,
+html.light-theme .req-thumb:focus-visible {
+    outline: 2px solid var(--lt-ember);
+}
+
+/* glass has no place on cream: flat, no blur, anywhere */
+html.light-theme *,
+html.light-theme *::before,
+html.light-theme *::after {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+html.light-theme .glass,
+html.light-theme .glass-strong {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+/* decorative glow / gloss layers that only make sense on dark */
+html.light-theme .article-sidebar-left::before,
+html.light-theme .article-sidebar-right::before,
+html.light-theme .article-banner-inner::before,
+html.light-theme .article-main::before,
+html.light-theme .qa-section::before,
+html.light-theme .news-card::before,
+html.light-theme .service-card::before,
+html.light-theme .service-card::after {
+    display: none;
+}
+
+html.light-theme .ph-mono {
+    color: var(--lt-amber-text);
+}
+
+
+/* -------------------------------------------------------------------------
+   3. BUTTONS
+   ------------------------------------------------------------------------- */
+/* primary: burnt -> rust gradient, white text (5.2:1 and 7.3:1), existing gloss/hover motion kept */
+html.light-theme .btn-solid,
+html.light-theme .hero-btn-submit,
+html.light-theme .btn-header-cta,
+html.light-theme .btn-header-login,
+html.light-theme .auth-submit,
+html.light-theme .qa-submit-btn,
+html.light-theme .qa-reply-send,
+html.light-theme .req-mini-btn--primary {
+    background: linear-gradient(135deg, var(--lt-burnt) 0%, var(--lt-rust) 100%);
+    color: #fff;
+    border: 1px solid rgba(154, 52, 18, 0.55);
+    box-shadow: var(--lt-shadow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+html.light-theme .btn-solid:hover,
+html.light-theme .hero-btn-submit:hover,
+html.light-theme .btn-header-cta:hover,
+html.light-theme .btn-header-login:hover,
+html.light-theme .auth-submit:hover,
+html.light-theme .qa-submit-btn:hover,
+html.light-theme .qa-reply-send:hover,
+html.light-theme .req-mini-btn--primary:hover {
+    background: linear-gradient(135deg, var(--lt-rust) 0%, var(--lt-rust) 100%);
+    box-shadow: var(--lt-shadow-btn-hover), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+html.light-theme .btn-solid::before,
+html.light-theme .hero-btn-submit::before,
+html.light-theme .btn-header-cta::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 55%);
+}
+
+/* ghost: espresso text, line-strong border */
+html.light-theme .btn-ghost {
+    background: rgba(255, 252, 244, 0.65);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-ink);
+    box-shadow: none;
+}
+
+html.light-theme .btn-ghost:hover {
+    background: var(--lt-sun-tint);
+    border-color: rgba(120, 72, 0, 0.42);
+    box-shadow: var(--lt-shadow);
+}
+
+/* danger stays red (semantic) */
+html.light-theme .btn-danger {
+    background: linear-gradient(135deg, #D92D20, var(--lt-danger));
+    border: 1px solid rgba(180, 35, 24, 0.6);
+    box-shadow: 0 10px 24px rgba(180, 35, 24, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+html.light-theme .btn-danger:hover {
+    box-shadow: 0 14px 30px rgba(180, 35, 24, 0.36);
+}
+
+
+/* -------------------------------------------------------------------------
+   4. SECTION HEADINGS
+   ------------------------------------------------------------------------- */
+/* sun-tint pill: rust text, because burnt is only 4.3:1 on sun-tint */
+html.light-theme .eyebrow,
+html.light-theme .eyebrow.on-dark {
+    color: var(--lt-rust);
+    background: var(--lt-sun-tint);
+    border-color: var(--lt-line-strong);
+}
+
+/* the redesigned home page uses flat eyebrows (no pill): back to burnt on cream/butter */
+html.light-theme .home-page .eyebrow,
+html.light-theme .home-page .eyebrow.on-dark {
+    background: none;
+    border: 0;
+    color: var(--lt-burnt);
+}
+
+html.light-theme .section-title {
+    color: var(--lt-ink);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+}
+
+html.light-theme .section-title::after {
+    background: linear-gradient(90deg, var(--lt-honey), var(--lt-ember));
+    box-shadow: none;
+}
+
+html.light-theme .section-title.on-dark {
+    color: var(--lt-ink);
+}
+
+
+/* -------------------------------------------------------------------------
+   5. HEADER (original pill header on inner pages + flat header on home)
+   ------------------------------------------------------------------------- */
+html.light-theme .site-header,
+html.light-theme .site-header.is-transparent {
+    background: var(--lt-cream);
+    border-color: var(--lt-line);
+    box-shadow: none;
+}
+
+html.light-theme .site-header:not(.is-transparent) {
+    box-shadow: var(--lt-shadow);
+}
+
+/* home: flat bar with a hairline under it, lifts when scrolled */
+html.light-theme .home-page .site-header,
+html.light-theme .home-page .site-header.is-transparent {
+    background: var(--lt-cream);
+    border: 0;
+    border-bottom: 1px solid var(--lt-line);
+    box-shadow: none;
+}
+
+html.light-theme .home-page .site-header:not(.is-transparent) {
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .logo-text {
+    color: var(--lt-ink);
+}
+
+html.light-theme .logo-icon,
+html.light-theme .brand-heading .ph-mono {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+    box-shadow: none;
+    color: var(--lt-burnt);
+}
+
+html.light-theme .main-nav a {
+    color: var(--lt-ink);
+    opacity: 1;
+}
+
+html.light-theme .main-nav a::after {
+    background: linear-gradient(90deg, var(--lt-honey), var(--lt-ember));
+    box-shadow: none;
+}
+
+html.light-theme .main-nav a:hover,
+html.light-theme .main-nav a.active,
+html.light-theme .home-page .main-nav a:hover,
+html.light-theme .home-page .main-nav a.active {
+    color: var(--lt-burnt);
+}
+
+/* mobile dropdown nav on inner pages (the home page keeps its two-row header) */
+@media (max-width: 780px) {
+    html.light-theme body:not(.home-page) .main-nav {
+        background: var(--lt-milk);
+        border: 1px solid var(--lt-line);
+        box-shadow: var(--lt-shadow-hover);
+    }
+
+    html.light-theme body:not(.home-page) .main-nav a:hover,
+    html.light-theme body:not(.home-page) .main-nav a.active {
+        background: var(--lt-sun-tint);
+        border-color: var(--lt-line-strong);
+        color: var(--lt-rust);
+    }
+}
+
+html.light-theme .nav-toggle {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .nav-toggle svg {
+    color: var(--lt-ink);
+}
+
+/* the hamburger path is hard-coded fill="white" in _Layout */
+html.light-theme .nav-toggle svg path {
+    fill: var(--lt-ink);
+}
+
+/* theme toggle button */
+html.light-theme .theme-toggle {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-ink);
+}
+
+html.light-theme .theme-toggle:hover {
+    background: var(--lt-sun-tint);
+    box-shadow: var(--lt-shadow);
+}
+
+/* login / header CTA keep their white label (the token remap would otherwise make it espresso) */
+html.light-theme .btn-header-login {
+    color: #fff;
+}
+
+/* user menu */
+html.light-theme .header-user-btn {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-ink);
+}
+
+html.light-theme .header-user-btn:hover {
+    background: var(--lt-sun-tint);
+    border-color: rgba(120, 72, 0, 0.42);
+}
+
+html.light-theme .header-user-avatar,
+html.light-theme .profile-avatar,
+html.light-theme .admin-row-thumb--avatar {
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(194, 65, 12, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+html.light-theme .profile-avatar {
+    border: 1px solid rgba(154, 52, 18, 0.5);
+    box-shadow: 0 14px 30px rgba(194, 65, 12, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+html.light-theme .header-user-dropdown {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow-hover);
+}
+
+html.light-theme .header-user-item {
+    color: var(--lt-ink);
+}
+
+html.light-theme .header-user-item svg {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .header-user-item:hover {
+    background: var(--lt-sun-tint);
+}
+
+html.light-theme .header-user-item--danger,
+html.light-theme .header-user-item--danger svg {
+    color: var(--lt-danger);
+}
+
+html.light-theme .header-user-item--danger:hover {
+    background: var(--lt-danger-soft);
+}
+
+html.light-theme .header-user-divider {
+    background: linear-gradient(90deg, transparent, var(--lt-line-strong), transparent);
+}
+
+
+/* -------------------------------------------------------------------------
+   6. HERO ("sunrise": cream + a soft honey / tangerine glow, flat, no neon)
+   ------------------------------------------------------------------------- */
+/* The glow is painted on the wrapper (not on .hero) so the 12px side gutters match;
+   the news section below sits above it as an opaque cream layer, so there is no seam. */
+html.light-theme .home-page .hero-news-bg {
+    background:
+        radial-gradient(ellipse 760px 480px at 82% 190px, rgba(255, 182, 39, 0.30) 0%, rgba(255, 182, 39, 0) 70%),
+        radial-gradient(ellipse 620px 420px at 12% 120px, rgba(255, 138, 31, 0.16) 0%, rgba(255, 138, 31, 0) 70%),
+        var(--lt-cream);
+}
+
+html.light-theme .hero-news-bg > .starfield-canvas {
+    opacity: 0.6;
+}
+
+html.light-theme .hero-badge {
+    color: var(--lt-rust);
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+    box-shadow: none;
+}
+
+html.light-theme .hero-badge:hover {
+    background: var(--lt-sun);
+    border-color: rgba(120, 72, 0, 0.42);
+}
+
+html.light-theme .hero-badge-dot {
+    background: var(--lt-ember);
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.22);
+    animation-name: lt-pulse;
+}
+
+@keyframes lt-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.22), 0 0 8px rgba(232, 89, 12, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(232, 89, 12, 0.12), 0 0 12px rgba(232, 89, 12, 0.25);
+    }
+}
+
+html.light-theme .hero-title {
+    color: var(--lt-ink);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    text-shadow: none;
+}
+
+html.light-theme .hero-subtitle {
+    color: var(--lt-burnt);
+    text-shadow: none;
+}
+
+html.light-theme .hero-desc {
+    color: var(--lt-ink-2);
+}
+
+/* 3D logo: the video is a blue logo on black, so it stays inside its rounded frame
+   as a warm espresso panel; the canvas is hue-shifted from blue to amber. */
+html.light-theme .hero-video-wrap {
+    background: radial-gradient(ellipse at 50% 38%, #4A2E0C 0%, var(--lt-ink) 72%);
+    border: 1px solid rgba(180, 83, 9, 0.55);
+    box-shadow: 0 18px 44px rgba(146, 84, 0, 0.26), inset 0 1px 0 rgba(255, 201, 60, 0.18);
+    overflow: hidden;
+}
+
+html.light-theme .hero-video {
+    filter: hue-rotate(172deg) saturate(1.5) brightness(1.65);
+}
+
+
+/* -------------------------------------------------------------------------
+   7. HOME SECTIONS (news, services, why-us): cream / butter alternation
+   These selectors mirror the old blue light-mode block in site.css (same
+   specificity, later in the cascade) so each value is replaced, not stacked.
+   ------------------------------------------------------------------------- */
+html.light-theme .home-page .theme-section {
+    background: var(--lt-cream);
+    color: var(--lt-ink);
+}
+
+/* news stays cream (continues the hero without a seam), services = butter, why-us = cream */
+html.light-theme .home-page .services-section.theme-section {
+    background: var(--lt-butter);
+    border-block: 1px solid var(--lt-line);
+}
+
+/* no bubbles, blur layers or starfield behind light sections (hidden, not unmounted) */
+html.light-theme .home-page .theme-section .starfield-canvas,
+html.light-theme .home-page .theme-section .bubble-container,
+html.light-theme .home-page .theme-section .index-blur-layer {
+    display: none;
+}
+
+html.light-theme .home-page .theme-section .eyebrow,
+html.light-theme .home-page .theme-section .eyebrow.on-dark {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .home-page .theme-section .section-title,
+html.light-theme .home-page .theme-section .section-title.on-dark {
+    color: var(--lt-ink);
+}
+
+html.light-theme .home-page .theme-section h3,
+html.light-theme .home-page .theme-section h4,
+html.light-theme .home-page .theme-section .news-card-title,
+html.light-theme .home-page .theme-section .service-card-title {
+    color: var(--lt-ink);
+}
+
+html.light-theme .home-page .theme-section p,
+html.light-theme .home-page .theme-section .news-card-excerpt {
+    color: var(--lt-ink-2);
+}
+
+/* cards: flat milk, line border, warm shadow */
+html.light-theme .home-page .theme-section .news-card,
+html.light-theme .home-page .theme-section .service-card,
+html.light-theme .home-page .theme-section .feature-item {
+    background: var(--lt-milk);
+    border-color: var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .home-page .theme-section .news-card:hover,
+html.light-theme .home-page .theme-section .service-card:hover {
+    border-color: rgba(232, 89, 12, 0.40);
+    box-shadow: var(--lt-shadow-hover);
+}
+
+html.light-theme .home-page .theme-section .feature-item:hover {
+    background: var(--lt-milk);
+    border-color: rgba(232, 89, 12, 0.40);
+    box-shadow: var(--lt-shadow-hover);
+}
+
+/* icon tiles: sun-tint with amber-text icons */
+html.light-theme .home-page .theme-section .service-card .ph,
+html.light-theme .home-page .theme-section .feature-item .ph {
+    background: var(--lt-sun-tint);
+    border-color: var(--lt-line-strong);
+    box-shadow: none;
+    color: var(--lt-amber-text);
+}
+
+html.light-theme .home-page .theme-section .whyus-image {
+    background: var(--lt-milk);
+    border-color: var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .home-page .theme-section .read-more {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .home-page .theme-section .read-more:hover {
+    color: var(--lt-rust);
+}
+
+/* "all news" link under the heading */
+html.light-theme .home-page .theme-section .btn-ghost {
+    color: var(--lt-burnt);
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+html.light-theme .home-page .theme-section .btn-ghost:hover {
+    color: var(--lt-rust);
+}
+
+html.light-theme .home-page .more-news .btn,
+html.light-theme .home-page .more-news .btn:hover {
+    color: var(--lt-burnt);
+    background: none;
+    border: 0;
+    box-shadow: none;
+}
+
+html.light-theme .home-page .more-news .btn:hover {
+    color: var(--lt-rust);
+}
+
+
+/* -------------------------------------------------------------------------
+   8. CARDS, BADGES, IMAGE FRAMES (home, AllNews, related items)
+   ------------------------------------------------------------------------- */
+html.light-theme .news-section {
+    background: none;
+}
+
+html.light-theme .news-card,
+html.light-theme .service-card,
+html.light-theme .feature-item {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .news-card:hover,
+html.light-theme .service-card:hover,
+html.light-theme .feature-item:hover {
+    border-color: rgba(232, 89, 12, 0.40);
+    box-shadow: var(--lt-shadow-hover);
+}
+
+html.light-theme .feature-item:hover {
+    background: var(--lt-milk);
+}
+
+html.light-theme .news-card-media,
+html.light-theme .whyus-image {
+    background:
+        radial-gradient(ellipse at 28% 18%, rgba(255, 182, 39, 0.38), transparent 62%),
+        radial-gradient(ellipse at 82% 82%, rgba(255, 138, 31, 0.20), transparent 62%),
+        var(--lt-butter);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .news-card-media {
+    border: 0;
+    border-bottom: 1px solid var(--lt-line);
+    box-shadow: none;
+}
+
+html.light-theme .news-card-media .ph-mono-wrap {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .news-card-media .ph-mono {
+    color: var(--lt-amber-text);
+}
+
+html.light-theme .news-card-body h3,
+html.light-theme .service-card h3,
+html.light-theme .feature-text h4 {
+    color: var(--lt-ink);
+}
+
+html.light-theme .news-card-body p,
+html.light-theme .service-card p,
+html.light-theme .feature-text p {
+    color: var(--lt-ink-2);
+}
+
+html.light-theme .read-more {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .read-more:hover {
+    color: var(--lt-rust);
+}
+
+html.light-theme .service-card .ph,
+html.light-theme .feature-item .ph {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+    box-shadow: none;
+    color: var(--lt-amber-text);
+}
+
+/* the .webp service illustrations are transparent blue 3D icons: they sit framed on the sun-tint tile */
+html.light-theme .service-card .ph img {
+    filter: drop-shadow(0 3px 5px rgba(146, 84, 0, 0.22));
+}
+
+html.light-theme .badge-date {
+    background: var(--lt-milk);
+    color: var(--lt-ink);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .badge-new {
+    background: var(--lt-honey);
+    color: var(--lt-ink);
+    border: 1px solid rgba(154, 52, 18, 0.35);
+    box-shadow: none;
+}
+
+html.light-theme .home-page .news-card .badge-new {
+    box-shadow: none;
+}
+
+html.light-theme .all-news {
+    background:
+        radial-gradient(ellipse 760px 460px at 84% 120px, rgba(255, 182, 39, 0.26) 0%, rgba(255, 182, 39, 0) 70%),
+        var(--lt-cream);
+}
+
+html.light-theme .services-section::before {
+    display: none;
+}
+
+
+/* -------------------------------------------------------------------------
+   9. FOOTER (espresso + cream, honey accents). Structure and animations untouched.
+   Tokens are re-scoped to the footer so every existing var()-based rule flips back
+   to the "on dark" palette without being rewritten.
+   ------------------------------------------------------------------------- */
+html.light-theme .site-footer {
+    --text-primary: var(--lt-cream);
+    --text-secondary: #D9B98A;   /* cocoa tinted, 9.0:1 on espresso */
+    --text-muted: #CDAE7F;       /* 7.9:1 */
+    --text-faint: #BFA070;
+    --sky-400: var(--lt-honey);
+    --cyan-200: var(--lt-honey);
+    background: var(--lt-ink);
+    color: #D9B98A;
+}
+
+html.light-theme .site-footer > .starfield-canvas {
+    opacity: 0.45;
+}
+
+html.light-theme .brand-heading {
+    color: var(--lt-cream);
+}
+
+html.light-theme .site-footer .brand-heading .ph-mono {
+    background: rgba(255, 182, 39, 0.14);
+    border: 1px solid rgba(255, 182, 39, 0.40);
+    color: var(--lt-honey);
+}
+
+html.light-theme .footer-col h4 {
+    color: var(--lt-honey);
+}
+
+html.light-theme .footer-col h4::after {
+    background: linear-gradient(90deg, var(--lt-honey), transparent);
+}
+
+html.light-theme .footer-col ul li a:hover {
+    color: var(--lt-ember);
+}
+
+html.light-theme .contact-item svg,
+html.light-theme .hours-item svg {
+    color: var(--lt-honey);
+}
+
+html.light-theme .hours-icon-wrap {
+    background: rgba(255, 182, 39, 0.12);
+    border: 1px solid rgba(255, 182, 39, 0.38);
+    box-shadow: none;
+}
+
+html.light-theme .hours-day {
+    color: var(--lt-cream);
+}
+
+html.light-theme .social-circle {
+    background: var(--lt-honey);
+    border: 1px solid rgba(255, 201, 60, 0.6);
+    color: var(--lt-ink);
+}
+
+html.light-theme .social-circle:hover {
+    background: var(--lt-ember);
+    color: var(--lt-ink);
+    border-color: var(--lt-tangerine);
+    box-shadow: 0 6px 18px rgba(232, 89, 12, 0.35);
+}
+
+/* bottom bar: same layout, slightly deeper espresso, readable text */
+html.light-theme .footer-bottom {
+    background: #221404;
+    color: #CDAE7F;
+    /* full-bleed bar without touching the layout: the colour extends past the container */
+    box-shadow: 0 0 0 100vmax #221404;
+    clip-path: inset(0 -100vmax);
+}
+
+html.light-theme .footer-bottom::before {
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 182, 39, 0.22) 50%, transparent 100%);
+}
+
+
+/* -------------------------------------------------------------------------
+   10. ARTICLE PAGE (News/News, News/AllNews)
+   ------------------------------------------------------------------------- */
+html.light-theme .article-dark-zone::before {
+    background: radial-gradient(ellipse 820px 480px at 88% 8%, rgba(255, 182, 39, 0.26) 0%, rgba(255, 182, 39, 0) 70%),
+                radial-gradient(ellipse 620px 420px at 6% 40%, rgba(255, 138, 31, 0.12) 0%, rgba(255, 138, 31, 0) 70%);
+}
+
+html.light-theme .article-banner-inner,
+html.light-theme .article-sidebar-left,
+html.light-theme .article-sidebar-right,
+html.light-theme .article-main {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow);
+    color: var(--lt-ink);
+}
+
+html.light-theme .article-badge {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-rust);
+}
+
+html.light-theme .article-title {
+    color: var(--lt-ink);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+}
+
+html.light-theme .article-meta-item {
+    color: var(--lt-ink-2);
+}
+
+html.light-theme .article-meta-item svg {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .article-illustration {
+    filter: drop-shadow(0 8px 18px rgba(146, 84, 0, 0.22));
+}
+
+/* the illustration is inline SVG with hard-coded blues: remap them (CSS beats presentation attributes) */
+html.light-theme .article-illustration stop[stop-color="#49b9ff"] { stop-color: var(--lt-honey); }
+html.light-theme .article-illustration stop[stop-color="#2f7dff"] { stop-color: var(--lt-burnt); }
+html.light-theme .article-illustration stop[stop-color="#0a5cf2"] { stop-color: var(--lt-rust); }
+html.light-theme .article-illustration stop[stop-color="#ffffff"] { stop-color: var(--lt-milk); }
+html.light-theme .article-illustration stop[stop-color="#dcefff"] { stop-color: var(--lt-sun-tint); }
+html.light-theme .article-illustration [fill="#8fd8ff"] { fill: var(--lt-sun); }
+html.light-theme .article-illustration [fill="#2f7dff"] { fill: var(--lt-burnt); }
+html.light-theme .article-illustration [fill="#eaf5ff"] { fill: var(--lt-milk); }
+html.light-theme .article-illustration [fill="#123a7a"] { fill: var(--lt-ink); }
+html.light-theme .article-illustration [fill="#bfe0ff"] { fill: var(--lt-sun-tint); }
+html.light-theme .article-illustration [fill="#ff93ab"] { fill: var(--lt-tangerine); }
+html.light-theme .article-illustration [stroke="#2f7dff"] { stroke: var(--lt-burnt); }
+html.light-theme .article-illustration [stroke="#123a7a"] { stroke: var(--lt-ink); }
+html.light-theme .article-illustration [stroke="#ffffff"] { stroke: var(--lt-milk); }
+
+html.light-theme .side-card {
+    background: var(--lt-cream);
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .side-card:hover {
+    background: var(--lt-butter);
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .side-card-head .icon-wrap,
+html.light-theme .cond-list .dot,
+html.light-theme .benefit-list .check-dot,
+html.light-theme .related-icon {
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    border: 1px solid rgba(154, 52, 18, 0.5);
+    box-shadow: none;
+}
+
+html.light-theme .side-card-head .icon-wrap svg,
+html.light-theme .cond-list .dot svg,
+html.light-theme .benefit-list .check-dot svg,
+html.light-theme .related-icon svg {
+    color: #fff;
+}
+
+html.light-theme .side-card-head h4,
+html.light-theme .article-main h2,
+html.light-theme .article-main h3,
+html.light-theme .cd-num,
+html.light-theme .related-body h5 {
+    color: var(--lt-ink);
+}
+
+html.light-theme .doc-list li,
+html.light-theme .cond-list li {
+    color: var(--lt-ink-2);
+    border-bottom: 1px dashed var(--lt-line-strong);
+}
+
+html.light-theme .doc-list .dot {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .doc-list .dot svg {
+    color: var(--lt-amber-text);
+}
+
+html.light-theme .deadline-date {
+    color: var(--lt-burnt);
+    text-shadow: none;
+}
+
+html.light-theme .cd-box {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .cd-label,
+html.light-theme .deadline-date-label,
+html.light-theme .deadline-sub,
+html.light-theme .related-date {
+    color: var(--lt-ink-3);
+}
+
+html.light-theme .article-main h2 {
+    border-inline-start-color: var(--lt-burnt);
+}
+
+html.light-theme .article-main p,
+html.light-theme .benefit-list li,
+html.light-theme .note-box p,
+html.light-theme .share-label {
+    color: var(--lt-ink-2);
+}
+
+html.light-theme .note-box {
+    background: rgba(255, 233, 168, 0.55);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .note-box svg {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .share-circle {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-burnt);
+}
+
+html.light-theme .share-circle:hover {
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    color: #fff;
+    border-color: rgba(154, 52, 18, 0.5);
+    box-shadow: var(--lt-shadow-btn);
+}
+
+html.light-theme .copy-tip {
+    background: var(--lt-ink);
+    color: var(--lt-cream);
+    border: 1px solid rgba(255, 182, 39, 0.35);
+}
+
+html.light-theme .related-item:hover {
+    background: var(--lt-butter);
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .related-badge {
+    color: var(--lt-rust);
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .related-more {
+    color: var(--lt-burnt);
+    border-top: 1px dashed var(--lt-line-strong);
+}
+
+html.light-theme .related-more:hover {
+    color: var(--lt-rust);
+}
+
+
+/* -------------------------------------------------------------------------
+   11. COMMENTS / Q&A  (_CommentsSection, _Comment, _Answer)
+   Most of it flips through the --qa-* tokens above; these are the leftovers.
+   ------------------------------------------------------------------------- */
+html.light-theme .qa-section {
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .qa-title-icon {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-amber-text);
+}
+
+html.light-theme .qa-input:focus {
+    border-color: var(--lt-ember);
+    background: var(--lt-milk);
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.18);
+    outline: 2px solid var(--lt-ember);
+    outline-offset: 1px;
+}
+
+html.light-theme .qa-item:hover {
+    background: var(--lt-butter);
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .qa-avatar {
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-rust);
+}
+
+html.light-theme .qa-avatar-support {
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    color: #fff;
+    border-color: rgba(154, 52, 18, 0.5);
+    box-shadow: none;
+}
+
+html.light-theme .qa-reply-btn:hover,
+html.light-theme .qa-reply-btn-active {
+    background: var(--lt-sun-tint);
+    color: var(--lt-rust);
+}
+
+html.light-theme .qa-answer {
+    border: 1px solid var(--lt-line);
+    border-right: 3px solid var(--lt-burnt);
+}
+
+html.light-theme .qa-viewall-btn {
+    background: var(--lt-milk);
+}
+
+html.light-theme .qa-viewall-btn:hover {
+    background: var(--lt-sun-tint);
+    color: var(--lt-rust);
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .qa-delete-btn {
+    background: var(--lt-danger-soft);
+    border: 1px solid var(--lt-danger-line);
+    color: var(--lt-danger);
+}
+
+html.light-theme .qa-delete-btn:hover {
+    background: var(--lt-danger);
+    color: #fff;
+    border-color: var(--lt-danger);
+}
+
+
+/* -------------------------------------------------------------------------
+   12. AUTH (Login, Register, AccessDenied)
+   ------------------------------------------------------------------------- */
+html.light-theme .auth-visual-glow {
+    background: radial-gradient(circle at 30% 20%, rgba(255, 182, 39, 0.34), transparent 58%),
+                radial-gradient(circle at 78% 80%, rgba(255, 138, 31, 0.20), transparent 62%);
+}
+
+html.light-theme .auth-card-glow {
+    background: radial-gradient(circle at 50% 0%, rgba(255, 182, 39, 0.24), transparent 62%);
+}
+
+html.light-theme .auth-brand {
+    color: var(--lt-ink);
+}
+
+html.light-theme .auth-brand-icon {
+    color: var(--lt-burnt);
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .auth-visual-title {
+    background: none;
+    color: var(--lt-ink);
+    -webkit-text-fill-color: currentColor;
+}
+
+html.light-theme .auth-feature-dot {
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-amber-text);
+}
+
+html.light-theme .auth-visual-foot {
+    border-top: 1px dashed var(--lt-line-strong);
+}
+
+html.light-theme .auth-tabs {
+    background: var(--lt-butter);
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .auth-tab:hover {
+    background: var(--lt-sun-tint);
+    color: var(--lt-ink);
+}
+
+html.light-theme .auth-tab.is-active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    box-shadow: var(--lt-shadow-btn);
+}
+
+html.light-theme .auth-input-wrap {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .auth-input-wrap:focus-within {
+    background: var(--lt-milk);
+    border-color: var(--lt-ember);
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.18);
+    outline: 2px solid var(--lt-ember);
+    outline-offset: 1px;
+}
+
+html.light-theme .auth-eye-btn:hover,
+html.light-theme .auth-eye-btn.is-active {
+    color: var(--lt-burnt);
+    background: var(--lt-sun-tint);
+}
+
+html.light-theme .auth-remember input[type="checkbox"] {
+    accent-color: var(--lt-burnt);
+}
+
+html.light-theme .auth-link,
+html.light-theme .auth-login-hint a {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .auth-link:hover,
+html.light-theme .auth-login-hint a:hover {
+    color: var(--lt-rust);
+}
+
+html.light-theme .auth-error {
+    color: var(--lt-danger);
+}
+
+html.light-theme .auth-summary {
+    color: var(--lt-danger);
+    background: var(--lt-danger-soft);
+    border: 1px solid var(--lt-danger-line);
+}
+
+html.light-theme .auth-info-box {
+    background: rgba(255, 233, 168, 0.55);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .auth-info-box svg {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .auth-login-hint {
+    background: var(--lt-butter);
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .auth-submit {
+    box-shadow: var(--lt-shadow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+html.light-theme .auth-success-icon {
+    background: linear-gradient(135deg, #2F9E5B, var(--lt-success));
+    color: #fff;
+    box-shadow: 0 14px 30px rgba(30, 122, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* warning icon (AccessDenied): honey fill, espresso glyph; the page text carries the label */
+html.light-theme .auth-success-icon--warn {
+    background: linear-gradient(135deg, var(--lt-sun), var(--lt-honey));
+    color: var(--lt-ink);
+    box-shadow: 0 14px 30px rgba(146, 84, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+
+/* -------------------------------------------------------------------------
+   13. PROFILE
+   ------------------------------------------------------------------------- */
+html.light-theme .profile-nav-item svg {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .profile-nav-item:hover {
+    background: var(--lt-butter);
+    color: var(--lt-ink);
+}
+
+html.light-theme .profile-nav-item.is-active {
+    color: var(--lt-ink);
+    background: var(--lt-sun-tint);
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .profile-nav-item.is-active svg {
+    color: var(--lt-rust);
+}
+
+html.light-theme .profile-role-badge,
+html.light-theme .profile-stat,
+html.light-theme .profile-quick-item,
+html.light-theme .profile-session,
+html.light-theme .profile-pref {
+    background: var(--lt-cream);
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .profile-role-tag--admin {
+    color: var(--lt-ink);
+    background: var(--lt-honey);
+    box-shadow: none;
+}
+
+html.light-theme .profile-role-tag--user {
+    color: var(--lt-rust);
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .profile-stat-icon,
+html.light-theme .profile-session-icon,
+html.light-theme .admin-row-thumb,
+html.light-theme .admin-empty-icon {
+    background: var(--lt-sun-tint);
+    color: var(--lt-amber-text);
+}
+
+html.light-theme .profile-quick-item svg {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .profile-quick-item:hover {
+    background: var(--lt-butter);
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .profile-avatar-edit {
+    border-bottom: 1px dashed var(--lt-line-strong);
+}
+
+/* warning note: tinted honey + an icon, because orange is the brand color now */
+html.light-theme .profile-hint--block {
+    background: var(--lt-warn-soft);
+    border: 1px solid var(--lt-warn-line);
+    color: var(--lt-warn-text);
+}
+
+html.light-theme .profile-hint--block::before {
+    content: "";
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    margin-inline-end: 0.5em;
+    vertical-align: -0.2em;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13'/%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13'/%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+html.light-theme .profile-input {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .profile-input:focus {
+    border-color: var(--lt-ember);
+    background: var(--lt-milk);
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.18);
+    outline: 2px solid var(--lt-ember);
+    outline-offset: 1px;
+}
+
+html.light-theme .profile-session-tag,
+html.light-theme .admin-tag--ok {
+    background: var(--lt-success-soft);
+    color: var(--lt-success);
+    border: 1px solid var(--lt-success-line);
+}
+
+html.light-theme .profile-toggle-group,
+html.light-theme .admin-filter-group {
+    background: var(--lt-butter);
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .profile-toggle-group button:hover,
+html.light-theme .admin-filter-group button:hover {
+    color: var(--lt-ink);
+}
+
+html.light-theme .profile-toggle-group button.is-active,
+html.light-theme .admin-filter-group button.is-active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+}
+
+/* swatches are the user's own choices: leave their colors, only fix the selected ring for cream */
+html.light-theme .profile-color-grid button.is-active {
+    border-color: var(--lt-milk);
+}
+
+html.light-theme .profile-switch-track {
+    background: var(--lt-line-strong);
+}
+
+html.light-theme .profile-switch-thumb {
+    background: var(--lt-milk);
+    box-shadow: 0 2px 6px rgba(146, 84, 0, 0.30);
+}
+
+html.light-theme .profile-switch input:checked + .profile-switch-track {
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+}
+
+html.light-theme .profile-card--danger {
+    border-color: var(--lt-danger-line);
+}
+
+
+/* -------------------------------------------------------------------------
+   14. ADMIN DASHBOARD  (no charts on this page: stat cards, tabs, rows, tags, modal)
+   ------------------------------------------------------------------------- */
+html.light-theme .admin-hero-stat,
+html.light-theme .admin-row {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .admin-row:hover {
+    background: var(--lt-milk);
+    border-color: rgba(232, 89, 12, 0.40);
+    box-shadow: var(--lt-shadow-hover);
+}
+
+html.light-theme .admin-tabs {
+    background: var(--lt-butter);
+    border: 1px solid var(--lt-line);
+}
+
+html.light-theme .admin-tab:hover {
+    background: var(--lt-sun-tint);
+    color: var(--lt-ink);
+}
+
+html.light-theme .admin-tab.is-active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    box-shadow: var(--lt-shadow-btn);
+}
+
+html.light-theme .admin-search input {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .admin-search input:focus {
+    border-color: var(--lt-ember);
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.18);
+    outline: 2px solid var(--lt-ember);
+    outline-offset: 1px;
+}
+
+/* draft tag: honey fill + label text ("پیش‌نویس"), so it never relies on color alone */
+html.light-theme .admin-tag--warn {
+    background: var(--lt-warn-soft);
+    color: var(--lt-warn-text);
+    border: 1px solid var(--lt-warn-line);
+}
+
+html.light-theme .admin-tag--admin {
+    background: var(--lt-honey);
+    color: var(--lt-ink);
+}
+
+html.light-theme .admin-row-btn {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+    color: var(--lt-ink-2);
+}
+
+html.light-theme .admin-row-btn:hover {
+    color: var(--lt-rust);
+    background: var(--lt-sun-tint);
+    border-color: rgba(120, 72, 0, 0.42);
+}
+
+html.light-theme .admin-row-btn--danger:hover {
+    color: var(--lt-danger);
+    background: var(--lt-danger-soft);
+    border-color: var(--lt-danger-line);
+}
+
+html.light-theme .admin-empty {
+    background: var(--lt-cream);
+    border: 1px dashed var(--lt-line-strong);
+}
+
+html.light-theme .admin-modal-backdrop {
+    background: rgba(43, 26, 6, 0.48);
+}
+
+html.light-theme .admin-modal-close {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .admin-modal-close:hover {
+    background: var(--lt-sun-tint);
+    color: var(--lt-ink);
+}
+
+
+/* -------------------------------------------------------------------------
+   15. SUBMIT REQUEST (multi-step form; submit-request.css + submit-request.js)
+   ------------------------------------------------------------------------- */
+html.light-theme .req-back:hover {
+    color: var(--lt-burnt);
+}
+
+html.light-theme .req-step {
+    color: #fff;
+    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    border: 1px solid rgba(154, 52, 18, 0.5);
+    box-shadow: var(--lt-shadow-btn);
+}
+
+html.light-theme .req-required,
+html.light-theme .req-error,
+html.light-theme .req-mini-btn--danger {
+    color: var(--lt-danger);
+}
+
+html.light-theme .req-select option {
+    background: var(--lt-milk);
+    color: var(--lt-ink);
+}
+
+html.light-theme .req-select-wrap::after {
+    border-right-color: var(--lt-burnt);
+    border-bottom-color: var(--lt-burnt);
+}
+
+html.light-theme .req-type-hint {
+    color: var(--lt-rust);
+    background: rgba(255, 233, 168, 0.55);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .profile-input.is-invalid {
+    border-color: var(--lt-danger);
+    box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.14);
+}
+
+html.light-theme .req-alert {
+    color: var(--lt-danger);
+    background: var(--lt-danger-soft);
+    border: 1px solid var(--lt-danger-line);
+}
+
+html.light-theme .req-choice-box {
+    background: var(--lt-cream);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .req-choice:hover .req-choice-box {
+    background: var(--lt-butter);
+}
+
+html.light-theme .req-radio-dot {
+    border: 2px solid var(--lt-line-strong);
+}
+
+html.light-theme .req-radio-dot::after {
+    background: var(--lt-burnt);
+}
+
+html.light-theme .req-choice input:checked + .req-choice-box {
+    border-color: var(--lt-burnt);
+    background: var(--lt-sun-tint);
+    box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.14);
+}
+
+html.light-theme .req-choice input:checked + .req-choice-box .req-radio-dot {
+    border-color: var(--lt-burnt);
+}
+
+html.light-theme .req-choice input:focus-visible + .req-choice-box {
+    outline: 2px solid var(--lt-ember);
+}
+
+html.light-theme .req-file {
+    background: var(--lt-cream);
+    border: 1px solid var(--lt-line-strong);
+}
+
+html.light-theme .req-file.is-invalid {
+    border-color: var(--lt-danger);
+}
+
+html.light-theme .req-file[data-state="uploaded"] {
+    border-color: var(--lt-success-line);
+    background: var(--lt-success-soft);
+}
+
+html.light-theme .req-file.is-dragover {
+    border-color: var(--lt-burnt);
+    background: var(--lt-sun-tint);
+}
+
+html.light-theme .req-drop {
+    border: 1.5px dashed rgba(194, 65, 12, 0.5);
+    background: rgba(255, 233, 168, 0.35);
+    color: var(--lt-rust);
+}
+
+html.light-theme .req-drop:hover {
+    background: var(--lt-sun-tint);
+    border-color: var(--lt-burnt);
+}
+
+html.light-theme .req-drop:focus-visible {
+    outline: 2px solid var(--lt-ember);
+}
+
+html.light-theme .req-fileinfo {
+    color: var(--lt-rust);
+}
+
+html.light-theme .req-mini-btn {
+    border: 1px solid var(--lt-line-strong);
+    background: var(--lt-milk);
+    color: var(--lt-ink);
+}
+
+html.light-theme .req-mini-btn:hover {
+    background: var(--lt-sun-tint);
+}
+
+html.light-theme .req-mini-btn--primary {
+    color: #fff;
+    border: 1px solid rgba(154, 52, 18, 0.55);
+}
+
+html.light-theme .req-mini-btn--primary:hover {
+    background: linear-gradient(135deg, var(--lt-rust), var(--lt-rust));
+}
+
+html.light-theme .req-mini-btn--danger {
+    border-color: var(--lt-danger-line);
+    background: var(--lt-milk);
+}
+
+html.light-theme .req-mini-btn--danger:hover {
+    background: var(--lt-danger-soft);
+}
+
+html.light-theme .req-progress {
+    background: var(--lt-line);
+}
+
+html.light-theme .req-progress > span {
+    background: linear-gradient(90deg, var(--lt-honey), var(--lt-ember));
+}
+
+html.light-theme .req-thumb {
+    border: 1px solid var(--lt-line-strong);
+    background: var(--lt-milk);
+    color: var(--lt-rust);
+}
+
+html.light-theme .req-thumb:hover {
+    border-color: var(--lt-burnt);
+}
+
+html.light-theme .req-thumb-badge {
+    color: var(--lt-cream);
+    background: rgba(43, 26, 6, 0.78);
+    border: 1px solid rgba(255, 248, 231, 0.3);
+}
+
+html.light-theme .req-success-icon {
+    color: var(--lt-success);
+    background: var(--lt-success-soft);
+    border: 1px solid var(--lt-success-line);
+    box-shadow: 0 14px 30px rgba(30, 122, 60, 0.16);
+}
+
+html.light-theme .req-code {
+    color: var(--lt-rust);
+    background: var(--lt-sun-tint);
+    border: 1px solid var(--lt-line-strong);
+}
+
+/* the lightbox is a dark overlay by nature: warm espresso scrim, and its text tokens stay on-dark */
+html.light-theme .req-lightbox {
+    --text-secondary: #D9B98A;
+    --text-primary: var(--lt-cream);
+    background: rgba(34, 20, 4, 0.94);
+}
+
+html.light-theme .req-lightbox-stage img {
+    box-shadow: 0 24px 80px rgba(43, 26, 6, 0.6);
+}
+
+html.light-theme .req-lightbox-stage iframe {
+    background: var(--lt-milk);
+}
+
+
+/* -------------------------------------------------------------------------
+   16. MOTION
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    html.light-theme .hero-badge-dot {
+        animation: none;
+    }
+}

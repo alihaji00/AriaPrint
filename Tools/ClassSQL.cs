@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 
 public class ClassSQL
 {
-
     private string connString;
 
     public int timeOut_Second = 0;

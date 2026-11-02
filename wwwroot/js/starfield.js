@@ -1,6 +1,9 @@
 // starfield.js — a soft, slowly-wandering animated starfield used behind
 // several sections of the site (hero, news, article pages, footer).
 // Usage: <canvas class="starfield-canvas" data-count="24" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
+// Optional: data-colors-light="#FFB627,#FF8A1F,#E8590C" overrides the warm palette used in the light
+// theme ("Honey & Ember"). The palette follows html.light-theme live, so toggling the theme recolors
+// the stars that are already on screen (no reseed, no restart).
 (function () {
     'use strict';
 
@@ -14,11 +17,33 @@
         return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
     }
 
+    var DEFAULT_LIGHT_COLORS = ['#FFB627', '#FF8A1F', '#E8590C'];
+    var rootEl = document.documentElement;
+
+    function isLight() {
+        return rootEl.classList.contains('light-theme');
+    }
+
+    function parseColors(list, fallback) {
+        var out = (list || '').split(',').map(function (c) { return c.trim(); }).filter(Boolean);
+        return out.length ? out : fallback;
+    }
+
     function initStarfield(canvas) {
         var ctx = canvas.getContext('2d');
         var dpr = Math.min(window.devicePixelRatio || 1, 2);
         var count = parseInt(canvas.dataset.count, 10) || 22;
-        var colors = (canvas.dataset.colors || '#49b9ff,#8fd8ff,#6fc3ff').split(',');
+        var darkColors = (canvas.dataset.colors || '#49b9ff,#8fd8ff,#6fc3ff').split(',');
+        var lightColors = parseColors(canvas.dataset.colorsLight, DEFAULT_LIGHT_COLORS);
+        var colors = isLight() ? lightColors : darkColors;
+
+        // Follow the theme live: only the active palette changes; stars keep their index,
+        // so the next animation frame simply draws them in the new colors.
+        if ('MutationObserver' in window) {
+            new MutationObserver(function () {
+                colors = isLight() ? lightColors : darkColors;
+            }).observe(rootEl, { attributes: true, attributeFilter: ['class'] });
+        }
         var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var stars = [];
         var w = 0, h = 0, running = true, rafId = null, avoidRect = null;
@@ -67,7 +92,7 @@
                 x: x,
                 y: y,
                 r: radius,
-                color: colors[(Math.random() * colors.length) | 0],
+                ci: (Math.random() * colors.length) | 0,
                 baseAlpha: 0.45 + Math.random() * 0.5,
                 vx: Math.cos(angle) * speed,
                 vy: Math.sin(angle) * speed,
@@ -82,16 +107,17 @@
         }
 
         function drawStar(s, alpha) {
+            var color = colors[s.ci % colors.length];
             var glowR = s.r * 4.5;
             var grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowR);
-            grad.addColorStop(0, hexToRgba(s.color, alpha));
-            grad.addColorStop(1, hexToRgba(s.color, 0));
+            grad.addColorStop(0, hexToRgba(color, alpha));
+            grad.addColorStop(1, hexToRgba(color, 0));
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(s.x, s.y, glowR, 0, Math.PI * 2);
             ctx.fill();
 
-            ctx.fillStyle = hexToRgba(s.color, Math.min(1, alpha + 0.3));
+            ctx.fillStyle = hexToRgba(color, Math.min(1, alpha + 0.3));
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
             ctx.fill();

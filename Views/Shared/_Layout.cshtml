@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var isHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index";
+}
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -8,8 +11,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @if (isHome)
+    {
+        <link rel="stylesheet" href="~/css/home-redesign.css" asp-append-version="true" />
+    }
+    @* Page-specific stylesheets (e.g. submit-request.css) go in @section Styles so they load before the theme file. *@
+    @await RenderSectionAsync("Styles", required: false)
+    @* Light theme ("Honey & Ember"): must stay LAST so it wins on source order, without !important. *@
+    <link rel="stylesheet" href="~/css/theme-light.css" asp-append-version="true" />
+    <script>
+        // Apply the saved theme before the DOM renders to prevent a flash (runs on every page).
+        // Default (nothing saved) is dark; prefers-color-scheme is intentionally ignored.
+        (function() {
+            try {
+                var saved = localStorage.getItem('theme');
+                if (saved === 'light') {
+                    document.documentElement.classList.add('light-theme');
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
-<body>
+<body class="@(isHome ? "home-page" : "")">
     <header class="site-header">
         <partial name="_SvgSprite"></partial>
         <div class="container header-inner">
@@ -26,7 +49,27 @@
                 <a href="#contact">تماس با ما</a>
             </nav>
 
-            <a href="/SubmitRequest" class="btn-header-cta">ثبت درخواست</a>
+            @if (!isHome)
+            {
+                <a class="btn-header-cta" href="/SubmitRequest"><span>ثبت درخواست</span></a>
+            }
+
+            <button class="theme-toggle" id="themeToggle" aria-label="تغییر تم" type="button">
+                <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
 
             <div class="header-user-area">
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -90,9 +133,8 @@
     {
         <footer class="site-footer" id="contact">
             <canvas class="starfield-canvas" data-count="10" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
-            <div class="container testimonial-row">
-
-                <div class="brand-side">
+            <div class="container footer-grid home-page-footer">
+                <div class="footer-brand">
                     <a class="brand-heading" href="/">
                         <span class="ph ph-mono"><svg><use href="#ph-mono"></use></svg></span>
                         <span>کافینت آریا</span>
@@ -105,34 +147,6 @@
                     </div>
                 </div>
 
-                <div class="quote-side">
-                    <div class="testimonial-slider">
-                        <button class="slider-btn slider-btn--prev" id="prevTestimonial" aria-label="نظر قبلی"><svg><use href="#i-chevron-left"></use></svg></button>
-
-                        <div class="testimonial-card">
-                            <span class="quote-glyph quote-glyph--tr" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-quote"></use></svg></span>
-                            <span class="quote-glyph quote-glyph--bl" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-quote"></use></svg></span>
-                            <p class="eyebrow on-dark">نظر مشتریان ما</p>
-                            <p class="quote-text" id="quoteText">از سرعت عمل و برخورد حرفه‌ای کافینت آریا بسیار راضی هستم. همیشه بهترین انتخاب من بوده‌اند.</p>
-                            <div class="stars" id="quoteStars">
-                                <svg><use href="#i-star"></use></svg>
-                                <svg><use href="#i-star"></use></svg>
-                                <svg><use href="#i-star"></use></svg>
-                                <svg><use href="#i-star"></use></svg>
-                                <svg><use href="#i-star"></use></svg>
-                            </div>
-                            <p class="author-name" id="authorName">مریم احمدی</p>
-                            <p class="author-role" id="authorRole">دانشجو</p>
-                        </div>
-
-                        <button class="slider-btn slider-btn--next" id="nextTestimonial" aria-label="نظر بعدی"><svg><use href="#i-chevron-right"></use></svg></button>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="container footer-grid">
-
                 <div class="footer-col">
                     <h4>دسترسی سریع</h4>
                     <ul>
@@ -144,16 +158,19 @@
                     </ul>
                 </div>
 
-                <div class="footer-col">
-                    <h4>خدمات</h4>
-                    <ul>
-                        <li><a href="#services">پرینت و کپی</a></li>
-                        <li><a href="#services">ثبت نام</a></li>
-                        <li><a href="#services">خدمات دانشجویی</a></li>
-                        <li><a href="#services">پرداخت قبوض</a></li>
-                        <li><a href="#services">اسکن و تایپ</a></li>
-                    </ul>
-                </div>
+                @if (!isHome)
+                {
+                    <div class="footer-col">
+                        <h4>خدمات</h4>
+                        <ul>
+                            <li><a href="#services">پرینت و کپی</a></li>
+                            <li><a href="#services">ثبت نام</a></li>
+                            <li><a href="#services">خدمات دانشجویی</a></li>
+                            <li><a href="#services">پرداخت قبوض</a></li>
+                            <li><a href="#services">اسکن و تایپ</a></li>
+                        </ul>
+                    </div>
+                }
 
                 <div class="footer-col" id="footer-col-call">
                     <h4>اطلاعات تماس</h4>
@@ -286,47 +303,6 @@
             document.addEventListener('click', e => { if (!wrap.contains(e.target)) close(); });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
         })();
-
-        // testimonial slider — ready for more entries; add objects to this array later
-
-        @{
-            var Feedbacks = new SetFeedbacks();
-            var FeedbacksList = Feedbacks.GetFeedbacks()
-            .Select(c => new
-            {
-                text = c.Text,
-                name = c.Name,
-                role = c.Role,
-                rating = c.Rating,
-            });
-        }
-
-        const testimonials = @Json.Serialize(FeedbacksList);
-
-        let tIndex = 0;
-        const quoteText = document.getElementById('quoteText');
-        const authorName = document.getElementById('authorName');
-        const authorRole = document.getElementById('authorRole');
-        const starsWrap = document.getElementById('quoteStars');
-
-        function renderTestimonial(i){
-          const t = testimonials[i];
-          quoteText.textContent = t.text;
-          authorName.textContent = t.name;
-          authorRole.textContent = t.role;
-          starsWrap.innerHTML = Array.from({length:5}).map((_,s) =>
-            `<svg style="${s < t.rating ? '' : 'opacity:.3'}"><use href="#i-star"></use></svg>`
-          ).join('');
-        }
-
-        document.getElementById('prevTestimonial').addEventListener('click', () => {
-          tIndex = (tIndex - 1 + testimonials.length) % testimonials.length;
-          renderTestimonial(tIndex);
-        });
-        document.getElementById('nextTestimonial').addEventListener('click', () => {
-          tIndex = (tIndex + 1) % testimonials.length;
-          renderTestimonial(tIndex);
-        });
     </script>
 
 

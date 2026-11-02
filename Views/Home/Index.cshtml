@@ -1,4 +1,4 @@
-﻿@model IndexViewModel
+@model IndexViewModel
 
 <!-- ================= HERO ================= -->
 <div class="hero-news-bg">
@@ -21,17 +21,20 @@
                     </div>
                     <div class="hero-buttons">
                         <a href="#news" class="btn btn-ghost"><span>مشاهده آخرین اخبار</span><svg class="icon"><use href="#i-chevron-left"></use></svg></a>
-                        <a href="#services" class="btn btn-solid"><span>خدمات ما</span><svg class="icon"><use href="#i-grid"></use></svg></a>
+                        <a href="/SubmitRequest" class="btn btn-solid hero-btn-submit">
+                            <span>ثبت درخواست</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-submit-icon"><path d="M7 17V7h10"></path><path d="M17 17 7 7"></path></svg>
+                        </a>
                     </div>
                 </div>
-                
+
                 <partial name="_Hero3dLogo"></partial>
 
             </div>
         </section>
 
         <!-- ================= NEWS ================= -->
-        <section class="news-section" id="news">
+        <section class="news-section theme-section" id="news">
             <div class="container News-Container">
                 <div class="section-head">
                     <p class="eyebrow on-dark">آخرین اخبار و اطلاعیه‌ها</p>
@@ -68,7 +71,7 @@
 </div>
 
 <!-- ================= SERVICES ================= -->
-<section class="services-section" id="services">
+<section class="services-section theme-section" id="services">
     <div class="container">
         <div class="section-head">
             <p class="eyebrow">خدمات ما</p>
@@ -87,7 +90,7 @@
 </section>
 
 <!-- ================= WHY US ================= -->
-<section class="whyus-section" id="about">
+<section class="whyus-section theme-section" id="about">
     <div class="container">
         <div class="section-head">
             <h2 class="section-title">چرا کافینت آریا؟</h2>

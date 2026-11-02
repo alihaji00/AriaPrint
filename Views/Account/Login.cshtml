@@ -305,9 +305,9 @@
         if (passwordInput && bars.length) {
             const setStrength = (val) => {
                 const labels = ['خیلی ضعیف', 'ضعیف', 'متوسط', 'خوب', 'عالی'];
-                const colors = ['#ff5c7a', '#ff8a4c', '#ffd84c', '#7ddc6c', '#34d399'];
+                const colors = ['var(--str-1, #ff5c7a)', 'var(--str-2, #ff8a4c)', 'var(--str-3, #ffd84c)', 'var(--str-4, #7ddc6c)', 'var(--str-5, #34d399)'];
                 bars.forEach((b, i) => {
-                    b.style.background = i < val ? colors[val - 1] : 'rgba(255,255,255,.08)';
+                    b.style.background = i < val ? colors[val - 1] : 'var(--str-empty, rgba(255,255,255,.08))';
                 });
                 if (strengthText) {
                     strengthText.textContent = val > 0 ? ('قدرت رمز: ' + labels[val - 1]) : 'قدرت رمز: —';
