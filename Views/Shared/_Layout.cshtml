@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout-redesign.css" asp-append-version="true" />
     @if (isHome)
     {
         <link rel="stylesheet" href="~/css/home-redesign.css" asp-append-version="true" />
@@ -32,7 +33,8 @@
         })();
     </script>
 </head>
-<body class="@(isHome ? "home-page" : "")">
+
+<body class="home-page">
     <header class="site-header">
         <partial name="_SvgSprite"></partial>
         <div class="container header-inner">
@@ -48,11 +50,6 @@
                 <a href="#news">اخبار</a>
                 <a href="#contact">تماس با ما</a>
             </nav>
-
-            @if (!isHome)
-            {
-                <a class="btn-header-cta" href="/SubmitRequest"><span>ثبت درخواست</span></a>
-            }
 
             <button class="theme-toggle" id="themeToggle" aria-label="تغییر تم" type="button">
                 <svg class="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -133,7 +130,7 @@
     {
         <footer class="site-footer" id="contact">
             <canvas class="starfield-canvas" data-count="10" data-colors="#49b9ff,#8fd8ff,#6fc3ff"></canvas>
-            <div class="container footer-grid home-page-footer">
+            <div class="container footer-grid">
                 <div class="footer-brand">
                     <a class="brand-heading" href="/">
                         <span class="ph ph-mono"><svg><use href="#ph-mono"></use></svg></span>
@@ -157,20 +154,6 @@
                         <li><a href="#contact">تماس با ما</a></li>
                     </ul>
                 </div>
-
-                @if (!isHome)
-                {
-                    <div class="footer-col">
-                        <h4>خدمات</h4>
-                        <ul>
-                            <li><a href="#services">پرینت و کپی</a></li>
-                            <li><a href="#services">ثبت نام</a></li>
-                            <li><a href="#services">خدمات دانشجویی</a></li>
-                            <li><a href="#services">پرداخت قبوض</a></li>
-                            <li><a href="#services">اسکن و تایپ</a></li>
-                        </ul>
-                    </div>
-                }
 
                 <div class="footer-col" id="footer-col-call">
                     <h4>اطلاعات تماس</h4>
@@ -212,7 +195,7 @@
                         <use href="#i-heart"></use>
                     </svg>
                     &
-                    <svg class="icon-coffee" style="margin-bottom:0.7vh; viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="icon-coffee" style="margin-bottom:0.7vh"; viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <style>
                                 .coffee-steam {

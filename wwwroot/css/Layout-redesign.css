@@ -1,0 +1,315 @@
+﻿/* =========================================================
+   HEADER — flat, full-width bar with a hairline divider
+   ========================================================= */
+.site-header,
+.site-header.is-transparent {
+    position: sticky;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid var(--glass-border);
+    border-radius: 0;
+    background: var(--navy-950);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    transition: box-shadow .3s ease;
+}
+
+    /* site.js toggles .is-transparent near the top of the page;
+   once scrolled it is removed, which is when the bar lifts. */
+    .site-header:not(.is-transparent) {
+        box-shadow: var(--shadow-soft);
+    }
+
+.header-inner {
+    min-height: 76px;
+    gap: clamp(16px, 2.4vw, 32px);
+}
+
+.logo {
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    padding: 8px;
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.logo-text {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.main-nav {
+    flex: 1;
+    justify-content: center;
+    gap: clamp(22px, 3vw, 44px);
+}
+
+    .main-nav a {
+        padding: 8px 0;
+        font-size: 15px;
+        font-weight: 500;
+        opacity: 1;
+        color: var(--text-secondary);
+        transition: color .2s ease;
+    }
+
+        .main-nav a::after {
+            display: none;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--text-primary);
+        }
+
+        .main-nav a.active {
+            font-weight: 700;
+        }
+
+/* the reference has no hamburger: the links stay visible */
+.nav-toggle {
+    display: none;
+}
+
+.header-user-area {
+    margin: 0;
+}
+
+/* ---------- header, mobile: logo + actions on row 1, links on row 2 ---------- */
+@media (max-width: 780px) {
+    .header-inner {
+        flex-wrap: wrap;
+        min-height: 0;
+        padding-top: 12px;
+        gap: 0 10px;
+    }
+
+    .logo {
+        order: 1;
+        flex: 0 1 auto;
+        gap: 10px;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        padding: 7px;
+    }
+
+    .logo-text {
+        font-size: 17px;
+    }
+
+    .theme-toggle {
+        order: 2;
+        margin-inline-start: auto;
+    }
+
+    .header-user-area {
+        order: 3;
+    }
+
+        /* site.css hides .btn-header-cta below 780px; the reference keeps the login visible */
+        .header-user-area .btn-header-cta {
+            display: inline-flex;
+            padding: 9px 14px;
+            font-size: 13px;
+        }
+
+    .header-user-name {
+        max-width: 84px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* undo the dropdown-panel version of the nav from site.css */
+    .main-nav {
+        order: 4;
+        flex: 0 0 100%;
+        position: static;
+        inset: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 10px;
+        padding: 0 0 12px;
+        max-height: none;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+        transition: none;
+        z-index: auto;
+    }
+
+        .main-nav a {
+            width: auto;
+            padding: 6px 0;
+            border: 0;
+            border-radius: 0;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+            .main-nav a:hover,
+            .main-nav a.active {
+                background: none;
+            }
+}
+
+@media (max-width: 400px) {
+    .logo-text {
+        font-size: 15px;
+    }
+
+    .header-user-area .btn-header-cta {
+        padding: 8px 11px;
+        font-size: 12.5px;
+        gap: 0;
+    }
+
+        .header-user-area .btn-header-cta svg {
+            display: none;
+        }
+
+    .main-nav {
+        gap: 8px;
+    }
+
+        .main-nav a {
+            font-size: 13px;
+        }
+}
+
+/* =========================================================
+   FOOTER (top area only; .footer-bottom is untouched)
+   Brand column first, then the link / contact / hours columns.
+   ========================================================= */
+.footer-grid.home-page-footer {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 40px clamp(32px, 4vw, 64px);
+    padding: 72px clamp(16px, 2.4vw, 28px) 64px;
+}
+
+.footer-brand .brand-heading {
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 22px;
+}
+
+    .footer-brand .brand-heading .ph-mono {
+        width: 44px;
+        height: 44px;
+        padding: 8px;
+        border-radius: 14px;
+        box-shadow: none;
+    }
+
+.footer-brand p {
+    max-width: 340px;
+    margin: 0 0 22px;
+    font-size: 14.5px;
+    line-height: 2;
+}
+
+.footer-brand .social-row {
+    gap: 10px;
+}
+
+.footer-brand .social-circle {
+    width: 38px;
+    height: 38px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+    .footer-brand .social-circle svg {
+        width: 17px;
+        height: 17px;
+    }
+
+.footer-col h4 {
+    margin-bottom: 20px;
+    padding-bottom: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+    .footer-col h4::after {
+        display: none;
+    }
+
+.footer-col ul {
+    list-style: none;
+}
+
+    .footer-col ul li {
+        margin-bottom: 12px;
+        font-size: 14.5px;
+    }
+
+        .footer-col ul li a:hover {
+            transform: none;
+        }
+
+.footer-col .contact-item {
+    margin-bottom: 14px;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.footer-col .hours-item {
+    margin-bottom: 14px;
+}
+
+.footer-col .hours-icon-wrap {
+    box-shadow: none;
+}
+
+.footer-col .hours-day {
+    font-size: 14px;
+}
+
+.footer-col .hours-time {
+    font-size: 13.5px;
+}
+
+/*/-----------------------responsive-----------------/*/
+
+@media (max-width: 1030px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding-top: 56px;
+        padding-bottom: 48px;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .footer-grid{
+        grid-template-columns: 1fr;
+        gap: 36px;
+        padding: 48px 20px 40px;
+    }
+}

@@ -21,206 +21,6 @@
 }
 
 /* =========================================================
-   HEADER — flat, full-width bar with a hairline divider
-   ========================================================= */
-.home-page .site-header,
-.home-page .site-header.is-transparent {
-    position: sticky;
-    top: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-bottom: 1px solid var(--glass-border);
-    border-radius: 0;
-    background: var(--navy-950);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    transition: box-shadow .3s ease;
-}
-
-/* site.js toggles .is-transparent near the top of the page;
-   once scrolled it is removed, which is when the bar lifts. */
-.home-page .site-header:not(.is-transparent) {
-    box-shadow: var(--shadow-soft);
-}
-
-.home-page .header-inner {
-    min-height: 76px;
-    gap: clamp(16px, 2.4vw, 32px);
-}
-
-.home-page .logo {
-    gap: 12px;
-}
-
-.home-page .logo-icon {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    padding: 8px;
-    border-radius: 14px;
-    box-shadow: none;
-}
-
-.home-page .logo-text {
-    font-size: 19px;
-    font-weight: 800;
-    letter-spacing: 0;
-}
-
-.home-page .main-nav {
-    flex: 1;
-    justify-content: center;
-    gap: clamp(22px, 3vw, 44px);
-}
-
-.home-page .main-nav a {
-    padding: 8px 0;
-    font-size: 15px;
-    font-weight: 500;
-    opacity: 1;
-    color: var(--text-secondary);
-    transition: color .2s ease;
-}
-
-.home-page .main-nav a::after {
-    display: none;
-}
-
-.home-page .main-nav a:hover,
-.home-page .main-nav a.active {
-    color: var(--text-primary);
-}
-
-.home-page .main-nav a.active {
-    font-weight: 700;
-}
-
-/* the reference has no hamburger: the links stay visible */
-.home-page .nav-toggle {
-    display: none;
-}
-
-.home-page .header-user-area {
-    margin: 0;
-}
-
-/* ---------- header, mobile: logo + actions on row 1, links on row 2 ---------- */
-@media (max-width: 780px) {
-    .home-page .header-inner {
-        flex-wrap: wrap;
-        min-height: 0;
-        padding-top: 12px;
-        gap: 0 10px;
-    }
-
-    .home-page .logo {
-        order: 1;
-        flex: 0 1 auto;
-        gap: 10px;
-    }
-
-    .home-page .logo-icon {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-        padding: 7px;
-    }
-
-    .home-page .logo-text {
-        font-size: 17px;
-    }
-
-    .home-page .theme-toggle {
-        order: 2;
-        margin-inline-start: auto;
-    }
-
-    .home-page .header-user-area {
-        order: 3;
-    }
-
-    /* site.css hides .btn-header-cta below 780px; the reference keeps the login visible */
-    .home-page .header-user-area .btn-header-cta {
-        display: inline-flex;
-        padding: 9px 14px;
-        font-size: 13px;
-    }
-
-    .home-page .header-user-name {
-        max-width: 84px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    /* undo the dropdown-panel version of the nav from site.css */
-    .home-page .main-nav {
-        order: 4;
-        flex: 0 0 100%;
-        position: static;
-        inset: auto;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 10px;
-        padding: 0 0 12px;
-        max-height: none;
-        overflow: visible;
-        border: 0;
-        border-radius: 0;
-        background: none;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        box-shadow: none;
-        transform: none;
-        opacity: 1;
-        pointer-events: auto;
-        transition: none;
-        z-index: auto;
-    }
-
-    .home-page .main-nav a {
-        width: auto;
-        padding: 6px 0;
-        border: 0;
-        border-radius: 0;
-        font-size: 14px;
-        white-space: nowrap;
-    }
-
-    .home-page .main-nav a:hover,
-    .home-page .main-nav a.active {
-        background: none;
-    }
-}
-
-@media (max-width: 400px) {
-    .home-page .logo-text {
-        font-size: 15px;
-    }
-
-    .home-page .header-user-area .btn-header-cta {
-        padding: 8px 11px;
-        font-size: 12.5px;
-        gap: 0;
-    }
-
-    .home-page .header-user-area .btn-header-cta svg {
-        display: none;
-    }
-
-    .home-page .main-nav {
-        gap: 8px;
-    }
-
-    .home-page .main-nav a {
-        font-size: 13px;
-    }
-}
-
-/* =========================================================
    SECTION HEADS — start-aligned, large type, no decoration
    ========================================================= */
 .home-page .section-head {
@@ -277,7 +77,6 @@
 
 .home-page .News-Container .section-head {
     order: 1;
-    margin-bottom: 10px;
 }
 
 /* "all news" becomes a quiet text link under the heading, like the reference */
@@ -406,8 +205,7 @@
 }
 
 .home-page .services-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(6, 1fr);
 }
 
 .home-page .service-card {
@@ -415,7 +213,8 @@
     border-width: 1px;
     border-style: solid;
     border-radius: var(--hr-radius);
-    text-align: start;
+    justify-content: center;
+    align-items: center;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     transition: transform .35s var(--hr-ease), box-shadow .35s var(--hr-ease);
@@ -511,99 +310,6 @@
     -webkit-backdrop-filter: none;
 }
 
-/* =========================================================
-   FOOTER (top area only; .footer-bottom is untouched)
-   Brand column first, then the link / contact / hours columns.
-   ========================================================= */
-.home-page .footer-grid.home-page-footer {
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
-    align-items: start;
-    gap: 40px clamp(32px, 4vw, 64px);
-    padding: 72px clamp(16px, 2.4vw, 28px) 64px;
-}
-
-.home-page .footer-brand .brand-heading {
-    gap: 12px;
-    margin-bottom: 16px;
-    font-size: 22px;
-}
-
-.home-page .footer-brand .brand-heading .ph-mono {
-    width: 44px;
-    height: 44px;
-    padding: 8px;
-    border-radius: 14px;
-    box-shadow: none;
-}
-
-.home-page .footer-brand p {
-    max-width: 340px;
-    margin: 0 0 22px;
-    font-size: 14.5px;
-    line-height: 2;
-}
-
-.home-page .footer-brand .social-row {
-    gap: 10px;
-}
-
-.home-page .footer-brand .social-circle {
-    width: 38px;
-    height: 38px;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-}
-
-.home-page .footer-brand .social-circle svg {
-    width: 17px;
-    height: 17px;
-}
-
-.home-page .footer-col h4 {
-    margin-bottom: 20px;
-    padding-bottom: 0;
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.home-page .footer-col h4::after {
-    display: none;
-}
-
-.home-page .footer-col ul {
-    list-style: none;
-}
-
-.home-page .footer-col ul li {
-    margin-bottom: 12px;
-    font-size: 14.5px;
-}
-
-.home-page .footer-col ul li a:hover {
-    transform: none;
-}
-
-.home-page .footer-col .contact-item {
-    margin-bottom: 14px;
-    font-size: 14px;
-    line-height: 1.9;
-}
-
-.home-page .footer-col .hours-item {
-    margin-bottom: 14px;
-}
-
-.home-page .footer-col .hours-icon-wrap {
-    box-shadow: none;
-}
-
-.home-page .footer-col .hours-day {
-    font-size: 14px;
-}
-
-.home-page .footer-col .hours-time {
-    font-size: 13.5px;
-}
 
 /* =========================================================
    RESPONSIVE
@@ -626,16 +332,6 @@
     .home-page .whyus-image {
         max-width: none;
         margin: 0;
-    }
-
-    .home-page .footer-grid.home-page-footer {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding-top: 56px;
-        padding-bottom: 48px;
-    }
-
-    .home-page .footer-brand {
-        grid-column: 1 / -1;
     }
 }
 
@@ -668,12 +364,6 @@
 
     .home-page .feature-item {
         padding: 22px;
-    }
-
-    .home-page .footer-grid.home-page-footer {
-        grid-template-columns: 1fr;
-        gap: 36px;
-        padding: 48px 20px 40px;
     }
 }
 

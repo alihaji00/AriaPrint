@@ -77,21 +77,21 @@ html.light-theme {
     flex-shrink: 0;
 }
 
-.theme-toggle:hover {
-    background: var(--glass-bg-strong);
-    transform: scale(1.05);
-}
+    .theme-toggle:hover {
+        background: var(--glass-bg-strong);
+        transform: scale(1.05);
+    }
 
-.theme-toggle .theme-icon-sun,
-.theme-toggle .theme-icon-moon {
-    position: absolute;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
+    .theme-toggle .theme-icon-sun,
+    .theme-toggle .theme-icon-moon {
+        position: absolute;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
 
-.theme-toggle .theme-icon-moon {
-    opacity: 0;
-    transform: rotate(-90deg);
-}
+    .theme-toggle .theme-icon-moon {
+        opacity: 0;
+        transform: rotate(-90deg);
+    }
 
 html.light-theme .theme-toggle .theme-icon-sun {
     opacity: 0;
@@ -201,34 +201,34 @@ html.light-theme .home-page .theme-section .news-card,
 html.light-theme .home-page .theme-section .service-card,
 html.light-theme .home-page .theme-section .feature-item {
     background: var(--light-card-bg);
-    border-color: var(--light-border);
+    border-color: rgba(232, 89, 12, 0.30);
     box-shadow: var(--light-card-shadow);
 }
 
-html.light-theme .home-page .theme-section .news-card:hover,
-html.light-theme .home-page .theme-section .service-card:hover {
-    border-color: rgba(36, 86, 230, 0.35);
-    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.14);
-}
+    html.light-theme .home-page .theme-section .news-card:hover,
+    html.light-theme .home-page .theme-section .service-card:hover {
+        border-color: rgba(36, 86, 230, 0.35);
+        box-shadow: 0 14px 36px rgba(15, 23, 42, 0.14);
+    }
 
-html.light-theme .home-page .theme-section .feature-item:hover {
-    background: var(--light-bg-alt);
-    border-color: rgba(36, 86, 230, 0.3);
-}
+    html.light-theme .home-page .theme-section .feature-item:hover {
+        background: var(--light-bg-alt);
+        border-color: rgba(36, 86, 230, 0.3);
+    }
 
-html.light-theme .home-page .theme-section .service-card::before,
-html.light-theme .home-page .theme-section .service-card::after,
-html.light-theme .home-page .theme-section .news-card::before {
-    display: none;
-}
+    html.light-theme .home-page .theme-section .service-card::before,
+    html.light-theme .home-page .theme-section .service-card::after,
+    html.light-theme .home-page .theme-section .news-card::before {
+        display: none;
+    }
 
-html.light-theme .home-page .theme-section .service-card .ph,
-html.light-theme .home-page .theme-section .feature-item .ph {
-    background: var(--light-bg-alt);
-    border-color: var(--light-border);
-    box-shadow: none;
-    color: var(--blue-600);
-}
+    html.light-theme .home-page .theme-section .service-card .ph,
+    html.light-theme .home-page .theme-section .feature-item .ph {
+        background: var(--light-bg-alt);
+        border-color: var(--light-border);
+        box-shadow: none;
+        color: var(--blue-600);
+    }
 
 html.light-theme .home-page .theme-section .whyus-image {
     background: var(--light-bg-alt);
@@ -240,9 +240,9 @@ html.light-theme .home-page .theme-section .read-more {
     color: var(--blue-600);
 }
 
-html.light-theme .home-page .theme-section .read-more:hover {
-    color: var(--blue-700);
-}
+    html.light-theme .home-page .theme-section .read-more:hover {
+        color: var(--blue-700);
+    }
 
 /* ghost buttons inside light sections (e.g. "مشاهده تمامی اخبار").
    Colors only: the shape of the button stays whatever the page styles say. */
@@ -253,13 +253,13 @@ html.light-theme .home-page .theme-section .btn-ghost {
     box-shadow: none;
 }
 
-html.light-theme .home-page .theme-section .btn-ghost:hover {
-    color: var(--blue-700);
-}
+    html.light-theme .home-page .theme-section .btn-ghost:hover {
+        color: var(--blue-700);
+    }
 
-html.light-theme .home-page .theme-section .btn-ghost .icon {
-    color: currentColor;
-}
+    html.light-theme .home-page .theme-section .btn-ghost .icon {
+        color: currentColor;
+    }
 
 :root {
     /* Navy / Deep blue palette */
@@ -584,6 +584,11 @@ section {
 /* =========================================================
    SECTION HEADING
    ========================================================= */
+.full-section {
+    display: flex;
+    justify-content: space-between;
+}
+
 .section-head {
     display: grid;
     justify-items: center;
@@ -643,6 +648,12 @@ section {
     .section-title.on-dark {
         color: #fff;
     }
+
+.section-body {
+    font-size: 0.95rem;
+    font-weight: 400;
+    margin-top: 15px;
+}
 
 /* =========================================================
    HEADER
@@ -1125,6 +1136,7 @@ section {
 .more-news {
     padding: 50px 0 0;
     text-align: center;
+    justify-content: space-between;
 }
 
     .more-news a {
@@ -2506,7 +2518,7 @@ section {
         height: clamp(13px, 2vw, 18px);
     }
 
-@media (max-width: 800px){
+@media (max-width: 800px) {
     .eyebrow {
         font-size: 0.7rem;
     }
@@ -2976,7 +2988,6 @@ section {
     .header-inner {
         gap: 10px;
     }
-
 }
 
 @media (max-width: 400px) {
@@ -5310,8 +5321,6 @@ section {
     .profile-toggle-group {
         align-self: flex-start;
     }
-
-    
 }
 
 @media (max-width: 560px) {
@@ -5499,8 +5508,8 @@ section {
         max-width: 7%;
     }
 
-    .profile-logout-form{
-        width:100%;
+    .profile-logout-form {
+        width: 100%;
     }
 }
 

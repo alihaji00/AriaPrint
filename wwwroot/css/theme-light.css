@@ -332,22 +332,11 @@ html.light-theme .site-header.is-transparent {
     background: var(--lt-cream);
     border-color: var(--lt-line);
     box-shadow: none;
+    border: 0;
+    border-bottom: 1px solid var(--lt-line);
 }
 
 html.light-theme .site-header:not(.is-transparent) {
-    box-shadow: var(--lt-shadow);
-}
-
-/* home: flat bar with a hairline under it, lifts when scrolled */
-html.light-theme .home-page .site-header,
-html.light-theme .home-page .site-header.is-transparent {
-    background: var(--lt-cream);
-    border: 0;
-    border-bottom: 1px solid var(--lt-line);
-    box-shadow: none;
-}
-
-html.light-theme .home-page .site-header:not(.is-transparent) {
     box-shadow: var(--lt-shadow);
 }
 
@@ -374,26 +363,8 @@ html.light-theme .main-nav a::after {
 }
 
 html.light-theme .main-nav a:hover,
-html.light-theme .main-nav a.active,
-html.light-theme .home-page .main-nav a:hover,
-html.light-theme .home-page .main-nav a.active {
+html.light-theme .main-nav a.active {
     color: var(--lt-burnt);
-}
-
-/* mobile dropdown nav on inner pages (the home page keeps its two-row header) */
-@media (max-width: 780px) {
-    html.light-theme body:not(.home-page) .main-nav {
-        background: var(--lt-milk);
-        border: 1px solid var(--lt-line);
-        box-shadow: var(--lt-shadow-hover);
-    }
-
-    html.light-theme body:not(.home-page) .main-nav a:hover,
-    html.light-theme body:not(.home-page) .main-nav a.active {
-        background: var(--lt-sun-tint);
-        border-color: var(--lt-line-strong);
-        color: var(--lt-rust);
-    }
 }
 
 html.light-theme .nav-toggle {
