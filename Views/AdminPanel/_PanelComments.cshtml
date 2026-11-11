@@ -1,0 +1,45 @@
+@* Existing comments panel (sample rows). UI only. *@
+<section class="admin-panel" data-panel="comments-all" aria-label="همه دیدگاه‌ها">
+    <header class="admin-panel-head">
+        <div>
+            <h2 class="admin-panel-title">همه دیدگاه‌ها</h2>
+            <p class="admin-panel-desc">دیدگاه‌های کاربران روی خبرها. ردیف‌ها نمونه‌اند.</p>
+        </div>
+    <span class="admin-tag admin-tag--sample">داده نمونه</span>
+    </header>
+        <div class="admin-toolbar">
+            <div class="admin-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                <input type="search" placeholder="جستجو در دیدگاه‌ها...">
+            </div>
+            <div class="admin-filter-group">
+                <button class="is-active" type="button">همه</button>
+                <button type="button">در انتظار</button>
+                <button type="button">تأیید شده</button>
+                <button type="button">رد شده</button>
+            </div>
+        </div>
+
+        <div class="admin-list">
+            <article class="admin-row">
+                <div class="admin-row-thumb admin-row-thumb--avatar">ع</div>
+                <div class="admin-row-body">
+                    <h4>علی محمدی</h4>
+                    <p>این یک نمونه دیدگاه است که از بک‌اند بارگذاری خواهد شد.</p>
+                    <div class="admin-row-meta">
+                        <span class="admin-tag admin-tag--ok">تأیید شده</span>
+                        <span>روی: نمونه خبر اول</span>
+                        <span>۱۴۰۴/۰۶/۱۲</span>
+                    </div>
+                </div>
+                <div class="admin-row-actions">
+                    <button class="admin-row-btn" title="پاسخ" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg>
+                    </button>
+                    <button class="admin-row-btn admin-row-btn--danger" title="حذف" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" /></svg>
+                    </button>
+                </div>
+            </article>
+        </div>
+</section>

@@ -14,7 +14,12 @@
     (function () {
         const video = document.getElementById('sourceVideo');
         const canvas = document.getElementById('heroCanvas');
-        const ctx = canvas.getContext('2d');
+        if (!video || !canvas) return;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+        let running = false;
+        let vfcId = null;
+        let rafId = null;
 
         function resizeCanvas() {
             const dpr = window.devicePixelRatio || 1;
@@ -23,52 +28,84 @@
             canvas.height = rect.height * dpr;
         }
 
-        function drawFrame() {
-            // Clear canvas with transparent background first
+        function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             if (video.readyState >= 2 && video.videoWidth) {
-                // Draw video frame
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                // For mix-blend-mode: screen to work well, we might need to
-                // adjust the video colors. Let's try a simple approach:
-                // Apply a filter to make dark areas more transparent
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
-
-                // Simple threshold: make very dark pixels transparent
                 for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-
-                    // If pixel is very dark (near black), make it transparent
-                    if (r < 30 && g < 30 && b < 30) {
-                        data[i + 3] = 0; // Set alpha to 0 (fully transparent)
+                    if (data[i] < 30 && data[i + 1] < 30 && data[i + 2] < 30) {
+                        data[i + 3] = 0;
                     }
                 }
-
                 ctx.putImageData(imageData, 0, 0);
             }
+        }
+
+        function schedule() {
+            if (!running) return;
             if (video.requestVideoFrameCallback) {
-                video.requestVideoFrameCallback(drawFrame);
+                vfcId = video.requestVideoFrameCallback(tick);
             } else {
-                requestAnimationFrame(drawFrame);
+                rafId = requestAnimationFrame(tick);
+            }
+        }
+
+        function tick() {
+            draw();
+            schedule();
+        }
+
+        function startLoop() {
+            if (running) return;
+            running = true;
+            schedule();
+        }
+
+        function stopLoop() {
+            running = false;
+            if (vfcId !== null && video.cancelVideoFrameCallback) video.cancelVideoFrameCallback(vfcId);
+            if (rafId !== null) cancelAnimationFrame(rafId);
+            vfcId = rafId = null;
+        }
+
+        function playVideo() {
+            const p = video.play();
+            if (p && p.catch) {
+                p.catch(function () {
+                    document.body.addEventListener('click', function () { video.play(); }, { once: true });
+                });
             }
         }
 
         window.addEventListener('resize', resizeCanvas);
-        video.addEventListener('loadedmetadata', () => {
-            canvas.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+        video.addEventListener('loadedmetadata', function () {
+            canvas.style.aspectRatio = video.videoWidth + ' / ' + video.videoHeight;
             resizeCanvas();
         });
-        video.addEventListener('play', () => { resizeCanvas(); drawFrame(); });
+        video.addEventListener('play', function () { resizeCanvas(); startLoop(); });
+        video.addEventListener('pause', stopLoop);
 
-        video.play().catch(() => {
-            document.body.addEventListener('click', () => video.play(), { once: true });
+        window.addEventListener('pageshow', function () {
+            stopLoop();
+            resizeCanvas();
+            playVideo();
+            if (!video.paused) startLoop();
+        });
+        window.addEventListener('pagehide', function () {
+            stopLoop();
+            video.pause();
+        });
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                video.pause();
+            } else {
+                playVideo();
+            }
         });
 
         resizeCanvas();
+        playVideo();
     })();
 </script>

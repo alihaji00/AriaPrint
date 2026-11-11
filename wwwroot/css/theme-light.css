@@ -1370,7 +1370,7 @@ html.light-theme .profile-card--danger {
 
 
 /* -------------------------------------------------------------------------
-   14. ADMIN DASHBOARD  (no charts on this page: stat cards, tabs, rows, tags, modal)
+   14. ADMIN DASHBOARD  (no charts on this page: stat cards, rows, tags, modal)
    ------------------------------------------------------------------------- */
 html.light-theme .admin-hero-stat,
 html.light-theme .admin-row {
@@ -1383,22 +1383,6 @@ html.light-theme .admin-row:hover {
     background: var(--lt-milk);
     border-color: rgba(232, 89, 12, 0.40);
     box-shadow: var(--lt-shadow-hover);
-}
-
-html.light-theme .admin-tabs {
-    background: var(--lt-butter);
-    border: 1px solid var(--lt-line);
-}
-
-html.light-theme .admin-tab:hover {
-    background: var(--lt-sun-tint);
-    color: var(--lt-ink);
-}
-
-html.light-theme .admin-tab.is-active {
-    color: #fff;
-    background: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
-    box-shadow: var(--lt-shadow-btn);
 }
 
 html.light-theme .admin-search input {
@@ -1460,6 +1444,134 @@ html.light-theme .admin-modal-close {
 html.light-theme .admin-modal-close:hover {
     background: var(--lt-sun-tint);
     color: var(--lt-ink);
+}
+
+
+/* -------------------------------------------------------------------------
+   14b. ADMIN PANEL REDESIGN  (scoped to .admin-zone: sidebar, top bar, panels, post editor)
+   Re-maps the --ad-* / --sb-* tokens defined in admin-panel.css to the "Honey & Ember" palette.
+   Sidebar = espresso + cream (same treatment as the footer, section 9).
+   ------------------------------------------------------------------------- */
+html.light-theme .admin-zone {
+    --ad-surface: var(--lt-milk);
+    --ad-surface-2: var(--lt-butter);
+    --ad-field-bg: var(--lt-milk);
+    --ad-line: var(--lt-line);
+    --ad-line-strong: var(--lt-line-strong);
+    --ad-text: var(--lt-ink);
+    --ad-text-2: var(--lt-ink-2);
+    --ad-muted: var(--lt-ink-3);
+    --ad-accent: var(--lt-burnt);
+    --ad-grad: linear-gradient(135deg, var(--lt-burnt), var(--lt-rust));
+    --ad-grad-text: #fff;
+    --ad-focus: var(--lt-ember);
+    --ad-focus-ring: rgba(232, 89, 12, 0.18);
+    --ad-danger: var(--lt-danger);
+    --ad-danger-line: var(--lt-danger-line);
+    --ad-danger-ring: rgba(180, 35, 24, 0.14);
+    --ad-ok: var(--lt-success);
+    --ad-ok-line: var(--lt-success-line);
+    --ad-warn: var(--lt-warn-text);
+    --ad-bar-bg: var(--lt-milk);
+    --ad-toast-bg: var(--lt-milk);
+    --ad-tip-bg: var(--lt-ink);
+    --ad-tip-text: var(--lt-cream);
+}
+
+html.light-theme .admin-zone .admin-sidebar {
+    --sb-bg: var(--lt-ink);
+    --sb-border: rgba(255, 182, 39, 0.22);
+    --sb-divider: rgba(255, 248, 231, 0.12);
+    --sb-text: #D9B98A;
+    --sb-text-strong: var(--lt-cream);
+    --sb-muted: #CDAE7F;
+    --sb-hover: rgba(255, 182, 39, 0.14);
+    --sb-active-bg: linear-gradient(135deg, var(--lt-honey), var(--lt-tangerine));
+    --sb-active-text: var(--lt-ink);
+    --sb-active-shadow: 0 4px 12px rgba(255, 138, 31, 0.24);
+    --sb-sub-bg: rgba(255, 248, 231, 0.07);
+    --sb-sub-active: rgba(255, 182, 39, 0.24);
+    --sb-accent: var(--lt-honey);
+    --sb-ring: var(--lt-honey);
+}
+
+html.light-theme .admin-zone .admin-brand-icon {
+    background: rgba(255, 182, 39, 0.14);
+    border: 1px solid rgba(255, 182, 39, 0.40);
+    color: var(--lt-honey);
+}
+
+html.light-theme .admin-zone .admin-backdrop {
+    background: rgba(43, 26, 6, 0.48);
+}
+
+html.light-theme .admin-zone .admin-hero-stat-num,
+html.light-theme .admin-zone .admin-panel-title {
+    color: var(--lt-ink);
+}
+
+html.light-theme .admin-zone .admin-stat-card,
+html.light-theme .admin-zone .admin-quick-btn,
+html.light-theme .admin-zone .admin-media-tile,
+html.light-theme .admin-zone .admin-table-wrap {
+    background: var(--lt-milk);
+    border: 1px solid var(--lt-line);
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .admin-zone .admin-stat-icon,
+html.light-theme .admin-zone .admin-quick-ico,
+html.light-theme .admin-zone .admin-media-thumb,
+html.light-theme .admin-zone .admin-drop-ico {
+    background: var(--lt-sun-tint);
+    color: var(--lt-rust);
+}
+
+html.light-theme .admin-zone .admin-quick-btn--main .admin-quick-ico {
+    background: var(--ad-grad);
+    color: #fff;
+}
+
+html.light-theme .admin-zone .admin-quick-btn:hover {
+    background: var(--lt-sun-tint);
+    border-color: rgba(232, 89, 12, 0.40);
+}
+
+html.light-theme .admin-zone .admin-tag--sample {
+    background: var(--lt-butter);
+    color: var(--lt-ink-2);
+    border: 1px dashed var(--lt-line-strong);
+}
+
+html.light-theme .admin-zone .admin-ed-bar {
+    box-shadow: var(--lt-shadow);
+}
+
+html.light-theme .admin-zone .admin-rte-area.is-empty::before {
+    color: var(--lt-ink-faint);
+}
+
+html.light-theme .admin-zone .admin-select option {
+    background: var(--lt-milk);
+    color: var(--lt-ink);
+}
+
+html.light-theme .admin-zone .admin-drop {
+    border-color: var(--lt-line-strong);
+}
+
+html.light-theme .admin-zone .admin-drop:hover,
+html.light-theme .admin-zone .admin-drop.is-drag {
+    border-color: var(--lt-ember);
+    background: var(--lt-sun-tint);
+}
+
+html.light-theme .admin-zone .admin-toast {
+    box-shadow: var(--lt-shadow-hover);
+}
+
+html.light-theme .admin-zone .admin-bell-dot {
+    box-shadow: 0 0 0 2px var(--lt-milk);
 }
 
 

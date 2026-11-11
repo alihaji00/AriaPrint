@@ -1,0 +1,63 @@
+@* Dashboard overview: every number and row below is SAMPLE data. UI only. *@
+<section class="admin-panel is-active" data-panel="dashboard" aria-label="داشبورد">
+    <header class="admin-panel-head">
+        <div>
+            <h2 class="admin-panel-title">نمای کلی</h2>
+            <p class="admin-panel-desc">خلاصه‌ای از وضعیت سایت. اعداد و فعالیت‌های این صفحه نمونه‌اند.</p>
+        </div>
+        <span class="admin-tag admin-tag--sample">داده نمونه</span>
+    </header>
+
+    <div class="admin-stat-grid">
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon"><svg class="admin-ico" aria-hidden="true"><use href="#ad-file"></use></svg></span>
+            <div><p class="admin-stat-value">۲۴</p><p class="admin-stat-label">خبر منتشرشده</p></div>
+        </article>
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon"><svg class="admin-ico" aria-hidden="true"><use href="#ad-comments"></use></svg></span>
+            <div><p class="admin-stat-value">۷</p><p class="admin-stat-label">دیدگاه در انتظار تأیید</p></div>
+        </article>
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon"><svg class="admin-ico" aria-hidden="true"><use href="#ad-inbox"></use></svg></span>
+            <div><p class="admin-stat-value">۱۲</p><p class="admin-stat-label">درخواست جدید</p></div>
+        </article>
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon"><svg class="admin-ico" aria-hidden="true"><use href="#ad-chart"></use></svg></span>
+            <div><p class="admin-stat-value">۳٬۴۸۰</p><p class="admin-stat-label">بازدید این هفته</p></div>
+        </article>
+    </div>
+
+    <div class="admin-overview-grid">
+        <section class="admin-card glass-strong" aria-labelledby="quickTitle">
+            <h3 id="quickTitle">اقدام‌های سریع</h3>
+            <div class="admin-quick">
+                <a class="admin-quick-btn admin-quick-btn--main" href="?tab=add-post" data-panel-link="add-post">
+                    <span class="admin-quick-ico"><svg class="admin-ico" aria-hidden="true"><use href="#ad-plus"></use></svg></span>
+                    <span><strong>افزودن پست</strong><small>نوشتن یک خبر جدید</small></span>
+                </a>
+                <a class="admin-quick-btn" href="?tab=comments-pending" data-panel-link="comments-pending">
+                    <span class="admin-quick-ico"><svg class="admin-ico" aria-hidden="true"><use href="#ad-comments"></use></svg></span>
+                    <span><strong>بررسی دیدگاه‌ها</strong><small>دیدگاه‌های در انتظار</small></span>
+                </a>
+                <a class="admin-quick-btn" href="?tab=requests-all" data-panel-link="requests-all">
+                    <span class="admin-quick-ico"><svg class="admin-ico" aria-hidden="true"><use href="#ad-inbox"></use></svg></span>
+                    <span><strong>درخواست‌ها</strong><small>مشاهده درخواست‌های مشتریان</small></span>
+                </a>
+                <a class="admin-quick-btn" href="?tab=media" data-panel-link="media">
+                    <span class="admin-quick-ico"><svg class="admin-ico" aria-hidden="true"><use href="#ad-image"></use></svg></span>
+                    <span><strong>کتابخانه رسانه</strong><small>تصاویر و فایل‌ها</small></span>
+                </a>
+            </div>
+        </section>
+
+        <section class="admin-card glass-strong" aria-labelledby="recentTitle">
+            <h3 id="recentTitle">فعالیت‌های اخیر</h3>
+            <ul class="admin-feed">
+                <li><span class="admin-feed-dot"></span><div><p>یک دیدگاه جدید روی «نمونه خبر اول» ثبت شد</p><small>۱۰ دقیقه پیش</small></div></li>
+                <li><span class="admin-feed-dot"></span><div><p>درخواست «ثبت‌نام آزمون» دریافت شد</p><small>۱ ساعت پیش</small></div></li>
+                <li><span class="admin-feed-dot"></span><div><p>پیش‌نویس «نمونه خبر دوم» ذخیره شد</p><small>دیروز</small></div></li>
+                <li><span class="admin-feed-dot"></span><div><p>کاربر جدیدی ثبت‌نام کرد</p><small>دیروز</small></div></li>
+            </ul>
+        </section>
+    </div>
+</section>

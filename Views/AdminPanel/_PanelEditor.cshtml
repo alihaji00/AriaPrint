@@ -1,0 +1,250 @@
+@* "افزودن پست": no-code post editor. FRONT-END ONLY, nothing is sent to a server (see /wwwroot/js/admin-panel.js, section EDITOR). *@
+<section class="admin-panel" data-panel="add-post" aria-label="افزودن پست">
+    <header class="admin-panel-head">
+        <div>
+            <h2 class="admin-panel-title">افزودن پست</h2>
+            <p class="admin-panel-desc">یک خبر جدید بنویسید و پیش‌نمایش کارت آن را همزمان ببینید.</p>
+        </div>
+        <span class="admin-tag admin-tag--sample">فقط رابط کاربری</span>
+    </header>
+
+    <div class="admin-editor-wrap">
+        <form id="postForm" method="post" data-backend="pending" enctype="multipart/form-data" novalidate>
+            <!--
+              BACKEND BINDING NOTES. Field names = News model properties:
+              Title (text) | Category (select) | Summary (textarea) | Content (hidden: sanitized HTML from the editor)
+              PictureUrl (file input: jpg/png/webp, max 2 MB) | Author (text) | ReleaseDate (text, Jalali "yyyy/MM/dd", Latin digits)
+              deadline (text, optional, same format) | DocumentsJson (hidden: JSON array of strings)
+              ConditionsJson (hidden: JSON array of strings) | IsNew (checkbox, value "true")
+              The form never submits: admin-panel.js cancels the submit event. When the backend exists, remove
+              data-backend="pending" and that handler. Note: _NewsCard expects ReleaseDate as 8 digits (yyyyMMdd), so strip the slashes on save.
+            -->
+
+            <div class="admin-ed-bar" role="region" aria-label="عملیات پست">
+                <p class="admin-ed-status" id="edStatus" aria-live="polite">پیش‌نویس تغییری ندارد</p>
+                <div class="admin-ed-actions">
+                    <button type="button" class="btn btn-ghost admin-btn-sm" id="btnSaveDraft">
+                        <svg class="admin-ico" aria-hidden="true"><use href="#ad-database"></use></svg>
+                        <span>ذخیره پیش‌نویس</span>
+                    </button>
+                    <button type="button" class="btn btn-ghost admin-btn-sm" id="btnPreview">
+                        <svg class="admin-ico" aria-hidden="true"><use href="#ad-eye"></use></svg>
+                        <span>پیش‌نمایش</span>
+                    </button>
+                    <button type="submit" class="btn btn-solid admin-btn-sm" id="btnPublish">
+                        <svg class="admin-ico" aria-hidden="true"><use href="#ad-send"></use></svg>
+                        <span>انتشار</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-ed-banner" id="draftBanner" hidden>
+                <svg class="admin-ico" aria-hidden="true"><use href="#ad-database"></use></svg>
+                <p>پیش‌نویس ذخیره‌شده در این مرورگر بازیابی شد. <span class="admin-ed-banner-note">تصویر شاخص ذخیره نمی‌شود و باید دوباره انتخاب شود.</span></p>
+                <button type="button" class="admin-link-btn" id="btnDiscardDraft">حذف پیش‌نویس</button>
+            </div>
+
+            <div class="admin-editor">
+                <div class="admin-ed-main">
+                    <section class="admin-card glass-strong" aria-labelledby="edInfoTitle">
+                        <h3 id="edInfoTitle">اطلاعات اصلی</h3>
+
+                        <div class="admin-field" data-field="Title">
+                            <label for="f-Title">عنوان <span class="admin-req" aria-hidden="true">*</span></label>
+                            <input id="f-Title" name="Title" type="text" class="profile-input" maxlength="120" required autocomplete="off"
+                                   placeholder="مثلاً: ثبت نام آزمون سراسری آغاز شد" aria-describedby="e-Title">
+                            <p class="admin-field-error" id="e-Title" aria-live="polite" hidden></p>
+                        </div>
+
+                        <div class="admin-field" data-field="Category">
+                            <label for="f-Category">دسته‌بندی <span class="admin-req" aria-hidden="true">*</span></label>
+                            <select id="f-Category" name="Category" class="profile-input admin-select" required aria-describedby="e-Category">
+                                <option value="">انتخاب دسته‌بندی...</option>
+                                <option value="ثبت نام">ثبت نام</option>
+                                <option value="خدمات دانشجویی">خدمات دانشجویی</option>
+                                <option value="پرداخت قبوض">پرداخت قبوض</option>
+                                <option value="اطلاعیه">اطلاعیه</option>
+                                <option value="آموزش">آموزش</option>
+                                <option value="__new__">+ افزودن دسته جدید</option>
+                            </select>
+                            <div class="admin-inline-add" id="catAdd" hidden>
+                                <input type="text" id="catNewInput" class="profile-input" maxlength="40" placeholder="نام دسته جدید" aria-label="نام دسته جدید" autocomplete="off">
+                                <button type="button" class="btn btn-ghost admin-btn-sm" id="catAddOk">افزودن</button>
+                                <button type="button" class="btn btn-ghost admin-btn-sm" id="catAddCancel">انصراف</button>
+                            </div>
+                            <p class="admin-field-error" id="e-Category" aria-live="polite" hidden></p>
+                        </div>
+
+                        <div class="admin-field" data-field="Summary">
+                            <div class="admin-label-row">
+                                <label for="f-Summary">خلاصه <span class="admin-req" aria-hidden="true">*</span></label>
+                                <span class="admin-counter" id="summaryCounter" aria-hidden="true">۰ / ۲۰۰</span>
+                            </div>
+                            <textarea id="f-Summary" name="Summary" class="profile-input profile-textarea" rows="3" maxlength="200" required
+                                      placeholder="یک یا دو جمله کوتاه که روی کارت خبر نمایش داده می‌شود..." aria-describedby="e-Summary"></textarea>
+                            <p class="admin-field-error" id="e-Summary" aria-live="polite" hidden></p>
+                        </div>
+                    </section>
+
+                    <section class="admin-card glass-strong" aria-labelledby="edContentTitle">
+                        <h3 id="edContentTitle">محتوا</h3>
+                        <div class="admin-field" data-field="Content">
+                            <span class="admin-sr-only" id="l-Content">متن کامل خبر</span>
+                            <div class="admin-rte" id="rte">
+                                <div class="admin-rte-bar" role="toolbar" aria-label="ابزار قالب‌بندی متن" aria-controls="rteArea">
+                                    <button type="button" class="admin-rte-btn" data-cmd="h2" aria-label="تیتر بزرگ" title="تیتر بزرگ"><span class="admin-rte-glyph" dir="ltr">H2</span></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="h3" aria-label="تیتر کوچک" title="تیتر کوچک"><span class="admin-rte-glyph" dir="ltr">H3</span></button>
+                                    <span class="admin-rte-sep" role="separator"></span>
+                                    <button type="button" class="admin-rte-btn" data-cmd="bold" aria-label="پررنگ" title="پررنگ (Ctrl+B)"><span class="admin-rte-glyph admin-rte-glyph--b">B</span></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="italic" aria-label="کج" title="کج (Ctrl+I)"><span class="admin-rte-glyph admin-rte-glyph--i">I</span></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="underline" aria-label="زیرخط" title="زیرخط (Ctrl+U)"><span class="admin-rte-glyph admin-rte-glyph--u">U</span></button>
+                                    <span class="admin-rte-sep" role="separator"></span>
+                                    <button type="button" class="admin-rte-btn" data-cmd="ul" aria-label="فهرست نقطه‌ای" title="فهرست نقطه‌ای"><svg class="admin-ico" aria-hidden="true"><use href="#ad-list-ul"></use></svg></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="ol" aria-label="فهرست شماره‌دار" title="فهرست شماره‌دار"><svg class="admin-ico" aria-hidden="true"><use href="#ad-list-ol"></use></svg></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="quote" aria-label="نقل قول" title="نقل قول"><svg class="admin-ico" aria-hidden="true"><use href="#ad-quote"></use></svg></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="link" aria-label="افزودن پیوند" title="افزودن پیوند"><svg class="admin-ico" aria-hidden="true"><use href="#ad-link"></use></svg></button>
+                                    <span class="admin-rte-sep" role="separator"></span>
+                                    <button type="button" class="admin-rte-btn" data-cmd="undo" aria-label="واگرد" title="واگرد (Ctrl+Z)"><svg class="admin-ico" aria-hidden="true"><use href="#ad-undo"></use></svg></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="redo" aria-label="ازنو" title="ازنو (Ctrl+Y)"><svg class="admin-ico" aria-hidden="true"><use href="#ad-redo"></use></svg></button>
+                                    <button type="button" class="admin-rte-btn" data-cmd="clear" aria-label="پاک کردن قالب‌بندی" title="پاک کردن قالب‌بندی"><svg class="admin-ico" aria-hidden="true"><use href="#ad-eraser"></use></svg></button>
+                                </div>
+                                <div class="admin-rte-link" id="rteLinkBar" hidden>
+                                    <input type="text" id="rteLinkInput" class="profile-input" dir="ltr" inputmode="url" placeholder="https://example.com" aria-label="نشانی پیوند" autocomplete="off">
+                                    <button type="button" class="btn btn-ghost admin-btn-sm" id="rteLinkOk">اعمال</button>
+                                    <button type="button" class="btn btn-ghost admin-btn-sm" id="rteLinkRemove">حذف پیوند</button>
+                                    <button type="button" class="btn btn-ghost admin-btn-sm" id="rteLinkCancel">بستن</button>
+                                </div>
+                                <div class="admin-rte-area is-empty" id="rteArea" contenteditable="true" role="textbox" aria-multiline="true"
+                                     aria-labelledby="l-Content" aria-describedby="e-Content" dir="rtl" spellcheck="true"
+                                     data-placeholder="متن کامل خبر را اینجا بنویسید..."></div>
+                            </div>
+                            <input type="hidden" name="Content" id="f-Content" value="">
+                            <p class="admin-field-error" id="e-Content" aria-live="polite" hidden></p>
+                        </div>
+                    </section>
+
+                    <section class="admin-card glass-strong" aria-labelledby="edListsTitle">
+                        <h3 id="edListsTitle">مدارک و شرایط</h3>
+                        <div class="admin-ed-lists">
+                            <div class="admin-field admin-dyn" data-list="DocumentsJson" data-item-label="مدرک">
+                                <div class="admin-label-row">
+                                    <span class="admin-label" id="l-docs">مدارک مورد نیاز</span>
+                                    <button type="button" class="admin-link-btn" data-add>
+                                        <svg class="admin-ico" aria-hidden="true"><use href="#ad-plus"></use></svg><span>افزودن مدرک</span>
+                                    </button>
+                                </div>
+                                <div class="admin-dyn-rows" role="list" aria-labelledby="l-docs"></div>
+                                <p class="admin-dyn-empty" hidden>هنوز مدرکی اضافه نشده است.</p>
+                                <input type="hidden" name="DocumentsJson" value="[]">
+                            </div>
+                            <div class="admin-field admin-dyn" data-list="ConditionsJson" data-item-label="شرط">
+                                <div class="admin-label-row">
+                                    <span class="admin-label" id="l-conds">شرایط</span>
+                                    <button type="button" class="admin-link-btn" data-add>
+                                        <svg class="admin-ico" aria-hidden="true"><use href="#ad-plus"></use></svg><span>افزودن شرط</span>
+                                    </button>
+                                </div>
+                                <div class="admin-dyn-rows" role="list" aria-labelledby="l-conds"></div>
+                                <p class="admin-dyn-empty" hidden>هنوز شرطی اضافه نشده است.</p>
+                                <input type="hidden" name="ConditionsJson" value="[]">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="admin-ed-aside" aria-label="تنظیمات و پیش‌نمایش">
+                    <section class="admin-card glass-strong admin-preview" aria-labelledby="edPreviewTitle">
+                        <h3 id="edPreviewTitle">پیش‌نمایش کارت</h3>
+                        <div class="admin-preview-card" aria-hidden="true">
+                            @* Same classes/markup as Views/Shared/_NewsCard.cshtml *@
+                            <article class="news-card">
+                                <div class="news-card-media">
+                                    <span class="badge badge-date" id="pvDate">1405/08/01</span>
+                                    <span class="badge badge-new" id="pvNew" hidden>جدید</span>
+                                    <span class="ph-mono-wrap" id="pvIcon"><svg class="ph-mono"><use href="#ph-mono"></use></svg></span>
+                                    <img class="admin-preview-img" id="pvImg" alt="" hidden>
+                                </div>
+                                <div class="news-card-body">
+                                    <h3 class="news-card-title" id="pvTitle">عنوان خبر اینجا نمایش داده می‌شود</h3>
+                                    <p class="news-card-excerpt" id="pvSummary">خلاصه خبر اینجا نمایش داده می‌شود.</p>
+                                    <a class="read-more" href="#" tabindex="-1">
+                                        <span>بیشتر بخوانید</span>
+                                        <svg class="icon-sm"><use href="#i-chevron-left"></use></svg>
+                                    </a>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+                    <section class="admin-card glass-strong" aria-labelledby="edPubTitle">
+                        <h3 id="edPubTitle">اطلاعات انتشار</h3>
+
+                        <div class="admin-field" data-field="Author">
+                            <label for="f-Author">نویسنده <span class="admin-req" aria-hidden="true">*</span></label>
+                            <input id="f-Author" name="Author" type="text" class="profile-input" value="کافینت آریا" maxlength="60" required autocomplete="off" aria-describedby="e-Author">
+                            <p class="admin-field-error" id="e-Author" aria-live="polite" hidden></p>
+                        </div>
+
+                        <div class="admin-field" data-field="ReleaseDate">
+                            <label for="f-ReleaseDate">تاریخ انتشار <span class="admin-req" aria-hidden="true">*</span></label>
+                            <input id="f-ReleaseDate" name="ReleaseDate" type="text" class="profile-input" dir="ltr" inputmode="numeric" maxlength="10" placeholder="1405/08/01" required autocomplete="off" aria-describedby="h-ReleaseDate e-ReleaseDate">
+                            <p class="admin-field-hint" id="h-ReleaseDate">تاریخ شمسی به‌صورت سال/ماه/روز</p>
+                            <p class="admin-field-error" id="e-ReleaseDate" aria-live="polite" hidden></p>
+                        </div>
+
+                        <div class="admin-field" data-field="deadline">
+                            <label for="f-deadline">مهلت (اختیاری)</label>
+                            <input id="f-deadline" name="deadline" type="text" class="profile-input" dir="ltr" inputmode="numeric" maxlength="10" placeholder="1405/09/01" autocomplete="off" aria-describedby="e-deadline">
+                            <p class="admin-field-error" id="e-deadline" aria-live="polite" hidden></p>
+                        </div>
+
+                        <div class="profile-pref admin-pref">
+                            <div>
+                                <p class="profile-pref-name" id="l-IsNew">نشان «جدید»</p>
+                                <p class="profile-pref-desc">روی کارت خبر نشان «جدید» نمایش داده شود.</p>
+                            </div>
+                            <label class="profile-switch">
+                                <input type="checkbox" name="IsNew" value="true" aria-labelledby="l-IsNew"><span class="profile-switch-track"><span class="profile-switch-thumb"></span></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="admin-card glass-strong" aria-labelledby="edCoverTitle">
+                        <h3 id="edCoverTitle">تصویر شاخص</h3>
+                        <div class="admin-field" data-field="PictureUrl">
+                            <label class="admin-drop" id="coverDrop" for="f-PictureUrl">
+                                <input id="f-PictureUrl" name="PictureUrl" type="file" class="admin-sr-only" accept="image/jpeg,image/png,image/webp" aria-describedby="h-PictureUrl e-PictureUrl">
+                                <span class="admin-drop-ico"><svg class="admin-ico" aria-hidden="true"><use href="#ad-upload"></use></svg></span>
+                                <span class="admin-drop-title">تصویر را اینجا رها کنید یا انتخاب کنید</span>
+                                <span class="admin-drop-sub" id="h-PictureUrl">jpg، png یا webp — حداکثر ۲ مگابایت</span>
+                            </label>
+                            <div class="admin-cover" id="coverBox" hidden>
+                                <img id="coverImg" alt="پیش‌نمایش تصویر شاخص">
+                                <div class="admin-cover-meta">
+                                    <span id="coverName" dir="ltr"></span>
+                                    <button type="button" class="admin-link-btn admin-link-btn--danger" id="coverRemove">
+                                        <svg class="admin-ico" aria-hidden="true"><use href="#ad-trash"></use></svg><span>حذف تصویر</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="admin-field-error" id="e-PictureUrl" aria-live="polite" hidden></p>
+                        </div>
+                    </section>
+
+                </aside>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Full post preview (UI only) -->
+<div class="admin-modal" id="postPreviewModal" hidden>
+    <div class="admin-modal-backdrop" data-close-modal></div>
+    <div class="admin-modal-card admin-modal-card--wide glass-strong" role="dialog" aria-modal="true" aria-labelledby="postPreviewTitle">
+        <button type="button" class="admin-modal-close" data-close-modal aria-label="بستن">
+            <svg class="admin-ico" aria-hidden="true"><use href="#ad-x"></use></svg>
+        </button>
+        <p class="admin-modal-sub" id="postPreviewNote">این پیش‌نمایش فقط در مرورگر شما ساخته می‌شود.</p>
+        <article class="admin-article" id="postPreviewBody"></article>
+        <h3 id="postPreviewTitle" class="admin-sr-only">پیش‌نمایش پست</h3>
+    </div>
+</div>

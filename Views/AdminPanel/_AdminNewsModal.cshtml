@@ -1,0 +1,55 @@
+<!-- Add / Edit news modal (UI only) -->
+<div class="admin-modal" id="newsModal" hidden>
+    <div class="admin-modal-backdrop" data-close-modal></div>
+    <div class="admin-modal-card glass-strong" role="dialog" aria-modal="true" aria-labelledby="newsModalTitle">
+        <button type="button" class="admin-modal-close" data-close-modal aria-label="بستن">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+        <h3 id="newsModalTitle">خبر جدید</h3>
+        <p class="admin-modal-sub">اطلاعات خبر را وارد کنید. این فرم فقط ظاهر است و بک‌اند بعداً اضافه می‌شود.</p>
+
+        <form class="admin-modal-form" novalidate>
+            <div class="admin-form-row admin-form-row--col">
+                <label>عنوان خبر</label>
+                <input type="text" class="profile-input" placeholder="مثلاً: ثبت نام آزمون سراسری">
+            </div>
+            <div class="admin-form-row admin-form-row--col">
+                <label>دسته‌بندی</label>
+                <input type="text" class="profile-input" placeholder="مثلاً: ثبت نام">
+            </div>
+            <div class="admin-form-row admin-form-row--col">
+                <label>چکیده</label>
+                <textarea class="profile-input profile-textarea" rows="2" placeholder="یک یا دو جمله کوتاه..."></textarea>
+            </div>
+            <div class="admin-form-row admin-form-row--col">
+                <label>متن کامل</label>
+                <textarea class="profile-input profile-textarea" rows="6" placeholder="متن خبر..."></textarea>
+            </div>
+            <div class="admin-form-grid">
+                <div class="admin-form-row admin-form-row--col">
+                    <label>تاریخ انتشار</label>
+                    <input type="text" class="profile-input" placeholder="۱۴۰۴/۰۶/۱۲">
+                </div>
+                <div class="admin-form-row admin-form-row--col">
+                    <label>مهلت ثبت‌نام</label>
+                    <input type="text" class="profile-input" placeholder="۱۴۰۴/۰۷/۰۱">
+                </div>
+            </div>
+            <div class="admin-form-row admin-form-row--col">
+                <label>مدارک (هر مورد در یک خط)</label>
+                <textarea class="profile-input profile-textarea" rows="3" placeholder="کارت ملی&#10;شناسنامه&#10;مدرک تحصیلی"></textarea>
+            </div>
+            <div class="admin-form-row admin-form-row--col">
+                <label>شرایط (هر مورد در یک خط)</label>
+                <textarea class="profile-input profile-textarea" rows="3" placeholder="تابعیت ایران&#10;عدم منع قانونی"></textarea>
+            </div>
+
+            <div class="admin-modal-actions">
+                <button type="button" class="btn btn-ghost" data-close-modal>انصراف</button>
+                <button type="button" class="btn btn-solid" disabled>
+                    <span>ذخیره (به‌زودی)</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

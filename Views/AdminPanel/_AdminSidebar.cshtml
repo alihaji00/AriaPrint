@@ -1,0 +1,86 @@
+@* Admin sidebar: first in the DOM inside .admin-shell, so RTL places it on the right edge.
+   Every link carries data-panel-link = the id of a section.admin-panel[data-panel]. UI only. *@
+@{
+    var given = User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value;
+    var displayName = string.IsNullOrWhiteSpace(given) ? "کاربر" : given;
+    var initial = displayName.Substring(0, 1);
+    var roleLabel = User.IsInRole("Admin") ? "مدیر" : "ناظر";
+
+    // group id, label, icon id, then (panel id, label, icon id) children. Every child has its own icon: the rail shows icons only.
+    var groups = new (string Id, string Label, string Icon, (string Id, string Label, string Icon)[] Items)[]
+    {
+        ("content", "محتوا", "ad-file", new[] { ("add-post", "افزودن پست", "ad-plus"), ("news", "مدیریت اخبار", "ad-newspaper"), ("drafts", "پیش‌نویس‌ها", "ad-edit"), ("categories", "دسته‌بندی‌ها", "ad-folder"), ("tags", "برچسب‌ها", "ad-tag"), ("media", "کتابخانه رسانه", "ad-image") }),
+        ("comments", "دیدگاه‌ها", "ad-comments", new[] { ("comments-all", "همه دیدگاه‌ها", "ad-list-ul"), ("comments-pending", "در انتظار تأیید", "ad-clock"), ("comments-reported", "گزارش‌شده‌ها", "ad-flag") }),
+        ("requests", "درخواست‌ها", "ad-inbox", new[] { ("requests-all", "همه درخواست‌ها", "ad-list-ol"), ("requests-review", "در حال بررسی", "ad-search"), ("requests-done", "تکمیل‌شده", "ad-check") }),
+        ("homepage", "صفحه اصلی", "ad-home", new[] { ("home-services", "مدیریت خدمات", "ad-printer"), ("home-whyus", "کارت‌های «چرا آریا»", "ad-shield") }),
+        ("users", "کاربران", "ad-users", new[] { ("users-all", "همه کاربران", "ad-user"), ("users-roles", "نقش‌ها و دسترسی‌ها", "ad-key") }),
+        ("reports", "گزارش‌ها", "ad-chart", new[] { ("reports-visits", "آمار بازدید", "ad-eye"), ("reports-activity", "گزارش فعالیت‌ها", "ad-activity") }),
+        ("settings", "تنظیمات", "ad-gear", new[] { ("settings-general", "تنظیمات عمومی", "ad-sliders"), ("settings-comments", "تنظیمات نظرات", "ad-comments"), ("settings-appearance", "ظاهر سایت", "ad-palette"), ("settings-notifications", "اعلان‌ها", "ad-bell"), ("settings-security", "امنیت", "ad-shield"), ("settings-backup", "پشتیبان‌گیری", "ad-database") })
+    };
+}
+<div class="admin-backdrop" id="adminBackdrop" hidden></div>
+
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-head">
+        <a class="admin-brand" href="/AdminPanel/Dashboard" data-panel-link="dashboard" data-tip="کافینت آریا" aria-label="کافینت آریا — پنل مدیریت">
+            <span class="ph ph-mono admin-brand-icon" aria-hidden="true"><svg><use href="#ph-mono"></use></svg></span>
+            <span class="admin-brand-text"><strong>کافینت آریا</strong><small>پنل مدیریت</small></span>
+        </a>
+        <button type="button" class="admin-icon-btn admin-collapse-btn" id="adminCollapseBtn" aria-label="جمع کردن منو" aria-pressed="false" data-tip="باز کردن منو">
+            <svg class="admin-ico" aria-hidden="true"><use href="#ad-chev-right"></use></svg>
+        </button>
+        <button type="button" class="admin-icon-btn admin-close-btn" id="adminCloseBtn" aria-label="بستن منو">
+            <svg class="admin-ico" aria-hidden="true"><use href="#ad-x"></use></svg>
+        </button>
+    </div>
+
+    <nav class="admin-nav" id="adminNav" aria-label="منوی پنل مدیریت">
+        <ul class="admin-nav-list">
+            <li class="admin-nav-item">
+                <a class="admin-nav-link" href="?tab=dashboard" data-panel-link="dashboard" data-tip="داشبورد" aria-label="داشبورد">
+                    <svg class="admin-ico admin-nav-icon" aria-hidden="true"><use href="#ad-grid"></use></svg>
+                    <span class="admin-nav-label">داشبورد</span>
+                </a>
+            </li>
+            @foreach (var g in groups)
+            {
+                <li class="admin-nav-item admin-nav-group" data-group="@g.Id">
+                    <button type="button" class="admin-nav-link admin-nav-toggle" aria-expanded="false" aria-controls="adminSub-@g.Id" data-tip="@g.Label" aria-label="@g.Label">
+                        <svg class="admin-ico admin-nav-icon" aria-hidden="true"><use href="#@g.Icon"></use></svg>
+                        <span class="admin-nav-label">@g.Label</span>
+                        <svg class="admin-ico admin-nav-chevron" aria-hidden="true"><use href="#ad-chev-down"></use></svg>
+                    </button>
+                    <div class="admin-sub" id="adminSub-@g.Id" role="group" aria-label="@g.Label">
+                        <ul class="admin-sub-list">
+                            @foreach (var it in g.Items)
+                            {
+                                <li>
+                                    <a class="admin-sub-link" href="?tab=@it.Id" data-panel-link="@it.Id" data-tip="@it.Label" aria-label="@it.Label">
+                                        <svg class="admin-ico admin-sub-icon" aria-hidden="true"><use href="#@it.Icon"></use></svg>
+                                        <span class="admin-sub-label">@it.Label</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <div class="admin-sidebar-foot">
+        <div class="admin-user" role="group" aria-label="@displayName — @roleLabel" data-tip="@displayName — @roleLabel">
+            <span class="admin-user-avatar" aria-hidden="true">@initial</span>
+            <span class="admin-user-meta"><strong>@displayName</strong><small>@roleLabel</small></span>
+        </div>
+        @* The real logout form (same POST + anti-forgery token). The row below only opens the confirmation dialog (_AdminLogoutModal);
+           the dialog's "خروج" button submits this form through its form="adminLogoutForm" attribute. *@
+        <form id="adminLogoutForm" asp-controller="Account" asp-action="Logout" method="post" class="admin-logout-form">
+            @Html.AntiForgeryToken()
+            <button type="button" class="admin-foot-link admin-foot-link--danger" data-action="logout" aria-haspopup="dialog" data-tip="خروج از حساب" aria-label="خروج از حساب">
+                <svg class="admin-ico" aria-hidden="true"><use href="#ad-logout"></use></svg>
+                <span class="admin-nav-label">خروج از حساب</span>
+            </button>
+        </form>
+    </div>
+</aside>

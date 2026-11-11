@@ -1,0 +1,2023 @@
+/* =========================================================
+   ADMIN PANEL (redesign): right-side sidebar shell, top bar, panels, post editor.
+   Loaded through @section Styles in Views/AdminPanel/Dashboard.cshtml, AFTER site.css and BEFORE theme-light.css.
+   Everything is scoped to .admin-zone (the existing admin- prefix). Colors come from the existing tokens only.
+   Light theme ("Honey & Ember") overrides live in theme-light.css, block "ADMIN PANEL REDESIGN".
+   ========================================================= */
+
+/* ---------- 0. local tokens (dark = default). Light theme re-maps them in theme-light.css ---------- */
+.admin-zone {
+    --admin-top: 77px; /* sticky site header height; admin-panel.js keeps it exact */
+    --sb-w: 232px;
+
+    --ad-surface: rgba(255, 255, 255, 0.04);
+    --ad-surface-2: rgba(255, 255, 255, 0.08);
+    --ad-field-bg: rgba(255, 255, 255, 0.05);
+    --ad-line: rgba(255, 255, 255, 0.12);
+    --ad-line-strong: rgba(255, 255, 255, 0.2);
+    --ad-text: var(--text-primary);
+    --ad-text-2: var(--text-secondary);
+    --ad-muted: var(--text-muted);
+    --ad-accent: var(--sky-400);
+    --ad-grad: linear-gradient(135deg, var(--blue-400), var(--blue-700));
+    --ad-grad-text: #fff;
+    --ad-focus: var(--sky-400);
+    --ad-focus-ring: rgba(73, 185, 255, 0.18);
+    --ad-danger: #ff9bb0;
+    --ad-danger-line: rgba(255, 100, 130, 0.35);
+    --ad-danger-ring: rgba(255, 100, 130, 0.2);
+    --ad-ok: #6ee7b7;
+    --ad-ok-line: rgba(52, 211, 153, 0.4);
+    --ad-warn: #fde68a;
+    --ad-bar-bg: var(--navy-900);
+    --ad-toast-bg: var(--navy-850);
+    --ad-tip-bg: var(--navy-1000);
+    --ad-tip-text: var(--text-primary);
+}
+
+.admin-zone :focus-visible {
+    outline: 2px solid var(--ad-focus);
+    outline-offset: 2px;
+}
+
+.admin-sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.admin-ico {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ---------- 1. shell: sidebar flush to the right edge (first in the DOM => RTL puts it there), content takes the rest ---------- */
+.admin-zone {
+    padding-bottom: 0; /* site.css adds 60px; the sidebar has to reach the bottom of the viewport */
+}
+
+.admin-shell {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: var(--sb-w) minmax(0, 1fr);
+    align-items: start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    transition: grid-template-columns 0.28s ease;
+}
+
+.admin-main {
+    min-width: 0;
+    width: 100%;
+    max-width: 1400px;
+    justify-self: center;
+    padding: 16px clamp(12px, 2vw, 28px) 48px;
+}
+
+.admin-body {
+    position: relative;
+}
+
+.admin-scroll-lock {
+    overflow: hidden;
+}
+
+/* ---------- 2. sidebar: flat panel, compact density ---------- */
+.admin-sidebar {
+    --sb-bg: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-950) 100%);
+    --sb-border: var(--glass-border);
+    --sb-divider: rgba(255, 255, 255, 0.1);
+    --sb-text: var(--text-secondary);
+    --sb-text-strong: var(--text-primary);
+    --sb-muted: var(--text-muted);
+    --sb-hover: rgba(255, 255, 255, 0.07);
+    --sb-active-bg: linear-gradient(135deg, var(--blue-400), var(--blue-700));
+    --sb-active-text: #fff;
+    --sb-active-shadow: 0 4px 12px rgba(36, 86, 230, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    --sb-sub-bg: rgba(255, 255, 255, 0.05);
+    --sb-sub-active: rgba(255, 255, 255, 0.12);
+    --sb-accent: var(--sky-400);
+    --sb-ring: var(--sky-400);
+
+    /* compact scale (desktop). The short-viewport and touch blocks below only change these. */
+    --sb-row: 32px;
+    --sb-sub-row: 28px;
+    --sb-fs: 12.5px;
+    --sb-sub-fs: 12px;
+
+    position: sticky;
+    top: var(--admin-top); /* = real height of the sticky site header (admin-panel.js keeps it exact) */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: calc(100vh - var(--admin-top));
+    height: calc(100dvh - var(--admin-top));
+    border: 0;
+    border-inline-end: 1px solid var(--sb-border); /* the only border: hairline on the inner edge (left in RTL) */
+    border-radius: 0;
+    background: var(--sb-bg);
+    box-shadow: none;
+    color: var(--sb-text);
+    overflow: hidden;
+}
+
+.admin-sidebar :focus-visible {
+    outline: 2px solid var(--sb-ring);
+    outline-offset: -2px;
+}
+
+.admin-sidebar-head {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    height: 48px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--sb-divider);
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--sb-text-strong);
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.admin-brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 5px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--sb-border);
+    color: var(--sb-accent);
+}
+
+.admin-brand-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.admin-brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+}
+
+.admin-brand-text strong {
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.admin-brand-text small {
+    font-size: 10.5px;
+    color: var(--sb-muted);
+    white-space: nowrap;
+}
+
+.admin-icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--ad-surface-2);
+    border: 1px solid var(--ad-line);
+    color: var(--ad-text-2);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-icon-btn:hover {
+    color: var(--ad-text);
+    border-color: var(--ad-line-strong);
+}
+
+.admin-sidebar .admin-icon-btn {
+    background: var(--sb-hover);
+    border-color: var(--sb-divider);
+    color: var(--sb-text);
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+}
+
+.admin-sidebar .admin-icon-btn .admin-ico {
+    width: 14px;
+    height: 14px;
+}
+
+.admin-sidebar .admin-icon-btn:hover {
+    color: var(--sb-text-strong);
+}
+
+.admin-collapse-btn .admin-ico {
+    transition: transform 0.28s ease;
+}
+
+.admin-shell.is-collapsed .admin-collapse-btn .admin-ico {
+    transform: rotate(180deg);
+}
+
+.admin-close-btn {
+    display: none !important;
+}
+
+/* nav. Normal case never scrolls; on an extremely short viewport it may, with the scrollbar hidden. */
+.admin-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 6px 8px;
+    scrollbar-width: none;
+}
+
+.admin-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.admin-nav-list,
+.admin-sub-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.admin-nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: var(--sb-row);
+    min-height: var(--sb-row);
+    padding: 0 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--sb-text);
+    font-family: inherit;
+    font-size: var(--sb-fs);
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-nav-link:hover {
+    background: var(--sb-hover);
+    color: var(--sb-text-strong);
+}
+
+.admin-nav-link .admin-nav-icon {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.8;
+}
+
+/* current page (a top-level link) and the "active ancestor": the group that holds the current page keeps the pill even when collapsed */
+.admin-nav-link[aria-current="page"],
+.admin-nav-group.is-current > .admin-nav-toggle {
+    background: var(--sb-active-bg);
+    color: var(--sb-active-text);
+    font-weight: 600;
+    box-shadow: var(--sb-active-shadow);
+}
+
+.admin-nav-group.is-open:not(.is-current) > .admin-nav-toggle {
+    color: var(--sb-text-strong);
+}
+
+.admin-nav-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-nav-link .admin-nav-chevron {
+    width: 12px;
+    height: 12px;
+    margin-inline-start: auto;
+    stroke-width: 2;
+    opacity: 0.8;
+    transition: transform 0.18s ease;
+}
+
+.admin-nav-group.is-open > .admin-nav-toggle .admin-nav-chevron {
+    transform: rotate(180deg);
+}
+
+/* sub-menu: an inset surface. ONE group is open at a time (admin-panel.js keeps a single openGroupId);
+   height + opacity animate ~180ms with the grid-rows trick. A closed group is visibility:hidden (+ inert), so it is out of the tab order. */
+.admin-sub {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-top: 0;
+    visibility: hidden;
+    transition: grid-template-rows 0.18s ease, margin-top 0.18s ease, visibility 0s linear 0.18s;
+}
+
+.admin-nav-group.is-open > .admin-sub {
+    grid-template-rows: 1fr;
+    margin-top: 2px;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.admin-sub-list {
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--sb-sub-bg);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.admin-nav-group.is-open > .admin-sub > .admin-sub-list {
+    opacity: 1;
+}
+
+.admin-sub-list::before,
+.admin-sub-list::after {
+    content: "";
+    display: block;
+    height: 3px;
+}
+
+.admin-sub-list > li + li {
+    margin-top: 2px;
+}
+
+.admin-sub-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--sb-sub-row);
+    min-height: var(--sb-sub-row);
+    margin: 0 4px;
+    padding: 0 8px;
+    padding-inline-start: 20px; /* icon starts ~24px from the row edge */
+    border-radius: 8px;
+    color: var(--sb-text);
+    font-size: var(--sb-sub-fs);
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-sub-icon {
+    width: 14px;
+    height: 14px;
+    stroke-width: 1.8;
+    opacity: 0.85;
+}
+
+.admin-sub-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-sub-link:hover {
+    background: var(--sb-hover);
+    color: var(--sb-text-strong);
+}
+
+.admin-sub-link[aria-current="page"] {
+    background: var(--sb-sub-active);
+    color: var(--sb-text-strong);
+    font-weight: 600;
+}
+
+.admin-sub-link[aria-current="page"] .admin-sub-icon {
+    color: var(--sb-accent);
+    opacity: 1;
+}
+
+/* footer: user card + logout */
+.admin-sidebar-foot {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    border-top: 1px solid var(--sb-divider);
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px 6px;
+    border-radius: 8px;
+    background: var(--sb-sub-bg);
+}
+
+.admin-user-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--sb-active-bg);
+    color: var(--sb-active-text);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-user-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+}
+
+.admin-user-meta strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--sb-text-strong);
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.admin-user-meta small {
+    color: var(--sb-muted);
+    font-size: 10.5px;
+}
+
+.admin-logout-form {
+    display: block;
+    margin: 0;
+}
+
+.admin-foot-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: var(--sb-row);
+    min-height: var(--sb-row);
+    padding: 0 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--sb-text);
+    font-family: inherit;
+    font-size: var(--sb-fs);
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-foot-link .admin-ico {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.8;
+}
+
+.admin-foot-link:hover {
+    background: var(--sb-hover);
+    color: var(--sb-text-strong);
+}
+
+.admin-foot-link--danger:hover {
+    background: rgba(255, 100, 130, 0.14);
+    color: #ff9bb0;
+}
+
+.admin-backdrop {
+    position: fixed;
+    inset: var(--admin-top) 0 0 0;
+    z-index: 130;
+    background: rgba(2, 5, 18, 0.6);
+}
+
+.admin-backdrop[hidden] {
+    display: none;
+}
+
+/* short laptop viewports (e.g. 1366x768 => ~650px inner height): tighten so everything still fits without scrolling */
+@media (min-width: 1025px) and (max-height: 720px) {
+    .admin-sidebar {
+        --sb-row: 30px;
+        --sb-sub-row: 26px;
+        --sb-fs: 12px;
+        --sb-sub-fs: 11.5px;
+    }
+
+    .admin-sidebar-head {
+        height: 44px;
+    }
+
+    .admin-nav {
+        padding-block: 4px;
+    }
+
+    .admin-sidebar-foot {
+        padding-block: 4px;
+    }
+
+    .admin-user {
+        padding-block: 3px;
+    }
+
+    .admin-user-avatar {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+/* collapsed icon-only rail: desktop only. Sub-items expand INLINE under their parent (no flyout, the rail never widens). */
+@media (min-width: 1025px) {
+    .admin-shell.is-collapsed {
+        --sb-w: 60px;
+    }
+
+    .admin-shell.is-collapsed .admin-sidebar-head {
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        height: auto;
+        padding: 4px 0;
+    }
+
+    .admin-shell.is-collapsed .admin-brand-text {
+        display: none;
+    }
+
+    .admin-shell.is-collapsed .admin-nav,
+    .admin-shell.is-collapsed .admin-sidebar-foot {
+        padding-inline: 6px;
+    }
+
+    .admin-shell.is-collapsed .admin-nav-label,
+    .admin-shell.is-collapsed .admin-sub-label,
+    .admin-shell.is-collapsed .admin-user-meta {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .admin-shell.is-collapsed .admin-nav-link,
+    .admin-shell.is-collapsed .admin-foot-link {
+        justify-content: center;
+        gap: 2px;
+        padding: 0;
+    }
+
+    .admin-shell.is-collapsed .admin-nav-link .admin-nav-chevron {
+        width: 10px;
+        height: 10px;
+        margin: 0;
+    }
+
+    .admin-shell.is-collapsed .admin-sub-link {
+        justify-content: center;
+        gap: 0;
+        margin: 0 4px;
+        padding: 0;
+    }
+
+    .admin-shell.is-collapsed .admin-user {
+        justify-content: center;
+        padding: 4px 0;
+    }
+}
+
+/* short viewport + rail: logo tile and collapse button share one row, so the rail head is as low as the expanded one */
+@media (min-width: 1025px) and (max-height: 720px) {
+    .admin-shell.is-collapsed .admin-sidebar-head {
+        flex-direction: row;
+        height: 44px;
+        gap: 1px;
+        padding: 0 2px;
+    }
+}
+
+/* ---------- 3. top bar, page header, panel head ---------- */
+.admin-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    margin-bottom: 18px;
+}
+
+.admin-menu-btn {
+    display: none;
+}
+
+.admin-breadcrumb {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.admin-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    color: var(--ad-muted);
+}
+
+.admin-breadcrumb li + li:not([hidden])::before {
+    content: "/";
+    margin-inline-end: 8px;
+    opacity: 0.55;
+}
+
+.admin-breadcrumb li[aria-current="page"] {
+    color: var(--ad-text);
+    font-weight: 700;
+}
+
+.admin-topbar-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.admin-topbar-search {
+    flex: 0 1 280px;
+    min-width: 0;
+}
+
+.admin-topbar-search input {
+    height: 40px;
+}
+
+.admin-bell-dot {
+    position: absolute;
+    top: 9px;
+    inset-inline-end: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ad-accent);
+    box-shadow: 0 0 0 2px var(--ad-bar-bg);
+}
+
+.admin-main .admin-hero {
+    padding: 0 0 20px;
+}
+
+.admin-main .admin-hero-inner {
+    align-items: center;
+    gap: 16px 24px;
+}
+
+.admin-main .eyebrow {
+    margin-bottom: 4px;
+    padding: 5px 12px;
+    font-size: 12px;
+}
+
+.admin-main .admin-hero-title {
+    font-size: clamp(20px, 2.2vw, 28px);
+    margin: 2px 0 6px;
+}
+
+.admin-main .admin-hero-sub {
+    font-size: 13.5px;
+    line-height: 1.8;
+}
+
+.admin-main .admin-hero-stat {
+    padding: 10px 18px;
+    min-width: 96px;
+    border-radius: 16px;
+}
+
+.admin-main .admin-hero-stat-num {
+    font-size: 22px;
+}
+
+.admin-panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px 14px;
+}
+
+.admin-panel-title {
+    margin: 0 0 4px;
+    color: var(--ad-text);
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.admin-panel-desc {
+    margin: 0;
+    max-width: 640px;
+    color: var(--ad-text-2);
+    font-size: 13.5px;
+    line-height: 1.85;
+}
+
+.admin-tag--sample {
+    background: var(--ad-surface-2);
+    color: var(--ad-muted);
+    border: 1px dashed var(--ad-line-strong);
+    white-space: nowrap;
+}
+
+.admin-icon-btn:focus-visible,
+.admin-link-btn:focus-visible {
+    outline: 2px solid var(--ad-focus);
+}
+
+/* ---------- 4. shared components ---------- */
+.admin-row-thumb .admin-ico {
+    width: 26px;
+    height: 26px;
+}
+
+.admin-row-btn .admin-ico {
+    width: 18px;
+    height: 18px;
+}
+
+.admin-empty .admin-empty-btn {
+    margin-top: 16px;
+}
+
+.admin-empty-icon .admin-ico {
+    width: 32px;
+    height: 32px;
+}
+
+.admin-cards--single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-card--wide {
+    max-width: 760px;
+}
+
+.admin-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+}
+
+.admin-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-line);
+}
+
+.admin-stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: rgba(73, 185, 255, 0.14);
+    color: var(--ad-accent);
+}
+
+.admin-stat-value {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.admin-stat-label {
+    margin: 2px 0 0;
+    color: var(--ad-muted);
+    font-size: 12.5px;
+}
+
+.admin-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 18px;
+    align-items: start;
+}
+
+.admin-quick {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+}
+
+.admin-quick-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-line);
+    color: var(--ad-text);
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-quick-btn:hover {
+    background: var(--ad-surface-2);
+    border-color: var(--ad-line-strong);
+}
+
+.admin-quick-btn strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.admin-quick-btn small {
+    display: block;
+    color: var(--ad-muted);
+    font-size: 12px;
+}
+
+.admin-quick-ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: rgba(73, 185, 255, 0.14);
+    color: var(--ad-accent);
+}
+
+.admin-quick-btn--main .admin-quick-ico {
+    background: var(--ad-grad);
+    color: var(--ad-grad-text);
+}
+
+.admin-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-feed li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.admin-feed-dot {
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    margin-top: 7px;
+    border-radius: 50%;
+    background: var(--ad-accent);
+    box-shadow: 0 0 0 4px var(--ad-focus-ring);
+}
+
+.admin-feed p {
+    margin: 0;
+    color: var(--ad-text);
+    font-size: 13.5px;
+    line-height: 1.7;
+}
+
+.admin-feed small {
+    color: var(--ad-muted);
+    font-size: 12px;
+}
+
+.admin-media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.admin-media-tile {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-line);
+}
+
+.admin-media-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 3;
+    background: rgba(73, 185, 255, 0.1);
+    color: var(--ad-accent);
+}
+
+.admin-media-thumb .admin-ico {
+    width: 34px;
+    height: 34px;
+}
+
+.admin-media-tile figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    min-width: 0;
+}
+
+.admin-media-tile strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ad-text);
+    font-size: 12.5px;
+    text-align: end;
+}
+
+.admin-media-tile small {
+    color: var(--ad-muted);
+    font-size: 11.5px;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+    border-radius: 16px;
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-line);
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 460px;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 16px;
+    text-align: start;
+    color: var(--ad-text-2);
+    border-bottom: 1px solid var(--ad-line);
+}
+
+.admin-table thead th {
+    color: var(--ad-muted);
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.admin-table tbody th {
+    color: var(--ad-text);
+    font-weight: 700;
+}
+
+.admin-table tbody tr:last-child th,
+.admin-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.admin-bars {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(40px, 1fr));
+    gap: 10px;
+    height: 240px;
+    overflow-x: auto;
+}
+
+.admin-bar {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    justify-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.admin-bar-fill {
+    align-self: end;
+    width: 100%;
+    max-width: 44px;
+    height: var(--h);
+    min-height: 6px;
+    border-radius: 10px 10px 4px 4px;
+    background: var(--ad-grad);
+}
+
+.admin-bar-val,
+.admin-bar-label {
+    color: var(--ad-muted);
+    font-size: 11.5px;
+    white-space: nowrap;
+}
+
+/* ---------- 5. post editor ---------- */
+.admin-editor-wrap {
+    container-type: inline-size;
+    container-name: aed;
+}
+
+.admin-ed-bar {
+    position: sticky;
+    top: calc(var(--admin-top) + 8px);
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 14px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: var(--ad-bar-bg);
+    border: 1px solid var(--ad-line-strong);
+    box-shadow: var(--shadow-soft);
+}
+
+.admin-ed-status {
+    margin: 0;
+    color: var(--ad-muted);
+    font-size: 12.5px;
+}
+
+.admin-ed-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-btn-sm {
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 13.5px;
+}
+
+.admin-btn-sm .admin-ico {
+    width: 16px;
+    height: 16px;
+}
+
+.admin-ed-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: var(--ad-surface);
+    border: 1px dashed var(--ad-line-strong);
+    color: var(--ad-text-2);
+    font-size: 13px;
+}
+
+.admin-ed-banner[hidden] {
+    display: none;
+}
+
+.admin-ed-banner p {
+    flex: 1 1 auto;
+    margin: 0;
+    line-height: 1.8;
+}
+
+.admin-ed-banner-note {
+    color: var(--ad-muted);
+}
+
+.admin-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    gap: 18px;
+    align-items: start;
+}
+
+.admin-ed-main,
+.admin-ed-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.admin-ed-aside {
+    position: sticky;
+    top: calc(var(--admin-top) + 84px);
+    max-height: calc(100vh - var(--admin-top) - 100px);
+    max-height: calc(100dvh - var(--admin-top) - 100px);
+    overflow-y: auto;
+    padding-inline-end: 2px;
+    scrollbar-width: thin;
+}
+
+@container aed (max-width: 860px) {
+    .admin-editor {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-ed-aside {
+        position: static;
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+.admin-editor .admin-card {
+    padding: 20px;
+}
+
+.admin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+    min-width: 0;
+}
+
+.admin-field:last-child {
+    margin-bottom: 0;
+}
+
+.admin-field > label,
+.admin-label {
+    color: var(--ad-text-2);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.admin-req {
+    color: var(--ad-danger);
+}
+
+.admin-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.admin-counter {
+    color: var(--ad-muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-counter.is-near {
+    color: var(--ad-warn);
+}
+
+.admin-field-hint {
+    margin: 0;
+    color: var(--ad-muted);
+    font-size: 12px;
+}
+
+.admin-field-error {
+    margin: 0;
+    color: var(--ad-danger);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.admin-field-error[hidden] {
+    display: none;
+}
+
+.admin-zone .profile-input.is-invalid,
+.admin-rte.is-invalid,
+.admin-drop.is-invalid {
+    border-color: var(--ad-danger);
+    box-shadow: 0 0 0 3px var(--ad-danger-ring);
+}
+
+.admin-select {
+    cursor: pointer;
+}
+
+.admin-select option {
+    background: var(--navy-900);
+    color: var(--text-primary);
+}
+
+.admin-inline-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.admin-inline-add[hidden] {
+    display: none;
+}
+
+.admin-inline-add .profile-input {
+    flex: 1 1 160px;
+    width: auto;
+    min-width: 0;
+}
+
+.admin-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ad-accent);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-link-btn:hover {
+    text-decoration: underline;
+}
+
+.admin-link-btn .admin-ico {
+    width: 15px;
+    height: 15px;
+}
+
+.admin-link-btn--danger {
+    color: var(--ad-danger);
+}
+
+/* rich-text editor */
+.admin-rte {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--ad-field-bg);
+    border: 1px solid var(--ad-line-strong);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-rte:focus-within {
+    border-color: var(--ad-focus);
+    box-shadow: 0 0 0 3px var(--ad-focus-ring);
+}
+
+.admin-rte-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    background: var(--ad-surface-2);
+    border-bottom: 1px solid var(--ad-line);
+}
+
+.admin-rte-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--ad-text-2);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-rte-btn:hover {
+    background: var(--ad-surface-2);
+    color: var(--ad-text);
+    border-color: var(--ad-line);
+}
+
+.admin-rte-btn[aria-pressed="true"] {
+    background: var(--ad-grad);
+    color: var(--ad-grad-text);
+}
+
+.admin-rte-btn .admin-ico {
+    width: 18px;
+    height: 18px;
+}
+
+.admin-rte-glyph {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.admin-rte-glyph--b {
+    font-weight: 900;
+}
+
+.admin-rte-glyph--i {
+    font-style: italic;
+    font-family: Georgia, serif;
+}
+
+.admin-rte-glyph--u {
+    text-decoration: underline;
+}
+
+.admin-rte-sep {
+    width: 1px;
+    height: 22px;
+    margin: 0 4px;
+    background: var(--ad-line-strong);
+}
+
+.admin-rte-link {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    background: var(--ad-surface);
+    border-bottom: 1px solid var(--ad-line);
+}
+
+.admin-rte-link[hidden] {
+    display: none;
+}
+
+.admin-rte-link .profile-input {
+    flex: 1 1 200px;
+    width: auto;
+    min-width: 0;
+    height: 40px;
+}
+
+.admin-rte-area {
+    min-height: 260px;
+    padding: 16px;
+    color: var(--ad-text);
+    font-size: 15px;
+    line-height: 2;
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.admin-rte-area.is-empty::before {
+    content: attr(data-placeholder);
+    float: inline-start;
+    height: 0;
+    color: var(--text-faint);
+    pointer-events: none;
+}
+
+.admin-rte-area > :first-child,
+.admin-article > :first-child {
+    margin-top: 0;
+}
+
+.admin-rte-area p,
+.admin-article p {
+    margin: 0 0 0.8em;
+}
+
+.admin-rte-area h2,
+.admin-article h2 {
+    margin: 1em 0 0.4em;
+    font-size: 1.35em;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.admin-rte-area h3,
+.admin-article h3 {
+    margin: 0.9em 0 0.4em;
+    font-size: 1.15em;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.admin-rte-area ul,
+.admin-rte-area ol,
+.admin-article ul,
+.admin-article ol {
+    margin: 0 0 0.8em;
+    padding-inline-start: 1.6em;
+}
+
+.admin-rte-area ul,
+.admin-article ul {
+    list-style: disc;
+}
+
+.admin-rte-area ol,
+.admin-article ol {
+    list-style: decimal;
+}
+
+.admin-rte-area blockquote,
+.admin-article blockquote {
+    margin: 0 0 0.8em;
+    padding: 2px 14px;
+    border-inline-start: 3px solid var(--ad-accent);
+    color: var(--ad-text-2);
+}
+
+.admin-rte-area a,
+.admin-article a {
+    color: var(--ad-accent);
+    text-decoration: underline;
+}
+
+/* dynamic lists */
+.admin-ed-lists {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.admin-dyn-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-dyn-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-dyn-row .profile-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    height: 42px;
+}
+
+.admin-dyn-empty {
+    margin: 0;
+    color: var(--ad-muted);
+    font-size: 12.5px;
+}
+
+.admin-dyn-empty[hidden] {
+    display: none;
+}
+
+.admin-pref {
+    margin-top: 6px;
+    padding-inline: 0;
+}
+
+/* cover image */
+.admin-drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 22px 14px;
+    border-radius: 16px;
+    border: 2px dashed var(--ad-line-strong);
+    background: var(--ad-surface);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.admin-drop[hidden] {
+    display: none;
+}
+
+.admin-drop:hover,
+.admin-drop.is-drag {
+    border-color: var(--ad-accent);
+    background: var(--ad-surface-2);
+}
+
+.admin-drop:focus-within {
+    outline: 2px solid var(--ad-focus);
+    outline-offset: 2px;
+}
+
+.admin-drop-ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(73, 185, 255, 0.14);
+    color: var(--ad-accent);
+}
+
+.admin-drop-title {
+    color: var(--ad-text);
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.admin-drop-sub {
+    color: var(--ad-muted);
+    font-size: 12px;
+}
+
+.admin-cover[hidden] {
+    display: none;
+}
+
+.admin-cover img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid var(--ad-line);
+}
+
+.admin-cover-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    color: var(--ad-muted);
+    font-size: 12px;
+}
+
+.admin-cover-meta span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* live preview (same classes as the real news card) */
+.admin-preview-card {
+    pointer-events: none;
+}
+
+.admin-preview-card .news-card {
+    transform: none !important;
+}
+
+.admin-preview-img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-preview-img[hidden],
+.admin-preview-card .badge[hidden],
+.admin-preview-card .ph-mono-wrap[hidden] {
+    display: none;
+}
+
+.admin-preview-card .news-card-title {
+    overflow-wrap: anywhere;
+}
+
+/* full preview modal */
+.admin-modal-card--wide {
+    width: min(760px, 100%);
+}
+
+.admin-article {
+    color: var(--ad-text);
+    font-size: 15px;
+    line-height: 2;
+    overflow-wrap: anywhere;
+}
+
+.admin-article-cat {
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.admin-article h2.admin-article-title {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.admin-article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 0 0 14px;
+    color: var(--ad-muted);
+    font-size: 12.5px;
+}
+
+.admin-article-cover {
+    display: block;
+    width: 100%;
+    max-height: 320px;
+    margin: 0 0 14px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.admin-article-summary {
+    color: var(--ad-text-2);
+    font-weight: 600;
+}
+
+.admin-article h4 {
+    margin: 1em 0 0.3em;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.admin-modal {
+    padding-top: calc(var(--admin-top) + 12px);
+}
+
+.admin-modal-card {
+    max-height: calc(100vh - var(--admin-top) - 36px);
+    max-height: calc(100dvh - var(--admin-top) - 36px);
+}
+
+/* ---------- 6. toasts + tooltip ---------- */
+.admin-toasts {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 20px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    pointer-events: none;
+}
+
+.admin-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: min(560px, 100%);
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: var(--ad-toast-bg);
+    border: 1px solid var(--ad-line-strong);
+    color: var(--ad-text);
+    font-size: 13.5px;
+    line-height: 1.8;
+    box-shadow: var(--shadow-soft);
+    pointer-events: auto;
+    animation: admin-toast-in 0.25s ease;
+}
+
+.admin-toast .admin-ico {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+}
+
+.admin-toast--success {
+    border-color: var(--ad-ok-line);
+}
+
+.admin-toast--success .admin-ico {
+    color: var(--ad-ok);
+}
+
+.admin-toast--error {
+    border-color: var(--ad-danger-line);
+}
+
+.admin-toast--error .admin-ico {
+    color: var(--ad-danger);
+}
+
+.admin-toast--info .admin-ico {
+    color: var(--ad-accent);
+}
+
+.admin-toast-close {
+    flex-shrink: 0;
+    margin-inline-start: 4px;
+    padding: 2px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ad-muted);
+    cursor: pointer;
+}
+
+.admin-toast-close .admin-ico {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    color: inherit;
+}
+
+@keyframes admin-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.admin-tip {
+    position: fixed;
+    z-index: 300;
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: var(--ad-tip-bg);
+    border: 1px solid var(--ad-line-strong);
+    color: var(--ad-tip-text);
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: var(--shadow-soft);
+}
+
+.admin-tip[hidden] {
+    display: none;
+}
+
+/* ---------- 7. responsive ---------- */
+@media (max-width: 1024px) {
+    .admin-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-main {
+        padding-top: 14px;
+    }
+
+    .admin-menu-btn {
+        display: inline-flex;
+    }
+
+    .admin-collapse-btn {
+        display: none !important;
+    }
+
+    .admin-close-btn {
+        display: inline-flex !important;
+    }
+
+    /* off-canvas drawer: same compact look, touch-sized rows (>= 38px), scrolling inside is allowed */
+    .admin-sidebar {
+        --sb-row: 38px;
+        --sb-sub-row: 38px;
+
+        position: fixed;
+        top: var(--admin-top);
+        bottom: 0;
+        inset-inline-start: 0;
+        z-index: 140;
+        width: min(264px, 88vw);
+        /* top + bottom:0 pin the drawer between the header and the bottom of the visible area; the max-height cap
+           (100vh fallback, then 100dvh) keeps it from ever reaching below the visible viewport on mobile browsers */
+        height: auto;
+        max-height: calc(100vh - var(--admin-top));
+        max-height: calc(100dvh - var(--admin-top));
+        border-radius: 0;
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 0.3s ease, visibility 0s linear 0.3s;
+    }
+
+    .admin-shell.is-drawer-open .admin-sidebar {
+        transform: none;
+        visibility: visible;
+        transition-delay: 0s;
+    }
+
+    /* flex column: brand and bottom area never shrink or scroll away; only the nav list scrolls (scrollbar hidden) */
+    .admin-sidebar-head,
+    .admin-sidebar-foot {
+        flex: none;
+    }
+
+    .admin-nav {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    .admin-sidebar-foot {
+        /* extra band under the user card/logout: on some phones (Chrome with the address bar shown, gesture/nav bar) the page
+           is told it is taller than what is really visible, so the very bottom of a fixed drawer is cut off. Adjust --drawer-safe-bottom if needed. */
+        padding-bottom: calc(10px + var(--drawer-safe-bottom, 64px) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .admin-sidebar .admin-close-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .admin-sidebar .admin-close-btn .admin-ico {
+        width: 16px;
+        height: 16px;
+    }
+
+    .admin-ed-bar {
+        top: calc(var(--admin-top) + 6px);
+    }
+}
+
+@supports not (height: 100dvh) {
+    @media (max-width: 1024px) {
+        .admin-sidebar {
+            max-height: calc(var(--app-vh, 1vh) * 100 - var(--admin-top));
+        }
+    }
+}
+
+/* mobile drawer: size it from the REAL visible height (visualViewport, written to --vv-h by admin-panel.js) so the
+   bottom area (user card + logout) always sits on the bottom edge of what the user can see, with the address bar
+   shown or hidden. Falls back to 100dvh if the variable is missing. Specificity is higher than the rules above on purpose. */
+@media (max-width: 1024px) {
+    .admin-zone .admin-sidebar {
+        bottom: auto;
+        height: calc(100vh - var(--admin-top));
+        height: calc(var(--vv-h, 100dvh) - var(--admin-top));
+        max-height: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .admin-topbar-tools {
+        flex: 1 1 100%;
+        order: 3;
+    }
+
+    .admin-topbar-search {
+        flex: 1 1 auto;
+    }
+
+    .admin-editor .admin-card {
+        padding: 16px;
+    }
+
+    .admin-ed-bar {
+        position: static;
+    }
+
+    .admin-ed-actions {
+        width: 100%;
+    }
+
+    .admin-ed-actions .btn {
+        flex: 1 1 auto;
+    }
+
+    .admin-panel-title {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 420px) {
+    .admin-main {
+        padding-inline: 10px;
+    }
+
+    .admin-main .admin-hero-stat {
+        padding: 8px 10px;
+        min-width: 0;
+    }
+
+    .admin-stat-card {
+        padding: 14px;
+    }
+
+    .admin-bars {
+        gap: 6px;
+    }
+}
+
+/* ---------- logout confirmation (extends the .admin-modal pattern from site.css) ---------- */
+.admin-modal-card--confirm {
+    width: min(400px, 100%);
+    padding: 24px;
+    text-align: center;
+}
+
+.admin-confirm-ico {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    background: var(--ad-danger-ring);
+    border: 1px solid var(--ad-danger-line);
+    color: var(--ad-danger);
+}
+
+.admin-confirm-ico .admin-ico {
+    width: 20px;
+    height: 20px;
+}
+
+.admin-modal-card--confirm .admin-modal-sub {
+    margin-bottom: 4px;
+}
+
+.admin-modal-card--confirm .admin-modal-actions {
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.admin-modal-card--confirm .btn {
+    min-width: 112px;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+/* ---------- 8. reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .admin-zone *,
+    .admin-zone *::before,
+    .admin-zone *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+    }
+}
+
+/* ---------- 9. page-level guard ----------
+   The shared header's CLOSED user dropdown (_Layout, untouched) is only hidden with opacity/visibility, so on narrow
+   screens it still stretched the document sideways (61px at 375px) and a body scroll-lock then shifted the page.
+   On this page only, a closed dropdown takes no space; @starting-style keeps the fade-in where supported. */
+.site-header .header-user-menu:not(.is-open) .header-user-dropdown {
+    display: none;
+}
+
+@starting-style {
+    .site-header .header-user-menu.is-open .header-user-dropdown {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+}

@@ -1,0 +1,66 @@
+@* Existing settings cards, split into two panels (general / comments). UI only: nothing is saved. *@
+<section class="admin-panel" data-panel="settings-general" aria-label="تنظیمات عمومی">
+    <header class="admin-panel-head">
+        <div>
+            <h2 class="admin-panel-title">تنظیمات عمومی</h2>
+            <p class="admin-panel-desc">نام، شعار و اطلاعات تماس سایت.</p>
+        </div>
+    </header>
+    <div class="admin-cards admin-cards--single">
+        <div class="admin-card glass-strong admin-card--wide">
+            <h3>تنظیمات عمومی سایت</h3>
+            <div class="admin-form-row">
+                <label>نام سایت</label>
+                <input type="text" class="profile-input" value="کافینت آریا">
+            </div>
+            <div class="admin-form-row">
+                <label>شعار</label>
+                <input type="text" class="profile-input" value="همیشه یک قدم جلوتر از شما">
+            </div>
+            <div class="admin-form-row">
+                <label>ایمیل پشتیبانی</label>
+                <input type="email" class="profile-input" dir="ltr" value="ariacafeenet@gmail.com">
+            </div>
+            <div class="admin-form-row">
+                <label>توضیحات سایت (SEO)</label>
+                <textarea class="profile-input profile-textarea" rows="3">ارائه انواع خدمات اینترنتی، ثبت نام، پرداخت قبوض و خدمات دانشجویی در بهبهان.</textarea>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="admin-panel" data-panel="settings-comments" aria-label="تنظیمات نظرات">
+    <header class="admin-panel-head">
+        <div>
+            <h2 class="admin-panel-title">تنظیمات نظرات</h2>
+            <p class="admin-panel-desc">قوانین ثبت و نمایش دیدگاه‌ها.</p>
+        </div>
+    </header>
+    <div class="admin-cards admin-cards--single">
+        <div class="admin-card glass-strong admin-card--wide">
+            <h3>تنظیمات نظرات</h3>
+            <div class="profile-pref">
+                <div>
+                    <p class="profile-pref-name">نیاز به تأیید مدیر</p>
+                    <p class="profile-pref-desc">دیدگاه‌ها قبل از نمایش عمومی توسط مدیر تأیید شوند.</p>
+                </div>
+                <label class="profile-switch"><input type="checkbox"><span class="profile-switch-track"><span class="profile-switch-thumb"></span></span></label>
+            </div>
+            <div class="profile-pref">
+                <div>
+                    <p class="profile-pref-name">فقط کاربران لاگین کرده</p>
+                    <p class="profile-pref-desc">فقط کاربران وارد شده بتوانند دیدگاه بگذارند.</p>
+                </div>
+                <label class="profile-switch"><input type="checkbox" checked><span class="profile-switch-track"><span class="profile-switch-thumb"></span></span></label>
+            </div>
+            <div class="profile-pref">
+                <div>
+                    <p class="profile-pref-name">سیستم لایک</p>
+                    <p class="profile-pref-desc">امکان لایک کردن دیدگاه‌ها.</p>
+                </div>
+                <label class="profile-switch"><input type="checkbox" checked><span class="profile-switch-track"><span class="profile-switch-thumb"></span></span></label>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,256 @@
+@* Generic UI-only panels. Each entry becomes one section.admin-panel[data-panel=Id].
+   Everything is sample data, clearly labeled; actions are disabled / no-op. Layout kinds: list, grid, table, bars, toggles, empty.
+   Row tuple = (title, description, tag text, tag class suffix [ok|warn|admin|""], meta). *@
+@{
+    var panels = new (string Id, string Title, string Desc, string Kind, string Search, string Action, string Icon, string EmptyTitle, string EmptyText, (string T, string D, string Tag, string Cls, string M)[] Rows)[]
+    {
+        ("drafts", "پیش‌نویس‌ها", "خبرهایی که هنوز منتشر نشده‌اند.", "list", "جستجوی پیش‌نویس...", "پیش‌نویس جدید (به‌زودی)", "ad-edit", "", "",
+            new[] {
+                ("پیش‌نویس: ثبت‌نام آزمون سراسری", "متن خبر هنوز کامل نشده است.", "پیش‌نویس", "warn", "آخرین ویرایش: دیروز"),
+                ("پیش‌نویس: تغییر ساعت کاری", "فقط عنوان و خلاصه نوشته شده است.", "پیش‌نویس", "warn", "آخرین ویرایش: ۳ روز پیش") }),
+
+        ("categories", "دسته‌بندی‌ها", "دسته‌بندی‌های خبرها.", "list", "جستجوی دسته‌بندی...", "افزودن دسته (به‌زودی)", "ad-folder", "", "",
+            new[] {
+                ("ثبت نام", "خبرهای مربوط به ثبت‌نام و آزمون‌ها", "", "", "۸ خبر"),
+                ("خدمات دانشجویی", "اطلاعیه‌ها و مهلت‌های دانشجویی", "", "", "۶ خبر"),
+                ("پرداخت قبوض", "راهنمای پرداخت قبوض", "", "", "۳ خبر"),
+                ("اطلاعیه", "اطلاعیه‌های عمومی کافینت", "", "", "۷ خبر") }),
+
+        ("tags", "برچسب‌ها", "برچسب‌های قابل استفاده در خبرها.", "list", "جستجوی برچسب...", "افزودن برچسب (به‌زودی)", "ad-tag", "", "",
+            new[] {
+                ("آزمون", "", "", "", "۵ خبر"),
+                ("دانشگاه", "", "", "", "۴ خبر"),
+                ("مهلت ثبت‌نام", "", "", "", "۳ خبر") }),
+
+        ("media", "کتابخانه رسانه", "تصاویر و فایل‌هایی که در خبرها استفاده می‌شوند.", "grid", "", "بارگذاری فایل (به‌زودی)", "ad-image", "", "",
+            new[] {
+                ("cover-01.webp", "", "", "", "۱۲۰ کیلوبایت"),
+                ("cover-02.webp", "", "", "", "۹۵ کیلوبایت"),
+                ("banner.png", "", "", "", "۲۴۰ کیلوبایت"),
+                ("cover-03.jpg", "", "", "", "۱۸۰ کیلوبایت"),
+                ("poster.webp", "", "", "", "۶۵ کیلوبایت"),
+                ("cover-04.webp", "", "", "", "۱۱۰ کیلوبایت") }),
+
+        ("comments-pending", "دیدگاه‌های در انتظار تأیید", "دیدگاه‌هایی که منتظر بررسی مدیر هستند.", "list", "جستجو در دیدگاه‌ها...", "", "", "", "",
+            new[] {
+                ("سارا احمدی", "آیا برای ثبت‌نام باید اصل مدارک را همراه داشت؟", "در انتظار", "warn", "روی: نمونه خبر دوم"),
+                ("رضا کریمی", "ممنون از اطلاع‌رسانی، خیلی مفید بود.", "در انتظار", "warn", "روی: نمونه خبر اول") }),
+
+        ("comments-reported", "دیدگاه‌های گزارش‌شده", "دیدگاه‌هایی که کاربران گزارش کرده‌اند.", "empty", "", "", "ad-flag", "گزارشی ثبت نشده", "وقتی کاربران دیدگاهی را گزارش کنند، اینجا نمایش داده می‌شود.", null),
+
+        ("requests-all", "همه درخواست‌ها", "درخواست‌هایی که مشتریان از بخش «ثبت درخواست» ارسال کرده‌اند.", "list", "جستجوی درخواست...", "", "ad-inbox", "", "",
+            new[] {
+                ("ثبت‌نام آزمون سراسری", "درخواست جدید از طرف علی محمدی", "جدید", "warn", "امروز"),
+                ("پرینت و صحافی پایان‌نامه", "۱۲۰ صفحه، رنگی", "در حال بررسی", "warn", "دیروز"),
+                ("پرداخت قبض", "قبض آب و برق", "تکمیل‌شده", "ok", "۳ روز پیش") }),
+
+        ("requests-review", "درخواست‌های در حال بررسی", "درخواست‌هایی که در حال پیگیری هستند.", "list", "جستجوی درخواست...", "", "ad-clock", "", "",
+            new[] {
+                ("پرینت و صحافی پایان‌نامه", "۱۲۰ صفحه، رنگی", "در حال بررسی", "warn", "دیروز") }),
+
+        ("requests-done", "درخواست‌های تکمیل‌شده", "درخواست‌هایی که انجام شده‌اند.", "list", "جستجوی درخواست...", "", "ad-check", "", "",
+            new[] {
+                ("پرداخت قبض", "قبض آب و برق", "تکمیل‌شده", "ok", "۳ روز پیش") }),
+
+        ("home-services", "مدیریت خدمات", "کارت‌های خدماتی که در صفحه اصلی نمایش داده می‌شوند.", "list", "جستجوی خدمت...", "افزودن خدمت (به‌زودی)", "ad-printer", "", "",
+            new[] {
+                ("چاپ و تکثیر", "پرینت، اسکن و صحافی", "فعال", "ok", "ترتیب نمایش: ۱"),
+                ("ثبت‌نام و خدمات اداری", "ثبت‌نام آزمون‌ها و سامانه‌ها", "فعال", "ok", "ترتیب نمایش: ۲"),
+                ("پرداخت قبوض", "پرداخت قبوض و شارژ", "فعال", "ok", "ترتیب نمایش: ۳") }),
+
+        ("home-whyus", "کارت‌های «چرا آریا»", "کارت‌های ویژگی در بخش «چرا آریا» صفحه اصلی.", "list", "جستجوی کارت...", "افزودن کارت (به‌زودی)", "ad-shield", "", "",
+            new[] {
+                ("سرعت در انجام کار", "کارها در کوتاه‌ترین زمان انجام می‌شود.", "فعال", "ok", "ترتیب نمایش: ۱"),
+                ("اعتماد و امانتداری", "اطلاعات مشتریان محفوظ می‌ماند.", "فعال", "ok", "ترتیب نمایش: ۲") }),
+
+        ("users-roles", "نقش‌ها و دسترسی‌ها", "سطح دسترسی هر نقش در پنل مدیریت.", "table", "", "", "", "", "",
+            new[] {
+                ("مدیر", "✓", "✓", "", "✓"),
+                ("ناظر", "✓", "✓", "", "—"),
+                ("کاربر عادی", "—", "—", "", "—") }),
+
+        ("reports-visits", "آمار بازدید", "بازدید روزانه سایت در هفته گذشته.", "bars", "", "", "", "", "",
+            new[] {
+                ("شنبه", "۳۲۰", "", "", "40"),
+                ("یکشنبه", "۴۵۰", "", "", "56"),
+                ("دوشنبه", "۵۱۰", "", "", "64"),
+                ("سه‌شنبه", "۴۱۰", "", "", "52"),
+                ("چهارشنبه", "۶۲۰", "", "", "78"),
+                ("پنجشنبه", "۷۴۰", "", "", "92"),
+                ("جمعه", "۴۳۰", "", "", "54") }),
+
+        ("reports-activity", "گزارش فعالیت‌ها", "رویدادهای اخیر پنل مدیریت.", "list", "جستجو در فعالیت‌ها...", "", "ad-clock", "", "",
+            new[] {
+                ("ورود به پنل مدیریت", "ورود موفق", "", "", "امروز"),
+                ("ویرایش پیش‌نویس", "«نمونه خبر دوم»", "", "", "دیروز"),
+                ("تأیید دیدگاه", "روی «نمونه خبر اول»", "", "", "دیروز") }),
+
+        ("settings-appearance", "ظاهر سایت", "گزینه‌های نمایش سایت.", "toggles", "", "", "", "", "",
+            new[] {
+                ("نمایش بخش اخبار در صفحه اصلی", "آخرین خبرها در صفحه اصلی نمایش داده شوند.", "1", "", ""),
+                ("نمایش ستاره‌های متحرک", "انیمیشن پس‌زمینه در صفحه‌ها.", "1", "", ""),
+                ("نمایش نشان «جدید» روی خبرهای تازه", "", "1", "", "") }),
+
+        ("settings-notifications", "اعلان‌ها", "اعلان‌هایی که مدیر دریافت می‌کند.", "toggles", "", "", "", "", "",
+            new[] {
+                ("اعلان دیدگاه جدید", "با ثبت هر دیدگاه اعلان بگیرید.", "1", "", ""),
+                ("اعلان درخواست جدید", "با ثبت هر درخواست اعلان بگیرید.", "1", "", ""),
+                ("خلاصه هفتگی ایمیلی", "", "", "", "") }),
+
+        ("settings-security", "امنیت", "تنظیمات امنیتی حساب‌ها.", "toggles", "", "", "", "", "",
+            new[] {
+                ("ورود دومرحله‌ای مدیران", "برای ورود مدیر، تأیید دوم هم لازم باشد.", "", "", ""),
+                ("خروج خودکار پس از عدم فعالیت", "", "1", "", ""),
+                ("ثبت سابقه ورودها", "", "1", "", "") }),
+
+        ("settings-backup", "پشتیبان‌گیری", "تهیه و بازیابی نسخه پشتیبان.", "empty", "", "تهیه نسخه پشتیبان (به‌زودی)", "ad-database", "هنوز نسخه پشتیبانی وجود ندارد", "این بخش بعد از اتصال بک‌اند فعال می‌شود.", null)
+    };
+}
+@foreach (var p in panels)
+{
+    <section class="admin-panel" data-panel="@p.Id" aria-label="@p.Title">
+        <header class="admin-panel-head">
+            <div>
+                <h2 class="admin-panel-title">@p.Title</h2>
+                <p class="admin-panel-desc">@p.Desc</p>
+            </div>
+            <span class="admin-tag admin-tag--sample">داده نمونه</span>
+        </header>
+
+        @if (p.Kind == "list" || p.Kind == "grid")
+        {
+            <div class="admin-toolbar">
+                @if (!string.IsNullOrEmpty(p.Search))
+                {
+                    <div class="admin-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                        <input type="search" placeholder="@p.Search" aria-label="@p.Search">
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(p.Action))
+                {
+                    <button class="btn btn-ghost" type="button" disabled>
+                        <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                        <span>@p.Action</span>
+                    </button>
+                }
+            </div>
+        }
+
+        @if (p.Kind == "list")
+        {
+            <div class="admin-list">
+                @foreach (var r in p.Rows)
+                {
+                    <article class="admin-row">
+                        <div class="admin-row-thumb">
+                            @if (string.IsNullOrEmpty(p.Icon))
+                            {
+                                @r.T.Substring(0, 1)
+                            }
+                            else
+                            {
+                                <svg class="admin-ico" aria-hidden="true"><use href="#@p.Icon"></use></svg>
+                            }
+                        </div>
+                        <div class="admin-row-body">
+                            <h4>@r.T</h4>
+                            @if (!string.IsNullOrEmpty(r.D))
+                            {
+                                <p>@r.D</p>
+                            }
+                            <div class="admin-row-meta">
+                                @if (!string.IsNullOrEmpty(r.Tag))
+                                {
+                                    <span class="admin-tag @(string.IsNullOrEmpty(r.Cls) ? "" : "admin-tag--" + r.Cls)">@r.Tag</span>
+                                }
+                                @if (!string.IsNullOrEmpty(r.M))
+                                {
+                                    <span>@r.M</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="admin-row-actions">
+                            <button class="admin-row-btn" type="button" title="ویرایش (به‌زودی)" aria-label="ویرایش" disabled>
+                                <svg class="admin-ico" aria-hidden="true"><use href="#ad-edit"></use></svg>
+                            </button>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else if (p.Kind == "grid")
+        {
+            <div class="admin-media-grid">
+                @foreach (var r in p.Rows)
+                {
+                    <figure class="admin-media-tile">
+                        <div class="admin-media-thumb"><svg class="admin-ico" aria-hidden="true"><use href="#ad-image"></use></svg></div>
+                        <figcaption><strong dir="ltr">@r.T</strong><small>@r.M</small></figcaption>
+                    </figure>
+                }
+            </div>
+        }
+        else if (p.Kind == "table")
+        {
+            <div class="admin-table-wrap" tabindex="0" role="region" aria-label="@p.Title">
+                <table class="admin-table">
+                    <thead><tr><th scope="col">نقش</th><th scope="col">اخبار</th><th scope="col">دیدگاه‌ها</th><th scope="col">کاربران</th></tr></thead>
+                    <tbody>
+                        @foreach (var r in p.Rows)
+                        {
+                            <tr><th scope="row">@r.T</th><td>@r.D</td><td>@r.Tag</td><td>@r.M</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (p.Kind == "bars")
+        {
+            <div class="admin-card glass-strong">
+                <div class="admin-bars" role="img" aria-label="نمودار نمونه بازدید روزانه">
+                    @foreach (var r in p.Rows)
+                    {
+                        <div class="admin-bar"><span class="admin-bar-val">@r.D</span><span class="admin-bar-fill" style="--h:@(r.M)%"></span><span class="admin-bar-label">@r.T</span></div>
+                    }
+                </div>
+            </div>
+        }
+        else if (p.Kind == "toggles")
+        {
+            <div class="admin-cards admin-cards--single">
+                <div class="admin-card glass-strong admin-card--wide">
+                    @foreach (var r in p.Rows)
+                    {
+                        <div class="profile-pref">
+                            <div>
+                                <p class="profile-pref-name">@r.T</p>
+                                @if (!string.IsNullOrEmpty(r.D))
+                                {
+                                    <p class="profile-pref-desc">@r.D</p>
+                                }
+                            </div>
+                            <label class="profile-switch">
+                                <input type="checkbox" aria-label="@r.T" checked="@(r.Tag == "1")"><span class="profile-switch-track"><span class="profile-switch-thumb"></span></span>
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else if (p.Kind == "empty")
+        {
+            <div class="admin-empty">
+                <div class="admin-empty-icon"><svg class="admin-ico" aria-hidden="true"><use href="#@p.Icon"></use></svg></div>
+                <h3>@p.EmptyTitle</h3>
+                <p>@p.EmptyText</p>
+                @if (!string.IsNullOrEmpty(p.Action))
+                {
+                    <button class="btn btn-ghost admin-empty-btn" type="button" disabled><span>@p.Action</span></button>
+                }
+            </div>
+        }
+
+        <p class="profile-hint profile-hint--block admin-hint-block">بک‌اند این بخش بعداً اضافه می‌شود. در حال حاضر فقط رابط کاربری آماده است.</p>
+    </section>
+}
