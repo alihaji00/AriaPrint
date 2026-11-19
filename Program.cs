@@ -1,12 +1,18 @@
 ﻿using AriaPrint.BL;
 using AriaPrint.Repository;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
+using System.IO;
+using System.Security.Claims;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +22,28 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromDays(14);
-        options.SlidingExpiration = true;
+        options.SlidingExpiration = false;
+
+        options.Events.OnValidatePrincipal = async context =>
+        {
+            var claimId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(claimId, out var userId))
+            {
+                context.RejectPrincipal();
+                await context.HttpContext.SignOutAsync();
+                return;
+            }
+
+            var userRepo = context.HttpContext.RequestServices.GetRequiredService<UserRepository>();
+            var user = await userRepo.GetByIdAsync(userId);
+
+            var cookieRole = context.Principal!.FindFirst(ClaimTypes.Role)?.Value;
+            if (user == null || user.Role != cookieRole)
+            {
+                context.RejectPrincipal();
+                await context.HttpContext.SignOutAsync();
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -29,7 +56,46 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = 429;
+    options.OnRejected = async (ctx, ct) =>
+    {
+        var http = ctx.HttpContext;
+
+        var seconds = 60;
+        if (ctx.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retry))
+            seconds = (int)Math.Ceiling(retry.TotalSeconds);
+
+        http.Response.StatusCode = 429;
+        http.Response.Headers.RetryAfter = seconds.ToString();
+        http.Response.ContentType = "text/html; charset=utf-8";
+
+        var env = http.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        var html = await File.ReadAllTextAsync(Path.Combine(env.WebRootPath, "error-429.html"), ct);
+        await http.Response.WriteAsync(html.Replace("{{SECONDS}}", seconds.ToString()), ct);
+    };
+    options.AddPolicy("Login", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
+
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    var h = context.Response.Headers;
+    h["X-Content-Type-Options"] = "nosniff";
+    h["X-Frame-Options"] = "DENY";
+    h["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    h["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+    await next();
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -46,15 +112,7 @@ using (var scope = app.Services.CreateScope())
 
     if (existingAdmin == null)
     {
-        var admin = new AppUser
-        {
-            FirstName = "پشتیبانی",
-            LastName = "کافینت آریا",
-            PhoneNumber = adminPhoneNumber,
-            PasswordHash = passwordService.HashPassword("Aa@123456"),
-            Role = "Admin"
-        };
-        await userRepo.CreateAsync(admin);
+        throw new Exception("ادمینی پیدا نشد!");
     }
 }
 
@@ -70,6 +128,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

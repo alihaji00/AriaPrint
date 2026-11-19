@@ -13,7 +13,7 @@ namespace AriaPrint.Models
         [Required(ErrorMessage = "شماره موبایل الزامی است")]
         public string PhoneNumber { get; set; } = "";
 
-        [Required(ErrorMessage = "رمز عبور الزامی است"), DataType(DataType.Password), MinLength(6, ErrorMessage = "رمز عبور باید حداقل ۶ کاراکتر باشد")]
+        [Required(ErrorMessage = "رمز عبور الزامی است"), DataType(DataType.Password), MinLength(8, ErrorMessage = "رمز عبور باید حداقل 8 کاراکتر باشد"), MaxLength(100, ErrorMessage = "رمز عبور باید حداکثر 100 کاراکتر باشد")]
         public string Password { get; set; } = "";
 
         [Required(ErrorMessage = "تکرار رمز عبور الزامی است"), DataType(DataType.Password), Compare("Password", ErrorMessage = "رمز عبور و تکرار آن یکسان نیست")]

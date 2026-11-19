@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ورود موقتاً بسته شد | آریا پرینت</title>
+<style>
+  @font-face { font-family:'Vazirmatn'; src:url('/fonts/Vazirmatn-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'Vazirmatn'; src:url('/fonts/Vazirmatn-Medium.woff2') format('woff2'); font-weight:500; font-display:swap; }
+  @font-face { font-family:'Vazirmatn'; src:url('/fonts/Vazirmatn-ExtraBold.woff2') format('woff2'); font-weight:800; font-display:swap; }
+
+  :root {
+    --bg: #050a23;
+    --glow: #102a82;
+    --ink: #eef1f8;
+    --muted: #b6c3e0;
+    --blue: #4d8bff;
+    --paper: #f3f5fb;
+    --paper-line: #d5dbeb;
+    --stamp: #f472b6;
+    --ok: #34d399;
+    --out: 250px; /* how much of the paper ends up outside the printer */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center; padding: 24px; overflow-x: hidden;
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(60% 50% at 50% 0%, var(--glow) 0%, transparent 70%),
+      var(--bg);
+  }
+
+  main { width: min(100%, 420px); text-align: center; }
+
+  /* ---- printer + papers ---- */
+  .stage { position: relative; width: 260px; height: 300px; margin: 0 auto 28px; }
+  .slot {
+    position: absolute; inset: 0 0 auto 0; height: 24px; z-index: 2;
+    border-radius: 12px;
+    background: linear-gradient(#1c2d70, #0b1d5e);
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .slot::after { /* the dark opening the paper comes out of */
+    content: ""; position: absolute; inset: 9px 14px auto; height: 5px; border-radius: 3px;
+    background: #020514; box-shadow: inset 0 1px 2px rgba(0,0,0,.8);
+  }
+  /* Clips only above the middle of the opening, so paper comes out of the slot
+     but can still fall freely to the sides and down when it is torn off. */
+  .paper-wrap { position: absolute; inset: 11px 22px 0; z-index: 3; clip-path: inset(0 -300px -300px -300px); }
+
+  .paper {
+    position: absolute; inset: 0 0 auto 0; height: 270px;
+    background: var(--paper);
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    padding: 26px 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transform: translateY(-100%);                              /* hidden inside the printer */
+    transition: transform 5s cubic-bezier(.3,.5,.4,1);          /* slow, like a printer feeding paper */
+  }
+  .paper.out { transform: translateY(calc(-100% + var(--out))); }
+
+  /* torn off: drops away to the side */
+  .paper.torn {
+    transform: translate(70px, calc(-100% + var(--out) + 60px)) rotate(18deg);
+    opacity: 0;
+    transition: transform .7s cubic-bezier(.5,0,.9,.5), opacity .7s ease-in;
+  }
+  #paperReady { transition-duration: .9s; }
+
+  .lines i { display: block; height: 7px; border-radius: 4px; background: var(--paper-line); margin-bottom: 12px; }
+  .lines i:nth-child(1) { width: 70%; }
+  .lines i:nth-child(2) { width: 94%; }
+  .lines i:nth-child(3) { width: 82%; }
+  .lines i:nth-child(4) { width: 60%; }
+  .stamp {
+    align-self: center; margin-bottom: 8px;
+    font-weight: 800; font-size: 40px; line-height: 1;
+    padding: 8px 18px; border: 4px solid var(--stamp); border-radius: 10px;
+    color: var(--stamp); transform: rotate(-6deg);
+  }
+  .stamp.ok { color: var(--ok); border-color: var(--ok); font-size: 30px; }
+
+  h1 { margin: 0 0 10px; font-size: 26px; font-weight: 800; }
+  p  { margin: 0 auto 22px; max-width: 34ch; line-height: 2; color: var(--muted); }
+
+  .count { margin-bottom: 18px; font-weight: 500; color: var(--ink); min-height: 1.6em; }
+  .count b { color: var(--blue); font-weight: 800; font-size: 1.25em; }
+
+  .btn {
+    display: inline-block; padding: 12px 34px; border-radius: 12px;
+    font: inherit; font-weight: 500; text-decoration: none;
+    color: #fff; background: var(--blue);
+    transition: opacity .2s, background .2s;
+  }
+  .btn:hover { background: #3a72ff; }
+  .btn:focus-visible { outline: 3px solid #a5e3ff; outline-offset: 3px; }
+  .btn[aria-disabled="true"] { opacity: .35; pointer-events: none; }
+
+  @media (prefers-reduced-motion: reduce) { .paper, .paper.torn, .btn { transition: none; } }
+  @media (max-width: 380px) { h1 { font-size: 22px; } .stage { transform: scale(.9); } }
+</style>
+</head>
+<body>
+<main>
+  <div class="stage" aria-hidden="true">
+    <div class="slot"></div>
+    <div class="paper-wrap">
+      <!-- paper 1: the error. comes out right away, stays until the wait is over -->
+      <div class="paper" id="paperError">
+        <div class="lines"><i></i><i></i><i></i><i></i></div>
+        <div class="stamp">۴۲۹</div>
+      </div>
+      <!-- paper 2: ready. comes out after paper 1 is torn off -->
+      <div class="paper" id="paperReady">
+        <div class="lines"><i></i><i></i><i></i><i></i></div>
+        <div class="stamp ok">آماده</div>
+      </div>
+    </div>
+  </div>
+
+  <h1>ورود موقتاً بسته شد</h1>
+  <p>چند تلاش ناموفق پشت‌سرهم ثبت شد. برای محافظت از حساب‌ها، ورود تا پایان شمارش بسته است.</p>
+
+  <div class="count" id="count" role="status" aria-live="polite"></div>
+  <a class="btn" id="back" href="/Account/Login" aria-disabled="true">بازگشت به ورود</a>
+</main>
+
+<script>
+  (function () {
+    // {{SECONDS}} is replaced by the server; falls back to 60 when opened directly.
+    var total = parseInt('{{SECONDS}}', 10);
+    if (!total || total < 1) total = 60;
+
+    var fa = function (n) { return String(n).replace(/\d/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[d]; }); };
+    var paperError = document.getElementById('paperError');
+    var paperReady = document.getElementById('paperReady');
+    var count = document.getElementById('count');
+    var back  = document.getElementById('back');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var start = Date.now();
+
+    // error paper slides out right after the page paints
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { paperError.classList.add('out'); });
+    });
+
+    function finish() {
+      paperError.classList.add('torn');                       // tear it off
+      setTimeout(function () { paperReady.classList.add('out'); }, reduce ? 0 : 450); // new paper comes out
+      count.textContent = 'می‌تونید دوباره وارد بشید.';
+      back.removeAttribute('aria-disabled');
+    }
+
+    function tick() {
+      var left = Math.max(0, Math.ceil(total - (Date.now() - start) / 1000));
+      if (left > 0) {
+        count.innerHTML = 'ورود تا <b>' + fa(left) + '</b> ثانیه دیگه باز می‌شه';
+        return;
+      }
+      clearInterval(timer);
+      finish();
+    }
+    var timer = setInterval(tick, 250);
+    tick();
+  })();
+</script>
+</body>
+</html>

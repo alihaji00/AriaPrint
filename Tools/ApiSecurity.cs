@@ -209,7 +209,7 @@ namespace ApiSecurity
 
     public static class JwtToken
     {
-        private const string SecretKey = "QbFgmIjD7q3r090Hz94C4f/0BIQuiaIRoaQwSw65o4c=";
+        private const string SecretKey = "**************";
         private const string Issuer = "MyLoginServer";
         private const string Audience = "MyApi";
 

@@ -20,4 +20,14 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\alihaji\WEB-asp.net\AriaPrint-Cofenet\AriaPrint\.editorconfig" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="D:\alihaji\WEB-asp.net\AriaPrint-Cofenet\AriaPrint\.editorconfig" />
+  </ItemGroup>
+
 </Project>

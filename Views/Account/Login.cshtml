@@ -341,17 +341,5 @@
                 }
             });
         });
-
-        // DEBUG: Form submission test
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                console.log('Form submitted!');
-                const phone = document.querySelector('input[name="PhoneNumber"]').value;
-                const password = document.querySelector('input[name="Password"]').value;
-                console.log('Phone:', phone);
-                console.log('Password:', password ? '[PROVIDED]' : '[EMPTY]');
-            });
-        }
     })();
 </script>

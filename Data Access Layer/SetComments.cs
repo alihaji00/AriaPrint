@@ -34,8 +34,6 @@ namespace AriaPrint.Data_Access_Layer
         {
             var insertData = new
             {
-                comment.FullName,
-                comment.PhoneNumber,
                 comment.Text,
                 comment.NewsId,
                 Date = DateTime.Now.ToPersianDateTimeNumber(),

@@ -19,12 +19,10 @@
         @if (User.Identity.IsAuthenticated)
         {
             <form asp-controller="Comments" asp-action="Comments" method="post" class="qa-form" id="qaForm">
-                <input type="hidden" asp-for="NewComment.NewsId" />
-                <input type="hidden" asp-for="NewComment.FullName" value="@(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "") @(User.FindFirst(System.Security.Claims.ClaimTypes.Surname)?.Value ?? "")" />
-                <input type="hidden" asp-for="NewComment.PhoneNumber" value="@(User.Identity.Name ?? "0")" />
+                <input type="hidden" name="NewsId" value="@Model.NewComment.NewsId" />
 
                 <div class="qa-form-row qa-form-row-submit">
-                    <input asp-for="NewComment.Text" type="text" id="qaComment" class="qa-input" placeholder="سوال یا دیدگاه خود را اینجا بنویسید..." required>
+                    <input type="text" name="Text" id="qaComment" class="qa-input" placeholder="سوال یا دیدگاه خود را اینجا بنویسید..." required>
                     <button type="submit" class="qa-submit-btn">ارسال</button>
                 </div>
 

@@ -5,6 +5,7 @@ using AriaPrint.Repository;
 using Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AriaPrint.Controllers
@@ -25,14 +26,25 @@ namespace AriaPrint.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Comments(Comment newComment)
+        public async Task<IActionResult> Comments(NewCommentInput input)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                string ip = Request.GetClientIpAddress();
-                await _commentService.AddCommentAsync(newComment, ip);
+                return RedirectToAction("News", "News", new { id = input.NewsId });
             }
-            return RedirectToAction("News", "News", new { id = newComment.NewsId });
+
+            var comment = new Comment
+            {
+                NewsId = input.NewsId,
+                Text = input.Text,
+                FullName = $"{User.FindFirst(ClaimTypes.GivenName)?.Value}{User.FindFirst(ClaimTypes.Surname)?.Value}".Trim(),
+                PhoneNumber =long.Parse(User.FindFirst(ClaimTypes.MobilePhone)!.Value),
+            };
+
+            string ip = Request.GetClientIpAddress();
+            await _commentService.AddCommentAsync(comment, ip);
+
+            return RedirectToAction("News", "News", new { id = input.NewsId });
         }
     }
 }
