@@ -4,12 +4,10 @@ using AriaPrint.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.RateLimiting;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace AriaPrint.Controllers
@@ -29,7 +27,7 @@ namespace AriaPrint.Controllers
         public IActionResult Register() => View();
 
         [HttpPost]
-        [EnableRateLimiting("login")]
+        [EnableRateLimiting("Login")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -131,10 +129,7 @@ namespace AriaPrint.Controllers
             var identity = new ClaimsIdentity(claims, scheme);
             var principal = new ClaimsPrincipal(identity);
 
-            //- [ ] **«مرا به خاطر بسپار» به سرور وصل نیست.**
-            // - `Views / Account / Login.cshtml` (خط ۱۰۷): چک‌باکس `RememberMe` هست ولی سرور بهش توجه نمی‌کنه.
-            // - `Controllers / AccountController.cs` (خط ۱۲۷): `IsPersistent = true` ثابته، یعنی همیشه ۱۴ روز لاگین می‌مونه.
-            // - کار لازم: فیلد `RememberMe` به `LoginViewModel` اضافه بشه، `SignInUserAsync(user, rememberMe)` بگیره، و `ExpireTimeSpan` توی `Program.cs` برای حالت بدون تیک کوتاه(مثلاً ۸ ساعت) بشه.
+            // TODO: RememberMe رو به سرور وصل کن.
 
             await HttpContext.SignInAsync(
                 scheme,

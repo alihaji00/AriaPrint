@@ -46,6 +46,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
+//To add new Admin:
+// UPDATE UsersTbl SET Role = 'Admin' WHERE PhoneNumber = 9xxxxxxxxx;
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<PasswordService>();
@@ -100,20 +103,6 @@ app.Use(async (context, next) =>
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
-    var passwordService = scope.ServiceProvider.GetRequiredService<PasswordService>();
-
-    long adminPhoneNumber = 09923365373;
-    var existingAdmin = await userRepo.GetByPhoneNumberAsync(adminPhoneNumber);
-
-    if (existingAdmin == null)
-    {
-        throw new Exception("ادمینی پیدا نشد!");
-    }
 }
 
 // Configure the HTTP request pipeline.

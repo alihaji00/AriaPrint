@@ -37,7 +37,7 @@ namespace AriaPrint.Controllers
             {
                 NewsId = input.NewsId,
                 Text = input.Text,
-                FullName = $"{User.FindFirst(ClaimTypes.GivenName)?.Value}{User.FindFirst(ClaimTypes.Surname)?.Value}".Trim(),
+                FullName = $"{User.FindFirst(ClaimTypes.GivenName)?.Value} {User.FindFirst(ClaimTypes.Surname)?.Value}".Trim(),
                 PhoneNumber =long.Parse(User.FindFirst(ClaimTypes.MobilePhone)!.Value),
             };
 
