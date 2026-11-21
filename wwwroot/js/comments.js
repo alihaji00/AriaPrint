@@ -155,4 +155,4 @@
             viewAllBtn.classList.toggle("qa-viewall-btn-open", expanded);
         });
     }
-});
+})();

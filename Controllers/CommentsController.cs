@@ -49,6 +49,8 @@ namespace AriaPrint.Controllers
             return RedirectToAction("News", "News", new { id = input.NewsId });
         }
 
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Delete(int commentId)
         {
             var comment = await _commentService.GetCommentByIdAsync(commentId);
