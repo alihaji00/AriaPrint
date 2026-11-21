@@ -5,11 +5,6 @@
     <LangVersion>12</LangVersion>
     <DebugType>full</DebugType>
     <WarningLevel>4</WarningLevel>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>false</Deterministic>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <Features>strict</Features>
   </PropertyGroup>
 
 

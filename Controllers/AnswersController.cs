@@ -14,15 +14,17 @@ namespace AriaPrint.Controllers
         private readonly SetComments _commentService = new SetComments();
         private readonly SetAnswers _answerService = new SetAnswers();
 
-        [HttpGet]
-        public async Task<IActionResult> Answers(int CommentId)
-        {
-            var viewModel = new CommentsViewModel
-            {
-                AnswersList = await _answerService.GetAnswersAsync(CommentId)
-            };
-            return View(viewModel);
-        }
+        //UseLess Action:
+
+        //[HttpGet]
+        //public async Task<IActionResult> Answers(int CommentId)
+        //{
+        //    var viewModel = new CommentsViewModel
+        //    {
+        //        AnswersList = await _answerService.GetAnswersAsync(CommentId)
+        //    };
+        //    return View(viewModel);
+        //}
 
         [Authorize(Roles = "Admin,Moderator")]
         [HttpPost]
@@ -40,5 +42,7 @@ namespace AriaPrint.Controllers
 
             return RedirectToAction("News", "News", new { id = parentComment.NewsId });
         }
+
+        //public IActionResult ToggleLike(){}
     }
 }

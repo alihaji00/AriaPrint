@@ -300,7 +300,6 @@ public class ClassSQL
         return await ExeQueryAsync(query, parameters);
     }
 
-
     public async Task<T?> SelectOneAsync<T>(
         string selectQuery,
         object? parameters = null)

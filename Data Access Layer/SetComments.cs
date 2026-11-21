@@ -66,5 +66,12 @@ namespace AriaPrint.Data_Access_Layer
 
             return Result.FirstOrDefault() ?? new Comment();
         }
+        public async Task<int> DeleteCommentAsync(int commentId)
+        {
+            return await db.UpdateDynamicAsync(
+                "CommentsTbl",
+                new { IsDelete = 1, DeleteTime = DateTime.Now.ToPersianDateTimeNumber() },
+                new { CommentId = commentId });
+        }
     }
 }

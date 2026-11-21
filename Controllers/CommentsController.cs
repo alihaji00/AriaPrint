@@ -14,15 +14,17 @@ namespace AriaPrint.Controllers
     {
         private readonly SetComments _commentService = new SetComments();
 
-        [HttpGet]
-        public async Task<IActionResult> Comments(int newsId)
-        {
-            var viewModel = new CommentsViewModel
-            {
-                CommentsList = await _commentService.GetCommentsAsync(newsId)
-            };
-            return View(viewModel);
-        }
+        //UseLess Action:
+
+        //[HttpGet]
+        //public async Task<IActionResult> Comments(int newsId)
+        //{
+        //    var viewModel = new CommentsViewModel
+        //    {
+        //        CommentsList = await _commentService.GetCommentsAsync(newsId)
+        //    };
+        //    return View(viewModel);
+        //}
 
         [Authorize]
         [HttpPost]
@@ -46,5 +48,24 @@ namespace AriaPrint.Controllers
 
             return RedirectToAction("News", "News", new { id = input.NewsId });
         }
+
+        public async Task<IActionResult> Delete(int commentId)
+        {
+            var comment = await _commentService.GetCommentByIdAsync(commentId);
+            if (comment.CommentId == 0) return NotFound();
+
+            var isMod = User.IsInRole("Admin") || User.IsInRole("Moderator");
+            var myPhone = long.Parse(User.FindFirst(ClaimTypes.MobilePhone)!.Value);
+
+            if (!isMod && comment.PhoneNumber != myPhone)
+            {
+                return StatusCode(403); //You Cant delete comment from others Unless your an admin
+            }
+
+            await _commentService.DeleteCommentAsync(commentId);
+            return Ok();
+        }
+
+        //public IActionResult ToggleLike(){}
     }
-}
+}   
